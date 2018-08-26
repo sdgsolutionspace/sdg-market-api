@@ -45,5 +45,71 @@ class Trading
      */
     private $sellOffer;
 
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getTransactionUtcDatetime()
+    {
+        return $this->transactionUtcDatetime;
+    }
+
+    /**
+     * @param \DateTime $transactionUtcDatetime
+     */
+    public function setTransactionUtcDatetime($transactionUtcDatetime)
+    {
+        $this->transactionUtcDatetime = $transactionUtcDatetime;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNumberOfTokens()
+    {
+        return $this->numberOfTokens;
+    }
+
+    /**
+     * @param string $numberOfTokens
+     */
+    public function setNumberOfTokens($numberOfTokens)
+    {
+        $this->numberOfTokens = $numberOfTokens;
+    }
+
+    /**
+     * @return \SellOffer
+     */
+    public function getSellOffer()
+    {
+        return $this->sellOffer;
+    }
+
+    /**
+     * @param \SellOffer $sellOffer
+     */
+    public function setSellOffer($sellOffer)
+    {
+        $this->sellOffer = $sellOffer;
+    }
+
+
+
 
 }

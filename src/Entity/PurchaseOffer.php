@@ -66,5 +66,117 @@ class PurchaseOffer
      */
     private $project;
 
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPurchaserId()
+    {
+        return $this->purchaserId;
+    }
+
+    /**
+     * @param int $purchaserId
+     */
+    public function setPurchaserId($purchaserId)
+    {
+        $this->purchaserId = $purchaserId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNumberOfTokens()
+    {
+        return $this->numberOfTokens;
+    }
+
+    /**
+     * @param string $numberOfTokens
+     */
+    public function setNumberOfTokens($numberOfTokens)
+    {
+        $this->numberOfTokens = $numberOfTokens;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPurchasePricePerToken()
+    {
+        return $this->purchasePricePerToken;
+    }
+
+    /**
+     * @param string $purchasePricePerToken
+     */
+    public function setPurchasePricePerToken($purchasePricePerToken)
+    {
+        $this->purchasePricePerToken = $purchasePricePerToken;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getOfferStartsUtcDate()
+    {
+        return $this->offerStartsUtcDate;
+    }
+
+    /**
+     * @param \DateTime $offerStartsUtcDate
+     */
+    public function setOfferStartsUtcDate($offerStartsUtcDate)
+    {
+        $this->offerStartsUtcDate = $offerStartsUtcDate;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getOfferExpiresAtUtcDate()
+    {
+        return $this->offerExpiresAtUtcDate;
+    }
+
+    /**
+     * @param \DateTime $offerExpiresAtUtcDate
+     */
+    public function setOfferExpiresAtUtcDate($offerExpiresAtUtcDate)
+    {
+        $this->offerExpiresAtUtcDate = $offerExpiresAtUtcDate;
+    }
+
+    /**
+     * @return \GitProject
+     */
+    public function getProject()
+    {
+        return $this->project;
+    }
+
+    /**
+     * @param \GitProject $project
+     */
+    public function setProject($project)
+    {
+        $this->project = $project;
+    }
+
 
 }

@@ -52,5 +52,85 @@ class GitProject
      */
     private $participation;
 
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGitAddress()
+    {
+        return $this->gitAddress;
+    }
+
+    /**
+     * @param string $gitAddress
+     */
+    public function setGitAddress($gitAddress)
+    {
+        $this->gitAddress = $gitAddress;
+    }
+
+    /**
+     * @return string
+     */
+    public function getProjectAddress()
+    {
+        return $this->projectAddress;
+    }
+
+    /**
+     * @param string $projectAddress
+     */
+    public function setProjectAddress($projectAddress)
+    {
+        $this->projectAddress = $projectAddress;
+    }
+
+    /**
+     * @return \ProjectParticipation
+     */
+    public function getParticipation()
+    {
+        return $this->participation;
+    }
+
+    /**
+     * @param \ProjectParticipation $participation
+     */
+    public function setParticipation($participation)
+    {
+        $this->participation = $participation;
+    }
+
 
 }

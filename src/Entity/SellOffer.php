@@ -66,5 +66,117 @@ class SellOffer
      */
     private $project;
 
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSellerId()
+    {
+        return $this->sellerId;
+    }
+
+    /**
+     * @param int $sellerId
+     */
+    public function setSellerId($sellerId)
+    {
+        $this->sellerId = $sellerId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNumberOfTokens()
+    {
+        return $this->numberOfTokens;
+    }
+
+    /**
+     * @param string $numberOfTokens
+     */
+    public function setNumberOfTokens($numberOfTokens)
+    {
+        $this->numberOfTokens = $numberOfTokens;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSellPricePerToken()
+    {
+        return $this->sellPricePerToken;
+    }
+
+    /**
+     * @param string $sellPricePerToken
+     */
+    public function setSellPricePerToken($sellPricePerToken)
+    {
+        $this->sellPricePerToken = $sellPricePerToken;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getOfferStatsUtcDate()
+    {
+        return $this->offerStatsUtcDate;
+    }
+
+    /**
+     * @param \DateTime $offerStatsUtcDate
+     */
+    public function setOfferStatsUtcDate($offerStatsUtcDate)
+    {
+        $this->offerStatsUtcDate = $offerStatsUtcDate;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getOfferExpiresAtUtcDate()
+    {
+        return $this->offerExpiresAtUtcDate;
+    }
+
+    /**
+     * @param \DateTime $offerExpiresAtUtcDate
+     */
+    public function setOfferExpiresAtUtcDate($offerExpiresAtUtcDate)
+    {
+        $this->offerExpiresAtUtcDate = $offerExpiresAtUtcDate;
+    }
+
+    /**
+     * @return \GitProject
+     */
+    public function getProject()
+    {
+        return $this->project;
+    }
+
+    /**
+     * @param \GitProject $project
+     */
+    public function setProject($project)
+    {
+        $this->project = $project;
+    }
+
 
 }

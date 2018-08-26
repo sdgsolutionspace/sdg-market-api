@@ -58,5 +58,86 @@ class Transaction
      */
     private $user;
 
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMovementType()
+    {
+        return $this->movementType;
+    }
+
+    /**
+     * @param string $movementType
+     */
+    public function setMovementType($movementType)
+    {
+        $this->movementType = $movementType;
+    }
+
+    /**
+     * @return \ProjectParticipation
+     */
+    public function getProjectParticipation()
+    {
+        return $this->projectParticipation;
+    }
+
+    /**
+     * @param \ProjectParticipation $projectParticipation
+     */
+    public function setProjectParticipation($projectParticipation)
+    {
+        $this->projectParticipation = $projectParticipation;
+    }
+
+    /**
+     * @return \Trading
+     */
+    public function getTrading()
+    {
+        return $this->trading;
+    }
+
+    /**
+     * @param \Trading $trading
+     */
+    public function setTrading($trading)
+    {
+        $this->trading = $trading;
+    }
+
+    /**
+     * @return \User
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param \User $user
+     */
+    public function setUser($user)
+    {
+        $this->user = $user;
+    }
+
+
 
 }
