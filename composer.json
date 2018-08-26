@@ -13,7 +13,8 @@
         "symfony/yaml": "*"
     },
     "require-dev": {
-        "symfony/dotenv": "*"
+        "symfony/dotenv": "*",
+        "symfony/phpunit-bridge": "*"
     },
     "config": {
         "preferred-install": {
