@@ -22,13 +22,6 @@ class SellOffer
     private $id;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="seller_id", type="integer", nullable=false)
-     */
-    private $sellerId;
-
-    /**
      * @var string
      *
      * @ORM\Column(name="number_of_tokens", type="decimal", precision=6, scale=2, nullable=false)
@@ -50,11 +43,11 @@ class SellOffer
     private $offerStatsUtcDate = 'CURRENT_TIMESTAMP';
 
     /**
-     * @var \DateTime
+     * @var \DateTime|null
      *
-     * @ORM\Column(name="offer_expires_at_utc_date", type="datetime", nullable=false, options={"default"="0000-00-00 00:00:00"})
+     * @ORM\Column(name="offer_expires_at_utc_date", type="datetime", nullable=true)
      */
-    private $offerExpiresAtUtcDate = '0000-00-00 00:00:00';
+    private $offerExpiresAtUtcDate;
 
     /**
      * @var \GitProject
@@ -67,115 +60,90 @@ class SellOffer
     private $project;
 
     /**
-     * @return int
+     * @var \User
+     *
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="seller_id", referencedColumnName="id")
+     * })
      */
-    public function getId()
+    private $seller;
+
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
-
-    /**
-     * @return int
-     */
-    public function getSellerId()
-    {
-        return $this->sellerId;
-    }
-
-    /**
-     * @param int $sellerId
-     */
-    public function setSellerId($sellerId)
-    {
-        $this->sellerId = $sellerId;
-    }
-
-    /**
-     * @return string
-     */
     public function getNumberOfTokens()
     {
         return $this->numberOfTokens;
     }
 
-    /**
-     * @param string $numberOfTokens
-     */
-    public function setNumberOfTokens($numberOfTokens)
+    public function setNumberOfTokens($numberOfTokens): self
     {
         $this->numberOfTokens = $numberOfTokens;
+
+        return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getSellPricePerToken()
     {
         return $this->sellPricePerToken;
     }
 
-    /**
-     * @param string $sellPricePerToken
-     */
-    public function setSellPricePerToken($sellPricePerToken)
+    public function setSellPricePerToken($sellPricePerToken): self
     {
         $this->sellPricePerToken = $sellPricePerToken;
+
+        return $this;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getOfferStatsUtcDate()
+    public function getOfferStatsUtcDate(): ?\DateTimeInterface
     {
         return $this->offerStatsUtcDate;
     }
 
-    /**
-     * @param \DateTime $offerStatsUtcDate
-     */
-    public function setOfferStatsUtcDate($offerStatsUtcDate)
+    public function setOfferStatsUtcDate(\DateTimeInterface $offerStatsUtcDate): self
     {
         $this->offerStatsUtcDate = $offerStatsUtcDate;
+
+        return $this;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getOfferExpiresAtUtcDate()
+    public function getOfferExpiresAtUtcDate(): ?\DateTimeInterface
     {
         return $this->offerExpiresAtUtcDate;
     }
 
-    /**
-     * @param \DateTime $offerExpiresAtUtcDate
-     */
-    public function setOfferExpiresAtUtcDate($offerExpiresAtUtcDate)
+    public function setOfferExpiresAtUtcDate(?\DateTimeInterface $offerExpiresAtUtcDate): self
     {
         $this->offerExpiresAtUtcDate = $offerExpiresAtUtcDate;
+
+        return $this;
     }
 
-    /**
-     * @return \GitProject
-     */
-    public function getProject()
+    public function getProject(): ?GitProject
     {
         return $this->project;
     }
 
-    /**
-     * @param \GitProject $project
-     */
-    public function setProject($project)
+    public function setProject(?GitProject $project): self
     {
         $this->project = $project;
+
+        return $this;
+    }
+
+    public function getSeller(): ?User
+    {
+        return $this->seller;
+    }
+
+    public function setSeller(?User $seller): self
+    {
+        $this->seller = $seller;
+
+        return $this;
     }
 
 

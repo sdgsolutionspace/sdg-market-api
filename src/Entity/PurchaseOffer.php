@@ -22,13 +22,6 @@ class PurchaseOffer
     private $id;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="purchaser_id", type="integer", nullable=false)
-     */
-    private $purchaserId;
-
-    /**
      * @var string
      *
      * @ORM\Column(name="number_of_tokens", type="decimal", precision=6, scale=2, nullable=false)
@@ -50,11 +43,11 @@ class PurchaseOffer
     private $offerStartsUtcDate = 'CURRENT_TIMESTAMP';
 
     /**
-     * @var \DateTime
+     * @var \DateTime|null
      *
-     * @ORM\Column(name="offer_expires_at_utc_date", type="datetime", nullable=false, options={"default"="0000-00-00 00:00:00"})
+     * @ORM\Column(name="offer_expires_at_utc_date", type="datetime", nullable=true)
      */
-    private $offerExpiresAtUtcDate = '0000-00-00 00:00:00';
+    private $offerExpiresAtUtcDate;
 
     /**
      * @var \GitProject
@@ -67,115 +60,90 @@ class PurchaseOffer
     private $project;
 
     /**
-     * @return int
+     * @var \User
+     *
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="purchaser_id", referencedColumnName="id")
+     * })
      */
-    public function getId()
+    private $purchaser;
+
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
-
-    /**
-     * @return int
-     */
-    public function getPurchaserId()
-    {
-        return $this->purchaserId;
-    }
-
-    /**
-     * @param int $purchaserId
-     */
-    public function setPurchaserId($purchaserId)
-    {
-        $this->purchaserId = $purchaserId;
-    }
-
-    /**
-     * @return string
-     */
     public function getNumberOfTokens()
     {
         return $this->numberOfTokens;
     }
 
-    /**
-     * @param string $numberOfTokens
-     */
-    public function setNumberOfTokens($numberOfTokens)
+    public function setNumberOfTokens($numberOfTokens): self
     {
         $this->numberOfTokens = $numberOfTokens;
+
+        return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getPurchasePricePerToken()
     {
         return $this->purchasePricePerToken;
     }
 
-    /**
-     * @param string $purchasePricePerToken
-     */
-    public function setPurchasePricePerToken($purchasePricePerToken)
+    public function setPurchasePricePerToken($purchasePricePerToken): self
     {
         $this->purchasePricePerToken = $purchasePricePerToken;
+
+        return $this;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getOfferStartsUtcDate()
+    public function getOfferStartsUtcDate(): ?\DateTimeInterface
     {
         return $this->offerStartsUtcDate;
     }
 
-    /**
-     * @param \DateTime $offerStartsUtcDate
-     */
-    public function setOfferStartsUtcDate($offerStartsUtcDate)
+    public function setOfferStartsUtcDate(\DateTimeInterface $offerStartsUtcDate): self
     {
         $this->offerStartsUtcDate = $offerStartsUtcDate;
+
+        return $this;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getOfferExpiresAtUtcDate()
+    public function getOfferExpiresAtUtcDate(): ?\DateTimeInterface
     {
         return $this->offerExpiresAtUtcDate;
     }
 
-    /**
-     * @param \DateTime $offerExpiresAtUtcDate
-     */
-    public function setOfferExpiresAtUtcDate($offerExpiresAtUtcDate)
+    public function setOfferExpiresAtUtcDate(?\DateTimeInterface $offerExpiresAtUtcDate): self
     {
         $this->offerExpiresAtUtcDate = $offerExpiresAtUtcDate;
+
+        return $this;
     }
 
-    /**
-     * @return \GitProject
-     */
-    public function getProject()
+    public function getProject(): ?GitProject
     {
         return $this->project;
     }
 
-    /**
-     * @param \GitProject $project
-     */
-    public function setProject($project)
+    public function setProject(?GitProject $project): self
     {
         $this->project = $project;
+
+        return $this;
+    }
+
+    public function getPurchaser(): ?User
+    {
+        return $this->purchaser;
+    }
+
+    public function setPurchaser(?User $purchaser): self
+    {
+        $this->purchaser = $purchaser;
+
+        return $this;
     }
 
 

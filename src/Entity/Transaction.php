@@ -58,86 +58,58 @@ class Transaction
      */
     private $user;
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getMovementType()
+    public function getMovementType(): ?string
     {
         return $this->movementType;
     }
 
-    /**
-     * @param string $movementType
-     */
-    public function setMovementType($movementType)
+    public function setMovementType(string $movementType): self
     {
         $this->movementType = $movementType;
+
+        return $this;
     }
 
-    /**
-     * @return \ProjectParticipation
-     */
-    public function getProjectParticipation()
+    public function getProjectParticipation(): ?ProjectParticipation
     {
         return $this->projectParticipation;
     }
 
-    /**
-     * @param \ProjectParticipation $projectParticipation
-     */
-    public function setProjectParticipation($projectParticipation)
+    public function setProjectParticipation(?ProjectParticipation $projectParticipation): self
     {
         $this->projectParticipation = $projectParticipation;
+
+        return $this;
     }
 
-    /**
-     * @return \Trading
-     */
-    public function getTrading()
+    public function getTrading(): ?Trading
     {
         return $this->trading;
     }
 
-    /**
-     * @param \Trading $trading
-     */
-    public function setTrading($trading)
+    public function setTrading(?Trading $trading): self
     {
         $this->trading = $trading;
+
+        return $this;
     }
 
-    /**
-     * @return \User
-     */
-    public function getUser()
+    public function getUser(): ?User
     {
         return $this->user;
     }
 
-    /**
-     * @param \User $user
-     */
-    public function setUser($user)
+    public function setUser(?User $user): self
     {
         $this->user = $user;
-    }
 
+        return $this;
+    }
 
 
 }

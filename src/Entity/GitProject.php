@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * GitProject
  *
- * @ORM\Table(name="git_project", indexes={@ORM\Index(name="fk_project_participation1_idx", columns={"participation_id"})})
+ * @ORM\Table(name="git_project")
  * @ORM\Entity
  */
 class GitProject
@@ -42,94 +42,45 @@ class GitProject
      */
     private $projectAddress;
 
-    /**
-     * @var \ProjectParticipation
-     *
-     * @ORM\ManyToOne(targetEntity="ProjectParticipation")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="participation_id", referencedColumnName="id")
-     * })
-     */
-    private $participation;
-
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     */
-    public function setName($name)
+    public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getGitAddress()
+    public function getGitAddress(): ?string
     {
         return $this->gitAddress;
     }
 
-    /**
-     * @param string $gitAddress
-     */
-    public function setGitAddress($gitAddress)
+    public function setGitAddress(string $gitAddress): self
     {
         $this->gitAddress = $gitAddress;
+
+        return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getProjectAddress()
+    public function getProjectAddress(): ?string
     {
         return $this->projectAddress;
     }
 
-    /**
-     * @param string $projectAddress
-     */
-    public function setProjectAddress($projectAddress)
+    public function setProjectAddress(string $projectAddress): self
     {
         $this->projectAddress = $projectAddress;
-    }
 
-    /**
-     * @return \ProjectParticipation
-     */
-    public function getParticipation()
-    {
-        return $this->participation;
-    }
-
-    /**
-     * @param \ProjectParticipation $participation
-     */
-    public function setParticipation($participation)
-    {
-        $this->participation = $participation;
+        return $this;
     }
 
 

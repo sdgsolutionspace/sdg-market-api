@@ -52,104 +52,111 @@ class User
     /**
      * @var bool
      *
-     * @ORM\Column(name="active", type="boolean", nullable=false)
+     * @ORM\Column(name="active", type="boolean", nullable=false, options={"default"="1"})
      */
-    private $active;
+    private $active = '1';
 
     /**
-     * @return int
+     * @var string
+     *
+     * @ORM\Column(name="role", type="string", length=0, nullable=false, options={"default"="user"})
      */
-    public function getId()
+    private $role = 'user';
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="black_listed", type="boolean", nullable=false)
+     */
+    private $blackListed = '0';
+
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getEmail()
+    public function getEmail(): ?string
     {
         return $this->email;
     }
 
-    /**
-     * @param null|string $email
-     */
-    public function setEmail($email)
+    public function setEmail(?string $email): self
     {
         $this->email = $email;
+
+        return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getUsername()
+    public function getUsername(): ?string
     {
         return $this->username;
     }
 
-    /**
-     * @param string $username
-     */
-    public function setUsername($username)
+    public function setUsername(string $username): self
     {
         $this->username = $username;
+
+        return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getGithubId()
+    public function getGithubId(): ?string
     {
         return $this->githubId;
     }
 
-    /**
-     * @param string $githubId
-     */
-    public function setGithubId($githubId)
+    public function setGithubId(string $githubId): self
     {
         $this->githubId = $githubId;
+
+        return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getTimezone()
+    public function getTimezone(): ?string
     {
         return $this->timezone;
     }
 
-    /**
-     * @param string $timezone
-     */
-    public function setTimezone($timezone)
+    public function setTimezone(string $timezone): self
     {
         $this->timezone = $timezone;
+
+        return $this;
     }
 
-    /**
-     * @return bool
-     */
-    public function isActive()
+    public function getActive(): ?bool
     {
         return $this->active;
     }
 
-    /**
-     * @param bool $active
-     */
-    public function setActive($active)
+    public function setActive(bool $active): self
     {
         $this->active = $active;
+
+        return $this;
+    }
+
+    public function getRole(): ?string
+    {
+        return $this->role;
+    }
+
+    public function setRole(string $role): self
+    {
+        $this->role = $role;
+
+        return $this;
+    }
+
+    public function getBlackListed(): ?bool
+    {
+        return $this->blackListed;
+    }
+
+    public function setBlackListed(bool $blackListed): self
+    {
+        $this->blackListed = $blackListed;
+
+        return $this;
     }
 
 
