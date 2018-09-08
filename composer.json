@@ -8,14 +8,15 @@
         "jms/serializer-bundle": "^2.4",
         "sensio/framework-extra-bundle": "^5.2",
         "symfony/console": "*",
+        "symfony/dotenv": "*",
         "symfony/flex": "^1.1",
         "symfony/framework-bundle": "*",
         "symfony/orm-pack": "^1.0",
         "symfony/yaml": "*"
     },
     "require-dev": {
+        "eightpoints/guzzle-bundle": "^7.3",
         "sensiolabs/security-checker": "^4.1",
-        "symfony/dotenv": "*",
         "symfony/maker-bundle": "^1.7",
         "symfony/phpunit-bridge": "*",
         "symfony/web-server-bundle": "*"
@@ -60,7 +61,7 @@
     },
     "extra": {
         "symfony": {
-            "allow-contrib": false,
+            "allow-contrib": "true",
             "require": "4.1.*"
         }
     }
