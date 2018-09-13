@@ -1,1 +1,11 @@
 /* You can add global styles to this file, and also import other style files */
+
+/* VARIABLES */
+@import "assets/scss/variables";
+@import "assets/scss/common";
+@import "assets/scss/utils";
+
+/**
+ * Let's import bootstrap
+ */
+@import "~bootstrap/scss/bootstrap";

@@ -1,0 +1,19 @@
+/**
+ * Common styles for basic HTML elements
+ * @author: Ashiqur Rahman
+ * @author_url: https://ashiqur.com
+ */
+
+html, body, app-root {
+  min-height: 100vh;
+  font-family: 'Lato', Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.8em;
+  overflow-x: hidden;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+
+}
