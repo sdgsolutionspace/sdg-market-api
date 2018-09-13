@@ -15,5 +15,52 @@ html, body, app-root {
 body {
   display: flex;
   flex-direction: column;
+}
 
+[_nghost-c1] {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  &.page-header {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    background: map-get($colors, primary);
+    color: map-get($colors, light);
+
+    a {
+      color: map-get($colors, light);
+    }
+  }
+}
+
+main {
+  &.page-main-content {
+    flex-grow: 1;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+footer {
+  &.page-footer {
+    padding-top: 2rem;
+    padding-bottom: 1rem;
+    background: map-get($colors, light);
+
+    .footer-links {
+      a {
+        margin-left: 0.5rem;
+        margin-right: 0.5rem;
+
+        &:last-child {
+          margin-right: 0
+        }
+      }
+    }
+  }
 }
