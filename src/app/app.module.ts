@@ -4,11 +4,13 @@ import { RoutingModule } from './routing.module';
 
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
+import { RepositoriesComponent } from './repositories/repositories.component';
 
 @NgModule( {
   declarations: [
     AppComponent,
-    LoginComponent
+    LoginComponent,
+    RepositoriesComponent
   ],
   imports: [
     BrowserModule,

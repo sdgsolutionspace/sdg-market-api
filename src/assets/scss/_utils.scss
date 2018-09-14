@@ -25,3 +25,11 @@ app-root {
     animation: loading-animation 1.2s infinite ease-in-out;
   }
 }
+
+.btn {
+  &:not(.btn-block) {
+    & + & {
+      margin-left: 0.5rem;
+    }
+  }
+}

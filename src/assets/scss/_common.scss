@@ -43,6 +43,19 @@ main {
     padding-bottom: 1rem;
     display: flex;
     flex-direction: column;
+
+    aside {
+      &.sidebar {
+        nav {
+          &.sidebar-nav {
+            a {
+              padding-left: 0;
+              color: map-get($colors, dark);
+            }
+          }
+        }
+      }
+    }
   }
 }
 
