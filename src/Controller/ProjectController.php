@@ -10,7 +10,7 @@ use FOS\RestBundle\Routing\ClassResourceInterface;
 use JMS\Serializer\SerializerBuilder;
 use Symfony\Component\Routing\Annotation\Route;
 use FOS\RestBundle\Controller\FOSRestController;
-use FOS\RestBundle\Controller\Annotations as FOSRest;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\Annotations\RequestParam as RequestParam;
 use Symfony\Component\HttpFoundation\{Request, Response, JsonResponse};
 use FOS\RestBundle\Controller\Annotations\RouteResource;
@@ -30,13 +30,12 @@ class ProjectController extends FOSRestController implements ClassResourceInterf
     public function cgetAction()
     {
         $query = $this->getDoctrine()
-            ->getRepository('App\Entity\GitProject')
+            ->getRepository(GitProject::class)
             ->createQueryBuilder('c')
             ->getQuery();
         $projects = $query->getResult(Query::HYDRATE_ARRAY);
-        return new JsonResponse([
-            'data' => $projects
-        ], JsonResponse::HTTP_OK);
+        return new JsonResponse(
+            $projects, JsonResponse::HTTP_OK);
     }
 
     /**
@@ -64,23 +63,25 @@ class ProjectController extends FOSRestController implements ClassResourceInterf
 
     /**
      *
-     * @return JsonResponse
+     * @Route("/project/{id}", name="get_project", methods={"GET"})
+     *
+     * @param $id
+     * @return null|object
      */
     public function getAction($id)
     {
         $repository = $this->getDoctrine()->getRepository(GitProject::class);
         $project = $repository->find($id);
 
-        if (!$project) {
+        if(!$project) {
             return new JsonResponse([
                 'message' => 'Project not found'
             ], JsonResponse::HTTP_NOT_FOUND);
         }
 
-        return new JsonResponse([
-            'message' => 'Check out this project: ' . $project->getName()
-        ], JsonResponse::HTTP_OK);
-
+        $serializer = SerializerBuilder::create()->build();
+        $gitProjectArray = $serializer->toArray($project);
+        return new JsonResponse($gitProjectArray, JsonResponse::HTTP_OK);
     }
 
     /**

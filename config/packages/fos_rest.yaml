@@ -12,6 +12,15 @@ fos_rest:
         rules:
         - { path: '^/api/v1', fallback_format: json}
         - { path: '^/', stop: true}
+    exception:
+        enabled: true
+        exception_controller: 'App\Controller\ExceptionController::showAction'
+        codes:
+            'Symfony\Component\Routing\Exception\ResourceNotFoundException': 404
+            'Doctrine\ORM\OptimisticLockException': HTTP_CONFLICT
+            'Symfony\Component\HttpKernel\Exception\NotFoundHttpException': 404
+        messages:
+            'Symfony\Component\Routing\Exception\ResourceNotFoundException': true
 #    param_fetcher_listener:  true
 #    allowed_methods_listener:  true
 #    routing_loader: true
