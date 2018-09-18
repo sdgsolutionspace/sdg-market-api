@@ -5,12 +5,16 @@ import { RoutingModule } from './routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { RepositoriesComponent } from './repositories/repositories.component';
+import { AddRepositoryComponent } from './repositories/add-repository/add-repository.component';
+import { EditRepositoryComponent } from './repositories/edit-repository/edit-repository.component';
 
 @NgModule( {
   declarations: [
     AppComponent,
     LoginComponent,
-    RepositoriesComponent
+    RepositoriesComponent,
+    AddRepositoryComponent,
+    EditRepositoryComponent
   ],
   imports: [
     BrowserModule,
