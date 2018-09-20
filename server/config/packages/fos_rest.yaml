@@ -1,0 +1,36 @@
+# Read the documentation: https://symfony.com/doc/master/bundles/FOSRestBundle/index.html
+fos_rest:
+    serializer:
+        serialize_null: true
+    routing_loader:
+        default_format: json
+        include_format: false
+    param_fetcher_listener: force
+    view:
+        view_response_listener: false
+    format_listener:
+        rules:
+        - { path: '^/api/v1', fallback_format: json}
+        - { path: '^/', stop: true}
+    exception:
+        enabled: true
+        exception_controller: 'App\Controller\ExceptionController::showAction'
+        codes:
+            'Symfony\Component\Routing\Exception\ResourceNotFoundException': 404
+            'Doctrine\ORM\OptimisticLockException': HTTP_CONFLICT
+            'Symfony\Component\HttpKernel\Exception\NotFoundHttpException': 404
+        messages:
+            'Symfony\Component\Routing\Exception\ResourceNotFoundException': true
+#    param_fetcher_listener:  true
+#    allowed_methods_listener:  true
+#    routing_loader: true
+#    view:
+#        view_response_listener:  true
+#    exception:
+#        codes:
+#            App\Exception\MyException: 403
+#        messages:
+#            App\Exception\MyException: Forbidden area.
+#    format_listener:
+#        rules:
+#            - { path: ^/api, prefer_extension: true, fallback_format: json, priorities: [ json, html ] }

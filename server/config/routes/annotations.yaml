@@ -1,0 +1,4 @@
+controllers:
+    resource: ../../src/Controller/
+    type: rest
+    prefix: '/api/v1'
