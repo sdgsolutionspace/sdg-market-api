@@ -33,3 +33,15 @@ app-root {
     }
   }
 }
+
+.nav-tabs {
+  li {
+    a {
+      cursor: pointer;
+
+      &.active {
+        @extend .btn-light;
+      }
+    }
+  }
+}
