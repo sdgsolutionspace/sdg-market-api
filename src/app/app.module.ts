@@ -7,6 +7,8 @@ import { LoginComponent } from './login/login.component';
 import { RepositoriesComponent } from './repositories/repositories.component';
 import { AddRepositoryComponent } from './repositories/add-repository/add-repository.component';
 import { EditRepositoryComponent } from './repositories/edit-repository/edit-repository.component';
+import { AuctionsComponent } from './auctions/auctions.component';
+import { ProjectAuctionComponent } from './auctions/project-auction/project-auction.component';
 
 @NgModule( {
   declarations: [
@@ -14,7 +16,9 @@ import { EditRepositoryComponent } from './repositories/edit-repository/edit-rep
     LoginComponent,
     RepositoriesComponent,
     AddRepositoryComponent,
-    EditRepositoryComponent
+    EditRepositoryComponent,
+    AuctionsComponent,
+    ProjectAuctionComponent
   ],
   imports: [
     BrowserModule,

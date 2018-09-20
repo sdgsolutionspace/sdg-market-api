@@ -50,47 +50,40 @@
     </aside>
     <div class="col-12 col-md-8 col-lg-10">
       <h1 class="title">
-        Manage repositories
-        <a class="btn btn-light float-right" [routerLink]="['/repositories/add']" [routerLinkActive]="['active']">
-          <i class="fas fa-fw fa-plus"></i> Add new
-        </a>
+        Auctions
       </h1>
       <div class="table-responsive">
         <table class="table table-hover table-striped table-dark">
           <thead>
           <tr>
-            <th>Git name</th>
-            <th>GitHub address</th>
+            <th>Projects</th>
             <th>Project value</th>
+            <th>Your value</th>
             <th class="actions">Actions</th>
           </tr>
           </thead>
           <tbody>
           <tr *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8, 9]">
             <td>
-              Very Interesting Project
+              Interesting Project {{i}}
             </td>
             <td>
-              <a href="https://github.com/choobs/very-interesting-project" target="_blank">
-                https://github.com/choobs/very-interesting-project
-              </a>
+              350 <i class="fas fa-fw fa-coins"></i>
             </td>
             <td>
-              30 <i class="fas fa-fw fa-coins"></i>
+              35 <i class="fas fa-fw fa-coins"></i>
             </td>
             <td class="actions">
-              <a [routerLink]="['/repositories/edit', i]" class="btn btn-sm btn-warning">
-                <i class="fas fa-fw fa-pencil-alt"></i> Edit
-              </a>
-              <a href="#" class="btn btn-sm btn-danger">
-                <i class="fas fa-fw fa-trash"></i> Remove
+              <a [routerLink]="['/auctions/project', i]" class="btn btn-sm btn-warning">
+                <i class="fas fa-fw fa-eye"></i> View
               </a>
             </td>
           </tr>
           </tbody>
         </table>
+
       </div>
-      <nav aria-label="Repositories navigation">
+      <nav aria-label="Projects navigation">
         <ul class="pagination justify-content-center">
           <li class="page-item disabled">
             <a class="page-link" href="#" aria-label="Previous">
