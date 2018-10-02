@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthService } from '../auth/auth.service';
 
 @Component( {
   selector: 'app-login',
@@ -10,14 +11,14 @@ export class LoginComponent implements OnInit {
 
   title = 'GitHub Trading';
 
-  constructor( private router: Router ) {
+  constructor( private router: Router, public auth: AuthService ) {
   }
 
   ngOnInit() {
   }
 
   connectGitHub() {
-    this.router.navigate( [ 'repositories' ] );
+    this.auth.login();
   }
 
 }
