@@ -3,7 +3,16 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  auth: {
+    domain: 'github-trading.eu.auth0.com',
+    CLIENT_ID: 'iSWtqfpvBycKK4hxa4cwTBeQdn36X8JF',
+    CLIENT_DOMAIN: 'github-trading.eu.auth0.com',
+    REDIRECT: 'http://localhost:4200/callback',
+    AUDIENCE: 'https://github-trading.eu.auth0.com/api/v2/',
+    LOGOUT_URL: '/',
+    SCOPE: 'openid profile email'
+  }
 };
 
 /*
