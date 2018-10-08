@@ -14,10 +14,6 @@ export class AuthService {
     audience: environment.auth.AUDIENCE,
     scope: environment.auth.SCOPE
   } );
-  // Store authentication data
-  userProfile: any;
-  accessToken: string;
-  authenticated: boolean;
 
   constructor( private router: Router ) {
     // Check session to restore login if not expired
@@ -39,7 +35,6 @@ export class AuthService {
       } else if ( err ) {
         console.error( `Error: ${err.error}` );
       }
-      this.router.navigate( [ '/' ] );
     } );
   }
 
@@ -50,7 +45,6 @@ export class AuthService {
       } else if ( err ) {
         console.log( err );
         this.logout();
-        this.authenticated = false;
       }
     } );
   }
@@ -61,6 +55,7 @@ export class AuthService {
       console.log( profile );
       if ( profile ) {
         this._setSession( authResult, profile );
+        this.router.navigate( [ 'auctions' ] );
       }
     } );
   }
@@ -69,24 +64,26 @@ export class AuthService {
     const expTime = authResult.expiresIn * 1000 + Date.now();
     // Save authentication data and update login status subject
     localStorage.setItem( 'expires_at', JSON.stringify( expTime ) );
-    this.accessToken = authResult.accessToken;
-    this.userProfile = profile;
-    this.authenticated = true;
+    localStorage.setItem( 'authenticated', '1');
+    localStorage.setItem( 'accessToken', JSON.stringify( authResult.accessToken ) );
+    localStorage.setItem( 'userProfile', JSON.stringify( profile ) );
   }
 
   logout() {
     // Remove auth data and update login status
     localStorage.removeItem( 'expires_at' );
-    this.userProfile = undefined;
-    this.accessToken = undefined;
-    this.authenticated = false;
+    localStorage.removeItem( 'authenticated' );
+    localStorage.removeItem( 'userProfile' );
+    localStorage.removeItem( 'accessToken' );
   }
 
   get isLoggedIn(): boolean {
     // Check if current date is before token
     // expiration and user is signed in locally
     const expiresAt = JSON.parse( localStorage.getItem( 'expires_at' ) );
-    return Date.now() < expiresAt && this.authenticated;
+    const authenticated = localStorage.getItem( 'authenticated') === '1';
+
+    return Date.now() < expiresAt && authenticated;
   }
 
 }

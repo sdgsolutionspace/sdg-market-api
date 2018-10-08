@@ -15,7 +15,7 @@ import { CallbackComponent } from './login/callback/callback.component';
  * Route constant
  */
 const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: '', component: AuctionsComponent, canActivate: [ AuthGuard ] },
   { path: 'login', component: LoginComponent },
   { path: 'callback', component: CallbackComponent },
   { path: 'repositories', component: RepositoriesComponent, canActivate: [ AuthGuard ] },
