@@ -29,7 +29,7 @@ class Transaction
     private $movementType;
 
     /**
-     * @var \ProjectParticipation
+     * @var ProjectParticipation
      *
      * @ORM\ManyToOne(targetEntity="ProjectParticipation")
      * @ORM\JoinColumns({
@@ -39,7 +39,7 @@ class Transaction
     private $projectParticipation;
 
     /**
-     * @var \Trading
+     * @var Trading
      *
      * @ORM\ManyToOne(targetEntity="Trading")
      * @ORM\JoinColumns({
@@ -49,7 +49,7 @@ class Transaction
     private $trading;
 
     /**
-     * @var \User
+     * @var User
      *
      * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumns({

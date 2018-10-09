@@ -50,7 +50,7 @@
     </aside>
     <div class="col-12 col-md-8 col-lg-10">
       <h1 class="title">
-        Manage repositories
+        Manage users
         <a class="btn btn-light float-right" [routerLink]="['/repositories/add']" [routerLinkActive]="['active']">
           <i class="fas fa-fw fa-plus"></i> Add new
         </a>
@@ -59,24 +59,38 @@
         <table class="table table-hover table-striped table-dark">
           <thead>
           <tr>
-            <th>Git name</th>
-            <th>GitHub address</th>
-            <th>Project value</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Github ID</th>
+            <th>Timezone</th>
+            <th>Role</th>
+            <th>Active</th>
+            <th>Blacklisted</th>
             <th class="actions">Actions</th>
           </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8, 9]">
+          <tr *ngFor="let user of users">
             <td>
-              Very Interesting Project
+              {{user.username}}
             </td>
             <td>
-              <a href="https://github.com/choobs/very-interesting-project" target="_blank">
-                https://github.com/choobs/very-interesting-project
-              </a>
+              {{user.email}}
             </td>
             <td>
-              30 <i class="fas fa-fw fa-coins"></i>
+              {{user.github_id}}
+            </td>
+            <td>
+              {{user.timezone}}
+            </td>
+            <td>
+              {{user.role}}
+            </td>
+            <td>
+              {{user.active}}
+            </td>
+            <td>
+              {{user.black_listed}}
             </td>
             <td class="actions">
               <a [routerLink]="['/repositories/edit', i]" class="btn btn-sm btn-warning">

@@ -50,7 +50,7 @@ class PurchaseOffer
     private $offerExpiresAtUtcDate;
 
     /**
-     * @var \GitProject
+     * @var GitProject
      *
      * @ORM\ManyToOne(targetEntity="GitProject")
      * @ORM\JoinColumns({
@@ -60,7 +60,7 @@ class PurchaseOffer
     private $project;
 
     /**
-     * @var \User
+     * @var User
      *
      * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumns({

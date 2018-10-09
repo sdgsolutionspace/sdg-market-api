@@ -43,7 +43,7 @@ class ProjectParticipation
     private $commitId;
 
     /**
-     * @var \GitProject
+     * @var GitProject
      *
      * @ORM\ManyToOne(targetEntity="GitProject")
      * @ORM\JoinColumns({

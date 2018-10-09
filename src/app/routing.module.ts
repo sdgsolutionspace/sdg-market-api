@@ -10,6 +10,7 @@ import { EditRepositoryComponent } from './repositories/edit-repository/edit-rep
 import { AuctionsComponent } from './auctions/auctions.component';
 import { ProjectAuctionComponent } from './auctions/project-auction/project-auction.component';
 import { CallbackComponent } from './login/callback/callback.component';
+import {UsersComponent} from './users/users.component';
 
 /**
  * Route constant
@@ -23,6 +24,7 @@ const routes: Routes = [
   { path: 'repositories/edit/:id', component: EditRepositoryComponent, canActivate: [ AuthGuard ] },
   { path: 'auctions', component: AuctionsComponent, canActivate: [ AuthGuard ] },
   { path: 'auctions/project/:id', component: ProjectAuctionComponent, canActivate: [ AuthGuard ] },
+  { path: 'users', component: UsersComponent, canActivate: [ AuthGuard ] },
   { path: '**', redirectTo: 'login' }
 ];
 

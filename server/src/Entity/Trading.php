@@ -36,7 +36,7 @@ class Trading
     private $numberOfTokens;
 
     /**
-     * @var \SellOffer
+     * @var SellOffer
      *
      * @ORM\ManyToOne(targetEntity="SellOffer")
      * @ORM\JoinColumns({

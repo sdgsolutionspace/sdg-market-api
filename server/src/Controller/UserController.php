@@ -5,216 +5,113 @@ namespace App\Controller;
 
 use App\Entity\GitProject;
 use App\Entity\User;
-use Doctrine\ORM\Query;
+use App\Form\Type\UserType;
 use FOS\RestBundle\Controller\FOSRestController;
-use FOS\RestBundle\View\View;
-use phpDocumentor\Reflection\Types\Object_;
+use FOS\RestBundle\Routing\ClassResourceInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use FOS\RestBundle\Controller\Annotations\RequestParam;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Routing\Annotation\Route;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-
-class UserController extends FOSRestController
+/**
+ * Class UserController
+ * @package App\Controller
+ *
+ * @FOSRest\NamePrefix(value="api_v1_users_")
+ */
+class UserController extends FOSRestController implements ClassResourceInterface
 {
     /**
      * Get all users
-     *
-     * @Route("/users", name="get_users", methods={"GET"})
      *
      * @return Object
      */
     public function cgetAction()
     {
-        $query = $this->getDoctrine()
-            ->getRepository('App\Entity\User')
-            ->createQueryBuilder('c')
-            ->getQuery();
-        $users = $query->getResult(Query::HYDRATE_ARRAY);
-        if (!$users) {
-            return new JsonResponse([
-                'message' => 'User not found'
-            ], JsonResponse::HTTP_NOT_FOUND);
-        }
+        $users = $this->getDoctrine()->getRepository(User::class)->findAll();
 
-        return new JsonResponse([
-            'data' => $users
-        ], JsonResponse::HTTP_OK);
+        return $users;
     }
 
     /**
      * Get single user by id
      *
-     * @Route("/users/{id}", name="get_user", methods={"GET"})
-     *
-     * @return array
+     * @param User $user
+     * @return null|object
      */
-    public function getUserAction($id)
+    public function getAction(User $user)
     {
-
-        $user = $this->getDoctrine()
-            ->getRepository('App\Entity\User')
-            ->find($id);
-
-        if (!$user) {
-            return new JsonResponse([
-                'message' => 'User not found'
-            ], JsonResponse::HTTP_NOT_FOUND);
-        }
-
-        return new JsonResponse([
-            'data' => $user
-        ], JsonResponse::HTTP_OK);
+        return $user;
     }
 
     /**
      * Blacklist user
      *
-     * @Route("/users/{id}/blacklist", name="blacklist_user", methods={"PATCH"})
-     *
-     * @return array
+     * @param User $user
+     * @return User
      */
-    public function patchUserBlacklistAction($id)
+    public function blacklistAction(User $user)
     {
         $em = $this->getDoctrine()->getManager();
-
-        $user = $em
-            ->getRepository('App\Entity\User')
-            ->find($id);
-
-        if (!$user) {
-            return new JsonResponse([
-                'message' => 'User not found'
-            ], JsonResponse::HTTP_NOT_FOUND);
-        }
-
-        if ($user->getBlackListed()) {
-            return new JsonResponse([
-                'message' => 'User already in blacklist'
-            ], JsonResponse::HTTP_BAD_REQUEST);
-        }
-
         $user->setBlackListed(1);
-
         $em->flush();
 
-        return new JsonResponse([
-            'message' => 'User successfully blacklisted'
-        ], JsonResponse::HTTP_OK);
+        return $user;
     }
 
     /**
      * Assign role
      *
-     * @Route("/users/{id}/assignrole", name="user_assign_role", methods={"GET"})
-     *
-     * @return array
+     * @param User $user
+     * @param $role
+     * @return User
      */
-    public function patchUserAssignroleAction($id, Request $request)
+    public function assignRoleAction(User $user, $role)
     {
         $em = $this->getDoctrine()->getManager();
-
-        $user = $em
-            ->getRepository('App\Entity\User')
-            ->find($id);
-
-        if (!$user) {
-            return new JsonResponse([
-                'message' => 'User not found'
-            ], JsonResponse::HTTP_NOT_FOUND);
-        }
-
-        if ($user->getRole()) {
-            return new JsonResponse([
-                'message' => 'User role already assigned'
-            ], JsonResponse::HTTP_BAD_REQUEST);
-        }
-
-        $user->setRole($request->request->get('role'));
-
+        $user->setRole($role);
         $em->flush();
 
-        return new JsonResponse([
-            'message' => 'User role successfully assigned'
-        ], JsonResponse::HTTP_OK);
+        return $user;
     }
-
 
     /**
      * Register User.
      *
-     * @FOSRest\Post("/users/register")
-     *
-     * @return array
+     * @param Request $request
+     * @return \Symfony\Component\Form\FormInterface
      */
-    public function postRegisterAction(Request $request)
+    public function postAction(Request $request)
     {
         $gitProject = $this->getDoctrine()
-            ->getRepository('App\Entity\GitProject')
+            ->getRepository(GitProject::class)
             ->findOneBy(['id' => $request->request->get('git_id')]);
 
-        //check git project exist
-        if (!$gitProject) {
-            //create git project
-            $gitProject = new GitProject();
-            $gitProject->setId($request->request->get('git_id'));
-            $gitProject->setName($request->request->get('git_name'));
-            $gitProject->setGitAddress($request->request->get('git_address'));
-            $gitProject->setProjectAddress($request->request->get('git_project_address'));
-
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($gitProject);
-            $em->flush();
-        }
-
+        $gitProject = $this->getOrCreateGitProject($request, $gitProject);
         $user = new User();
+        $userForm = $this->createForm(UserType::class, $user, ['csrf_protection' => false]);
 
-        $user->setEmail($request->request->get('email'));
-        $user->setUsername($request->request->get('username'));
-        $user->setTimezone('Europe/Berlin');
-        $user->setActive(false);
-        $user->setGithubId($gitProject->getId());
+        $data = $request->request->all();
+        $userForm->submit($data);
+        if ($userForm->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $user->setTimezone('Europe/Berlin');
+            $user->setActive(false);
+            $user->setGithubId($gitProject->getId());
+            $em->persist($user);
+            $em->flush();
 
-        $errors = $this->validate($user);
+            return $userForm;
+        } else {
+            return $userForm;
+        }
+    }
 
-//        if (count($errors) > 0) {
-//            /*
-//             * Uses a __toString method on the $errors variable which is a
-//             * ConstraintViolationList object. This gives us a nice string
-//             * for debugging.
-//             */
-//            $errorsString = (string)$errors;
-//
-//            return new JsonResponse([
-//                'message' => 'Validation Errors',
-//                'errors' => $errorsString
-//            ], JsonResponse::HTTP_BAD_REQUEST);
-//        }
-
-
+    public function deleteAction(User $user)
+    {
         $em = $this->getDoctrine()->getManager();
-        $em->persist($user);
+        $em->remove($user);
         $em->flush();
 
-        if (!$user) {
-            return new JsonResponse(
-                [
-                    'message' => 'Failed to create user'
-                ],
-                JsonResponse::HTTP_BAD_REQUEST
-            );
-        }
-
-        // @todos sendRegistrationEmail
-        $this->sendRegistrationEmail($user);
-
-        return new JsonResponse([
-            'message' => 'User created successfully'
-        ], JsonResponse::HTTP_CREATED);
-
+        return ['success' => 'OK'];
     }
 
     /**
@@ -224,6 +121,25 @@ class UserController extends FOSRestController
     protected function sendRegistrationEmail($user)
     {
 
+    }
+
+    /**
+     * @param Request $request
+     * @param $gitProject
+     * @return array
+     */
+    private function getOrCreateGitProject(Request $request, $gitProject): GitProject
+    {
+        if (!$gitProject) {
+            //create git project
+            $gitProject = new GitProject();
+            //$gitProject->setId($request->request->get('git_id'));
+            $gitProject->setName($request->request->get('git_name'));
+            $gitProject->setGitAddress($request->request->get('git_address'));
+            $gitProject->setProjectAddress($request->request->get('git_project_address'));
+        }
+
+        return $gitProject;
     }
 
 }
