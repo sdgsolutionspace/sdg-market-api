@@ -23,8 +23,10 @@ fos_rest:
             'Symfony\Component\Routing\Exception\ResourceNotFoundException': true
     zone:
     - { path: ^/api/* }
-#    body_converter:
-#        enabled: true
+    body_converter:
+        enabled: true
+    body_listener:
+        array_normalizer: fos_rest.normalizer.camel_keys
 #    param_fetcher_listener:  true
 #    allowed_methods_listener:  true
 #    routing_loader: true

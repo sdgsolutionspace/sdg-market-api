@@ -15,6 +15,7 @@
         "symfony/framework-bundle": "*",
         "symfony/orm-pack": "^1.0",
         "symfony/twig-bundle": "*",
+        "symfony/validator": "*",
         "symfony/yaml": "*"
     },
     "require-dev": {
@@ -22,6 +23,7 @@
         "sensiolabs/security-checker": "^4.1",
         "symfony/maker-bundle": "^1.7",
         "symfony/phpunit-bridge": "*",
+        "symfony/var-dumper": "*",
         "symfony/web-server-bundle": "*"
     },
     "config": {

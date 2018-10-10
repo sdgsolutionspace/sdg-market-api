@@ -1,15 +1,15 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Nikolaos Doulgeridis
  * Website: http://www.nickdoulgeris.com
  * Email: nickdoulgeridis@gmail.com
  * Date: 10/10/18
- * Time: 1:58 AM
+ * Time: 1:58 AM.
  */
 
 namespace App\Form\Type;
-
 
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
@@ -22,7 +22,7 @@ class UserType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
-     * @param array $options
+     * @param array                $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -37,7 +37,7 @@ class UserType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => User::class
+            'data_class' => User::class,
         ]);
     }
 }

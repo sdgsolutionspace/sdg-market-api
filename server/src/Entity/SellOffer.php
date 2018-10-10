@@ -3,9 +3,10 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * SellOffer
+ * SellOffer.
  *
  * @ORM\Table(name="sell_offer", indexes={@ORM\Index(name="fk_trading_user_idx", columns={"seller_id"}), @ORM\Index(name="fk_sell_offer_project1_idx", columns={"project_id"})})
  * @ORM\Entity
@@ -25,6 +26,8 @@ class SellOffer
      * @var string
      *
      * @ORM\Column(name="number_of_tokens", type="decimal", precision=6, scale=2, nullable=false)
+     * @Assert\NotBlank()
+     * @Assert\Type("numeric")
      */
     private $numberOfTokens;
 
@@ -32,20 +35,26 @@ class SellOffer
      * @var string
      *
      * @ORM\Column(name="sell_price_per_token", type="decimal", precision=6, scale=2, nullable=false)
+     * @Assert\NotBlank()
+     * @Assert\Type("numeric")
      */
     private $sellPricePerToken;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="offer_stats_utc_date", type="datetime", nullable=false, options={"default"="CURRENT_TIMESTAMP"})
+     * @ORM\Column(name="offer_starts_utc_date", type="datetime", nullable=false, options={"default"="CURRENT_TIMESTAMP"})
+     * @Assert\DateTime()
+     * @Assert\NotBlank()
      */
-    private $offerStatsUtcDate = 'CURRENT_TIMESTAMP';
+    private $offerStartsUtcDate;
 
     /**
      * @var \DateTime|null
      *
      * @ORM\Column(name="offer_expires_at_utc_date", type="datetime", nullable=true)
+     * @Assert\DateTime()
+     * @Assert\NotBlank()
      */
     private $offerExpiresAtUtcDate;
 
@@ -56,6 +65,7 @@ class SellOffer
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="project_id", referencedColumnName="id")
      * })
+     * @Assert\NotNull()
      */
     private $project;
 
@@ -66,10 +76,11 @@ class SellOffer
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="seller_id", referencedColumnName="id")
      * })
+     * @Assert\NotNull()
      */
     private $seller;
 
-    public function getId(): ?int
+    public function getId(): ? int
     {
         return $this->id;
     }
@@ -98,53 +109,51 @@ class SellOffer
         return $this;
     }
 
-    public function getOfferStatsUtcDate(): ?\DateTimeInterface
+    public function getOfferStartsUtcDate(): ? \DateTimeInterface
     {
-        return $this->offerStatsUtcDate;
+        return $this->offerStartsUtcDate;
     }
 
-    public function setOfferStatsUtcDate(\DateTimeInterface $offerStatsUtcDate): self
+    public function setOfferStartsUtcDate($offerStartsUtcDate): self
     {
-        $this->offerStatsUtcDate = $offerStatsUtcDate;
+        $this->offerStartsUtcDate = $offerStartsUtcDate;
 
         return $this;
     }
 
-    public function getOfferExpiresAtUtcDate(): ?\DateTimeInterface
+    public function getOfferExpiresAtUtcDate(): ? \DateTimeInterface
     {
         return $this->offerExpiresAtUtcDate;
     }
 
-    public function setOfferExpiresAtUtcDate(?\DateTimeInterface $offerExpiresAtUtcDate): self
+    public function setOfferExpiresAtUtcDate(? \DateTimeInterface $offerExpiresAtUtcDate): self
     {
         $this->offerExpiresAtUtcDate = $offerExpiresAtUtcDate;
 
         return $this;
     }
 
-    public function getProject(): ?GitProject
+    public function getProject(): ? GitProject
     {
         return $this->project;
     }
 
-    public function setProject(?GitProject $project): self
+    public function setProject(? GitProject $project): self
     {
         $this->project = $project;
 
         return $this;
     }
 
-    public function getSeller(): ?User
+    public function getSeller(): ? User
     {
         return $this->seller;
     }
 
-    public function setSeller(?User $seller): self
+    public function setSeller(? User $seller): self
     {
         $this->seller = $seller;
 
         return $this;
     }
-
-
 }

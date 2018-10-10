@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Controller;
 
 use App\Entity\GitProject;
@@ -12,17 +11,16 @@ use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
 
 /**
- * Class UserController
- * @package App\Controller
+ * Class UserController.
  *
  * @FOSRest\NamePrefix(value="api_v1_users_")
  */
 class UserController extends FOSRestController implements ClassResourceInterface
 {
     /**
-     * Get all users
+     * Get all users.
      *
-     * @return Object
+     * @return object
      */
     public function cgetAction()
     {
@@ -32,9 +30,10 @@ class UserController extends FOSRestController implements ClassResourceInterface
     }
 
     /**
-     * Get single user by id
+     * Get single user by id.
      *
      * @param User $user
+     *
      * @return null|object
      */
     public function getAction(User $user)
@@ -43,9 +42,10 @@ class UserController extends FOSRestController implements ClassResourceInterface
     }
 
     /**
-     * Blacklist user
+     * Blacklist user.
      *
      * @param User $user
+     *
      * @return User
      */
     public function blacklistAction(User $user)
@@ -58,10 +58,11 @@ class UserController extends FOSRestController implements ClassResourceInterface
     }
 
     /**
-     * Assign role
+     * Assign role.
      *
      * @param User $user
      * @param $role
+     *
      * @return User
      */
     public function assignRoleAction(User $user, $role)
@@ -77,6 +78,7 @@ class UserController extends FOSRestController implements ClassResourceInterface
      * Register User.
      *
      * @param Request $request
+     *
      * @return \Symfony\Component\Form\FormInterface
      */
     public function postAction(Request $request)
@@ -115,31 +117,30 @@ class UserController extends FOSRestController implements ClassResourceInterface
     }
 
     /**
-     * Send registration email
+     * Send registration email.
+     *
      * @param $user
      */
     protected function sendRegistrationEmail($user)
     {
-
     }
 
-    /**
-     * @param Request $request
-     * @param $gitProject
-     * @return array
-     */
-    private function getOrCreateGitProject(Request $request, $gitProject): GitProject
-    {
-        if (!$gitProject) {
-            //create git project
-            $gitProject = new GitProject();
-            //$gitProject->setId($request->request->get('git_id'));
-            $gitProject->setName($request->request->get('git_name'));
-            $gitProject->setGitAddress($request->request->get('git_address'));
-            $gitProject->setProjectAddress($request->request->get('git_project_address'));
-        }
+    // /**
+    //  * @param Request $request
+    //  * @param $gitProject
+    //  * @return array
+    //  */
+    // private function getOrCreateGitProject(Request $request, $gitProject): GitProject
+    // {
+    //     if (!$gitProject) {
+    //         //create git project
+    //         $gitProject = new GitProject();
+    //         //$gitProject->setId($request->request->get('git_id'));
+    //         $gitProject->setName($request->request->get('git_name'));
+    //         $gitProject->setGitAddress($request->request->get('git_address'));
+    //         $gitProject->setProjectAddress($request->request->get('git_project_address'));
+    //     }
 
-        return $gitProject;
-    }
-
+    //     return $gitProject;
+    // }
 }

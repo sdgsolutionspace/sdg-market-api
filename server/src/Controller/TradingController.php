@@ -1,22 +1,25 @@
 <?php
 
-
 namespace App\Controller;
 
-use Doctrine\ORM\Query;
-use FOS\RestBundle\View\View;
-use App\Entity\{GitProject, User, UserToken, SellOffer, PurchaseOffer, Transaction, Trading};
+use App\Entity\User;
+use App\Entity\Trading;
+use App\Entity\SellOffer;
+use App\Entity\UserToken;
+use App\Entity\Transaction;
+use App\Entity\PurchaseOffer;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use FOS\RestBundle\Controller\FOSRestController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
-use FOS\RestBundle\Controller\Annotations\RequestParam;
-use Symfony\Component\HttpFoundation\{Request, Response, JsonResponse};
+use App\Form\Type\TradingType;
 
 /**
- * Class TradingController
- * @package App\Controller
+ * Class TradingController.
  *
  * @FOSRest\NamePrefix(value="api_v1_trades_")
+ * @FOSRest\Prefix("/trading")
  */
 class TradingController extends FOSRestController
 {
@@ -28,9 +31,10 @@ class TradingController extends FOSRestController
     }
 
     /**
-     * Get single user by id
+     * Get single user by id.
      *
      * @param Trading $trading
+     *
      * @return null|object
      */
     public function getAction(Trading $trading)
@@ -38,9 +42,30 @@ class TradingController extends FOSRestController
         return $trading;
     }
 
+    /**
+     * Create a new trading entry.
+     *
+     *
+     * @param Request $request
+     */
     public function postAction(Request $request)
     {
-        //TODO
+        $em = $this->getDoctrine()->getManager();
+        $trading = new Trading();
+        $form = $this->createForm(TradingType::class, $trading);
+        $form->submit($request->request->all());
+        $form->handleRequest($request);
+
+        if (false === $form->isValid()) {
+            return $this->handleView(
+                $this->view($form)
+            );
+        }
+
+        $em->persist($trading);
+        $em->flush();
+
+        return $trading;
     }
 
     public function deleteAction(Trading $trading)
@@ -245,7 +270,4 @@ class TradingController extends FOSRestController
 //
 //
 //
-
-
-
 }
