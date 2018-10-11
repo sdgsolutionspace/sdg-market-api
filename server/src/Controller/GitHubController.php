@@ -1,11 +1,12 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Nikolaos Doulgeridis
  * Website: http://www.nickdoulgeris.com
  * Email: nickdoulgeridis@gmail.com
  * Date: 10/10/18
- * Time: 7:48 PM
+ * Time: 7:48 PM.
  */
 
 namespace App\Controller;
@@ -17,15 +18,17 @@ use League\OAuth2\Client\Provider\GithubResourceOwner;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
-use \Github\Client;
+use Github\Client;
 
 class GitHubController extends Controller
 {
     /**
-     * Link to this controller to start the "connect" process
+     * Link to this controller to start the "connect" process.
      *
      * @Route("/connect/github", name="connect_github_start")
+     *
      * @param ClientRegistry $clientRegistry
+     *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function connectAction(ClientRegistry $clientRegistry)
@@ -33,18 +36,20 @@ class GitHubController extends Controller
         // will redirect to GitHub!
         return $clientRegistry
             ->getClient('github')
-            ->redirect(['user','user:email','repo'])
-            ;
+            ->redirect(['user', 'user:email', 'repo']);
     }
 
     /**
      * After going to GitHub, you're redirected back here
      * because this is the "redirect_route" you configured
-     * in config/packages/knpu_oauth2_client.yaml
+     * in config/packages/knpu_oauth2_client.yaml.
      *
      * @Route("/connect/github/check", name="connect_github_check")
+     *
      * @param ClientRegistry $clientRegistry
+     *
      * @return JsonResponse
+     *
      * @throws IdentityProviderException
      */
     public function connectCheckAction(ClientRegistry $clientRegistry)
@@ -67,19 +72,20 @@ class GitHubController extends Controller
     /**
      * @param GithubResourceOwner $apiUser
      * @param $accessToken
+     *
      * @return User|null|object
      */
     private function syncUser(GithubResourceOwner $apiUser, $accessToken)
     {
         $em = $this->getDoctrine()->getManager();
         $dbUser = $em->getRepository(User::class)->findOneBy(['githubId' => $apiUser->getId()]);
-        if($dbUser === null){
+        if ($dbUser === null) {
             $dbUser = new User();
             $dbUser->setName($apiUser->getName());
             $dbUser->setGithubId($apiUser->getId());
             $dbUser->setEmail($this->getPrimaryEmail($accessToken));
             $dbUser->setUsername($apiUser->getNickname());
-            $dbUser->setTimezone(' 	Europe/Paris');
+            $dbUser->setTimezone('Europe/Paris');
         }
         $dbUser->setAccessToken($accessToken);
         $em->persist($dbUser);
@@ -90,6 +96,7 @@ class GitHubController extends Controller
 
     /**
      * @param $accessToken
+     *
      * @return string
      */
     private function getPrimaryEmail($accessToken): string

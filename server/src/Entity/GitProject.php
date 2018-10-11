@@ -46,9 +46,27 @@ class GitProject
      */
     private $projectAddress;
 
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="active", type="boolean", nullable=false, options={"default"=FALSE})
+     * @Assert\NotNull()
+     */
+    private $active = 1;
+
     public function getId(): ? int
     {
         return $this->id;
+    }
+
+    public function isActive(): ? bool
+    {
+        return $this->active;
+    }
+
+    public function setActive($active): ? bool
+    {
+        return $this->active = (bool) $active;
     }
 
     public function getName(): ? string

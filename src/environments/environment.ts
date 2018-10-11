@@ -4,7 +4,7 @@
 
 export const environment = {
     production: false,
-    baseAPIUrl: 'http://github-trading.local/api/v1/',
+    baseAPIUrl: 'http://github-trading.local:8000/api/v1/',
     auth: {
         domain: 'github-trading.eu.auth0.com',
         CLIENT_ID: 'iSWtqfpvBycKK4hxa4cwTBeQdn36X8JF',

@@ -6,7 +6,7 @@
           {{title}}
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#header-navigation"
-                aria-controls="header-navigation" aria-expanded="false" aria-label="Toggle navigation">
+          aria-controls="header-navigation" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="header-navigation">
@@ -26,62 +26,24 @@
 
 <main class="container-fluid page-main-content">
   <div class="row align-items-stretch">
-    <aside class="sidebar col-md-4 col-lg-2">
-      <h3>Sidebar</h3>
-      <nav class="sidebar-nav">
-        <ul class="nav flex-column">
-          <li class="nav-item">
-            <a class="nav-link" [routerLink]="['/auctions']" [routerLinkActive]="['active']">
-              <i class="fas fa-fw fa-gavel"></i> Auctions
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link active" [routerLink]="['/repositories']" [routerLinkActive]="['active']">
-              <i class="fab fa-fw fa-github"></i> Manage repositories
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" [routerLink]="['/users']" [routerLinkActive]="['active']">
-              <i class="fas fa-fw fa-user"></i> Manage users
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </aside>
+    <app-sidebar></app-sidebar>
     <div class="col-12 col-md-8 col-lg-10">
       <h1 class="title">
         Add repository
       </h1>
-      <form>
+      <app-loading [visible]="project === null"></app-loading>
+      <form *ngIf="project" [formGroup]="form" (ngSubmit)="submitForm()" [ngClass]="{'submitted': submitted}">
         <div class="row">
           <div class="col-md-6">
-            <div class="form-group row">
-              <label class="col-sm-2" for="project-value">
-                Project value
-              </label>
-              <div class="col-sm-10">
-                <div class="input-group">
-                  <input type="number" class="form-control" id="project-value" placeholder="Value" min="1" step="1"
-                         required>
-                  <div class="input-group-append">
-                    <span class="input-group-text">
-                      <i class="fas fa-fw fa-coins"></i>
-                    </span>
-                  </div>
-                </div>
-                <div class="invalid-feedback">
-                  Please provide the project value.
-                </div>
-              </div>
-            </div>
 
             <div class="form-group row">
               <label class="col-sm-2" for="git-name">
                 Git name
               </label>
               <div class="col-sm-10">
-                <input type="text" class="form-control" id="git-name" placeholder="Repository name" required>
-                <div class="invalid-feedback">
+                <input type="text" class="form-control" id="git-name" placeholder="Repository name" formControlName="name"
+                  [ngClass]="{ 'is-invalid': submitted && form.get('name').errors }">
+                <div class="error invalid-feedback" *ngIf="form.get('name').errors">
                   Git name is required
                 </div>
               </div>
@@ -92,27 +54,32 @@
                 Git address
               </label>
               <div class="col-sm-10">
-                <input type="text" class="form-control" id="git-address" placeholder="Repository Git URL" required>
-                <div class="invalid-feedback">
+                <input type="text" class="form-control" id="git-address" placeholder="Repository Git URL"
+                  formControlName="git_address" [ngClass]="{ 'is-invalid': submitted && form.get('git_address').errors }">
+                <div class="invalid-feedback" *ngIf="form.get('git_address').errors">
                   Please provide a valid Git URL
                 </div>
               </div>
             </div>
 
             <div class="form-group row">
-              <label class="col-sm-2" for="description">
-                Description
+              <label class="col-sm-2" for="git-address">
+                Project address
               </label>
               <div class="col-sm-10">
-                <textarea class="form-control" id="description" placeholder="Provide a description for the project"
-                          required></textarea>
+                <input type="text" class="form-control" id="project-address" placeholder="Project URL" formControlName="project_address"
+                  [ngClass]="{ 'is-invalid': submitted && form.get('project_address').errors }">
+                <div class="invalid-feedback" *ngIf="form.get('project_address').errors">
+                  Please provide a valid project URL (could be the same as the git url)
+                </div>
               </div>
             </div>
+
           </div>
           <div class="col-md-6">
             <div class="form-group row">
               <div class="col">
-                <a class="btn btn-block btn-outline-light">
+                <a class="btn btn-block btn-outline-light" href="{{ project.git_address }}">
                   <i class="fab fa-fw fa-github"></i> Go to GitHub
                 </a>
               </div>
@@ -123,13 +90,19 @@
               </label>
               <div class="col-sm-10">
                 <div class="custom-control custom-radio">
-                  <input type="radio" id="status-active" name="status" class="custom-control-input" value="active">
+                  <input type="radio" id="status-active" name="active" class="custom-control-input" [value]="true"
+                    formControlName="active">
                   <label class="custom-control-label" for="status-active">Active</label>
                 </div>
                 <div class="custom-control custom-radio">
-                  <input type="radio" id="status-inactive" name="status" class="custom-control-input" value="inactive">
+                  <input type="radio" id="status-inactive" name="active" class="custom-control-input" [value]="false"
+                    formControlName="active">
                   <label class="custom-control-label" for="status-inactive">Inactive</label>
+                  <div class="invalid-feedback" *ngIf="form.get('active').errors">
+                    Please define if the project is active or not
+                  </div>
                 </div>
+
               </div>
             </div>
             <div class="form-group row">
