@@ -10,7 +10,7 @@ use FOS\RestBundle\Controller\Annotations\RouteResource;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
 
 /**
- * @RouteResource("PurchaseOffer")
+ * @RouteResource("purchase-offer")
  * @FOSRest\NamePrefix(value="api_v1_purchase_offer_")
  */
 class PurchaseOfferController extends FOSRestController
@@ -44,6 +44,7 @@ class PurchaseOfferController extends FOSRestController
      *
      *
      * @param Request $request
+     * @return PurchaseOffer|\Symfony\Component\HttpFoundation\Response
      */
     public function postAction(Request $request)
     {
@@ -69,7 +70,9 @@ class PurchaseOfferController extends FOSRestController
      * Create a new PurchaseOffer entry.
      *
      *
+     * @param PurchaseOffer $purchaseOffer
      * @param Request $request
+     * @return PurchaseOffer|\Symfony\Component\HttpFoundation\Response
      */
     public function putAction(PurchaseOffer $purchaseOffer, Request $request)
     {

@@ -2,16 +2,9 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
 use App\Entity\Trading;
-use App\Entity\SellOffer;
-use App\Entity\UserToken;
-use App\Entity\Transaction;
-use App\Entity\PurchaseOffer;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
 use FOS\RestBundle\Controller\FOSRestController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
 use App\Form\Type\TradingType;
 
@@ -47,6 +40,7 @@ class TradingController extends FOSRestController
      *
      *
      * @param Request $request
+     * @return Trading|\Symfony\Component\HttpFoundation\Response
      */
     public function postAction(Request $request)
     {
@@ -138,7 +132,7 @@ class TradingController extends FOSRestController
 //    }
 //
 //    /**
-//     * @Route("/offers/purchase", name="get_purhase_offers", methods={"GET"})
+//     * @Route("/offers/purchase", name="get_purchase_offers", methods={"GET"})
 //     * @return array
 //     */
 //    public function getPurchaseOfferAction()
@@ -174,7 +168,7 @@ class TradingController extends FOSRestController
 //        $em->persist($offersSell);
 //        $em->flush();
 //
-//        return new JsonResponse(["message"=>"created Successfullly"], JsonResponse::HTTP_CREATED);
+//        return new JsonResponse(["message"=>"created Successfully"], JsonResponse::HTTP_CREATED);
 //
 //    }
 //
@@ -197,7 +191,7 @@ class TradingController extends FOSRestController
 //        $em->persist($purchaseOffer);
 //        $em->flush();
 //
-//        return new JsonResponse(["message"=>"created Successfullly"], JsonResponse::HTTP_CREATED);
+//        return new JsonResponse(["message"=>"created Successfully"], JsonResponse::HTTP_CREATED);
 //
 //    }
 //

@@ -125,22 +125,22 @@ class UserController extends FOSRestController implements ClassResourceInterface
     {
     }
 
-    // /**
-    //  * @param Request $request
-    //  * @param $gitProject
-    //  * @return array
-    //  */
-    // private function getOrCreateGitProject(Request $request, $gitProject): GitProject
-    // {
-    //     if (!$gitProject) {
-    //         //create git project
-    //         $gitProject = new GitProject();
-    //         //$gitProject->setId($request->request->get('git_id'));
-    //         $gitProject->setName($request->request->get('git_name'));
-    //         $gitProject->setGitAddress($request->request->get('git_address'));
-    //         $gitProject->setProjectAddress($request->request->get('git_project_address'));
-    //     }
+    /**
+     * @param Request $request
+     * @param $gitProject
+     * @return GitProject
+     */
+     private function getOrCreateGitProject(Request $request, $gitProject): GitProject
+     {
+         if (!$gitProject) {
+             //create git project
+             $gitProject = new GitProject();
+             //$gitProject->setId($request->request->get('git_id'));
+             $gitProject->setName($request->request->get('git_name'));
+             $gitProject->setGitAddress($request->request->get('git_address'));
+             $gitProject->setProjectAddress($request->request->get('git_project_address'));
+         }
 
-    //     return $gitProject;
-    // }
+         return $gitProject;
+     }
 }

@@ -4,16 +4,16 @@ namespace App\Controller;
 
 use App\Entity\SellOffer;
 use App\Form\Type\SellOfferType;
+use FOS\RestBundle\Routing\ClassResourceInterface;
 use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Controller\FOSRestController;
-use FOS\RestBundle\Controller\Annotations\RouteResource;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
 
 /**
- * @RouteResource("SellOffer")
+ * @FOSRest\RouteResource("sell-offer")
  * @FOSRest\NamePrefix(value="api_v1_sell_offer_")
  */
-class SellOfferController extends FOSRestController
+class SellOfferController extends FOSRestController implements ClassResourceInterface
 {
     /**
      * Get all projects.
@@ -44,6 +44,7 @@ class SellOfferController extends FOSRestController
      *
      *
      * @param Request $request
+     * @return SellOffer|\Symfony\Component\HttpFoundation\Response
      */
     public function postAction(Request $request)
     {
@@ -69,7 +70,9 @@ class SellOfferController extends FOSRestController
      * Create a new SellOffer entry.
      *
      *
+     * @param SellOffer $sellOffer
      * @param Request $request
+     * @return SellOffer|\Symfony\Component\HttpFoundation\Response
      */
     public function putAction(SellOffer $sellOffer, Request $request)
     {

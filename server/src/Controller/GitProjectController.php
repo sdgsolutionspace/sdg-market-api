@@ -10,7 +10,7 @@ use FOS\RestBundle\Controller\Annotations\RouteResource;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
 
 /**
- * @RouteResource("GitProject")
+ * @RouteResource("git-project")
  * @FOSRest\NamePrefix(value="api_v1_git_project_")
  */
 class GitProjectController extends FOSRestController
@@ -44,6 +44,7 @@ class GitProjectController extends FOSRestController
      *
      *
      * @param Request $request
+     * @return GitProject|\Symfony\Component\HttpFoundation\Response
      */
     public function postAction(Request $request)
     {
@@ -69,7 +70,9 @@ class GitProjectController extends FOSRestController
      * Create a new gitProject entry.
      *
      *
+     * @param GitProject $gitProject
      * @param Request $request
+     * @return GitProject|\Symfony\Component\HttpFoundation\Response
      */
     public function putAction(GitProject $gitProject, Request $request)
     {

@@ -13,7 +13,7 @@ use FOS\RestBundle\Controller\Annotations as FOSRest;
  * @RouteResource("Transaction")
  * @FOSRest\NamePrefix(value="api_v1_transactions_")
  */
-class TransationsController extends FOSRestController
+class TransactionsController extends FOSRestController
 {
     /**
      * Get all projects.
@@ -44,6 +44,7 @@ class TransationsController extends FOSRestController
      *
      *
      * @param Request $request
+     * @return Transaction|\Symfony\Component\HttpFoundation\Response
      */
     public function postAction(Request $request)
     {
@@ -69,7 +70,9 @@ class TransationsController extends FOSRestController
      * Create a new Transaction entry.
      *
      *
+     * @param Transaction $transaction
      * @param Request $request
+     * @return Transaction|\Symfony\Component\HttpFoundation\Response
      */
     public function putAction(Transaction $transaction, Request $request)
     {
