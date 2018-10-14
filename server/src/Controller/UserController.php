@@ -41,6 +41,11 @@ class UserController extends FOSRestController implements ClassResourceInterface
         return $user;
     }
 
+    public function getMeAction()
+    {
+        return $this->getUser();
+    }
+
     /**
      * Blacklist user.
      *

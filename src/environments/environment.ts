@@ -4,16 +4,16 @@
 
 export const environment = {
     production: false,
-    baseAPIUrl: 'http://github-trading.local:8000/api/v1/',
-    auth: {
-        domain: 'github-trading.eu.auth0.com',
-        CLIENT_ID: 'iSWtqfpvBycKK4hxa4cwTBeQdn36X8JF',
+    baseUrl: 'http://github-trading.local',
+    baseAPIUrl: 'http://github-trading.local/api/v1/',
+    githubAuth: {
+        URL: 'https://github.com/login/oauth/authorize',
+        CLIENT_ID: 'd75c58ebe60fd6e3772e',
         CLIENT_DOMAIN: 'github-trading.eu.auth0.com',
-        REDIRECT: 'http://localhost:4200/callback',
-        AUDIENCE: 'https://github-trading.eu.auth0.com/api/v2/',
-        LOGOUT_URL: '/',
-        SCOPE: 'openid profile email'
-    }
+        REDIRECT_URI: 'http://localhost:4200/callback',
+        SCOPE: 'user user:email repo'
+    },
+    localStorageJWT: 'git-trading-jwt'
 };
 
 /*

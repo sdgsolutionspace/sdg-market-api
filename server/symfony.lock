@@ -128,15 +128,6 @@
             "ref": "343a54894c535b6ef0d1a297f543793b3852ea9d"
         }
     },
-    "knpuniversity/oauth2-client-bundle": {
-        "version": "1.20",
-        "recipe": {
-            "repo": "github.com/symfony/recipes-contrib",
-            "branch": "master",
-            "version": "1.20",
-            "ref": "b79787c589eaf10e35882634d6d6783f745ae7e8"
-        }
-    },
     "lcobucci/jwt": {
         "version": "3.2.4"
     },

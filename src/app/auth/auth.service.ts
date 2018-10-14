@@ -1,89 +1,42 @@
-import { Injectable } from '@angular/core';
-import * as auth0 from 'auth0-js';
-import { environment } from './../../environments/environment';
-import { Router } from '@angular/router';
+import {Injectable} from '@angular/core';
+import {Router} from '@angular/router';
+import {environment} from '../../environments/environment';
+import {HttpClient} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {UserService} from "../services/api/user.service";
 
 @Injectable()
 export class AuthService {
-  // Create Auth0 web auth instance
-  auth0 = new auth0.WebAuth({
-    clientID: environment.auth.CLIENT_ID,
-    domain: environment.auth.CLIENT_DOMAIN,
-    responseType: 'id_token token',
-    redirectUri: environment.auth.REDIRECT,
-    audience: environment.auth.AUDIENCE,
-    scope: environment.auth.SCOPE
-  });
+    constructor(private router: Router, private http: HttpClient, private userService: UserService) {
+    }
 
-  constructor(private router: Router) {
-    // Check session to restore login if not expired
-    this.getAccessToken();
-  }
+    login() {
+        let url = `${environment.githubAuth.URL}?scope=${environment.githubAuth.SCOPE}`;
+        url += `&state=${this.generateRandomState()}&response_type=code&approval_prompt=auto`;
+        url += `&redirect_uri=${environment.githubAuth.REDIRECT_URI}&client_id=${environment.githubAuth.CLIENT_ID}`;
 
-  login() {
-    // Auth0 authorize request
-    this.auth0.authorize();
-  }
+        window.location.href = url;
+    }
 
-  handleLoginCallback() {
-    // When Auth0 hash parsed, get profile
-    this.auth0.parseHash((err, authResult) => {
-      console.log(authResult);
-      if (authResult && authResult.accessToken) {
-        window.location.hash = '';
-        this.getUserInfo(authResult);
-      } else if (err) {
-        console.error(`Error: ${err.error}`);
-      }
-    });
-  }
+    verifyCodeAndState(code, state): Observable<any> {
+        const url = environment.baseUrl + '/connect/github/check';
+        return this.http.get(`${url}?code=${code}&state=${state}`);
+    }
 
-  getAccessToken() {
-    this.auth0.checkSession({}, (err, authResult) => {
-      if (authResult && authResult.accessToken) {
-        this.getUserInfo(authResult);
-      } else if (err) {
-        console.log(err);
-        this.logout();
-      }
-    });
-  }
+    logout() {
+        localStorage.removeItem(environment.localStorageJWT);
+    }
 
-  getUserInfo(authResult) {
-    // Use access token to retrieve user's profile and set session
-    this.auth0.client.userInfo(authResult.accessToken, (err, profile) => {
-      console.log(profile);
-      if (profile) {
-        this._setSession(authResult, profile);
-        this.router.navigate(['auctions']);
-      }
-    });
-  }
+    logInUser(response) {
+        localStorage.setItem(environment.localStorageJWT, response.token);
+    }
 
-  private _setSession(authResult, profile) {
-    const expTime = authResult.expiresIn * 1000 + Date.now();
-    // Save authentication data and update login status subject
-    localStorage.setItem('expires_at', JSON.stringify(expTime));
-    localStorage.setItem('authenticated', '1');
-    localStorage.setItem('accessToken', JSON.stringify(authResult.accessToken));
-    localStorage.setItem('userProfile', JSON.stringify(profile));
-  }
+    async getMe(): Promise<any> {
+        return await this.userService.getMe().toPromise();
+    }
 
-  logout() {
-    // Remove auth data and update login status
-    localStorage.removeItem('expires_at');
-    localStorage.removeItem('authenticated');
-    localStorage.removeItem('userProfile');
-    localStorage.removeItem('accessToken');
-  }
-
-  get isLoggedIn(): boolean {
-    // Check if current date is before token
-    // expiration and user is signed in locally
-    const expiresAt = JSON.parse(localStorage.getItem('expires_at'));
-    const authenticated = localStorage.getItem('authenticated') === '1';
-
-    return Date.now() < expiresAt && authenticated;
-  }
+    generateRandomState() {
+        return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    }
 
 }
