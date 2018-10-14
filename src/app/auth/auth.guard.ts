@@ -29,7 +29,6 @@ export class AuthGuard implements CanActivate {
         return this.userService.getMe()
             .pipe(
                 map(user => {
-                    debugger;
                     if (user !== null && user !== false && this.hasTheRole(user, role)) {
                         return of(true);
                     }
