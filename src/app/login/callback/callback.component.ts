@@ -23,7 +23,7 @@ export class CallbackComponent implements OnInit {
                 },
                 error => {
                     // TODO: Better error handling
-                    alert('ERROR!');
+                    alert('Github Auth Error!');
                 });
     }
 

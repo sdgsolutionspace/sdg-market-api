@@ -33,13 +33,11 @@ class GitHubController extends Controller
      * because this is the "redirect_route" you configured
      * in config/packages/knpu_oauth2_client.yaml.
      *
-     * @Route("/connect/github/check", name="connect_github_check")
+     * @Route("/connect/github/check", name="github_auth_check")
      *
-     * @param ClientRegistry $clientRegistry
-     *
+     * @param Request $request
      * @return Response|JsonResponse
      *
-     * @throws IdentityProviderException
      */
     public function connectCheckAction(Request $request)
     {
@@ -80,7 +78,7 @@ class GitHubController extends Controller
 
             return new JsonResponse(['token' => $jwtManager->create($dbUser)]);
         }catch (\Exception $ex){
-            return new JsonResponse($ex->getMessage());
+            return new JsonResponse($ex->getMessage(), 500);
         }
     }
 

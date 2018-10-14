@@ -17,6 +17,3 @@ controllers:
     resource: ../src/Controller/
     type: rest
     prefix: '/api/v1'
-
-angular_github_callback:
-    path: http://localhost:4200/callback

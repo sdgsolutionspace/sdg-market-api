@@ -5,10 +5,12 @@ namespace App\Controller;
 use App\Entity\GitProject;
 use App\Entity\User;
 use App\Form\Type\UserType;
+use FOS\RestBundle\Controller\Annotations as FOSRest;
+use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Routing\ClassResourceInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
-use FOS\RestBundle\Controller\Annotations as FOSRest;
 
 /**
  * Class UserController.
@@ -19,6 +21,8 @@ class UserController extends FOSRestController implements ClassResourceInterface
 {
     /**
      * Get all users.
+     *
+     * @Security("has_role('ROLE_ADMIN')")
      *
      * @return object
      */
@@ -32,8 +36,9 @@ class UserController extends FOSRestController implements ClassResourceInterface
     /**
      * Get single user by id.
      *
-     * @param User $user
+     * @Security("has_role('ROLE_ADMIN')")
      *
+     * @param User $user
      * @return null|object
      */
     public function getAction(User $user)
@@ -41,6 +46,9 @@ class UserController extends FOSRestController implements ClassResourceInterface
         return $user;
     }
 
+    /**
+     * @return mixed
+     */
     public function getMeAction()
     {
         return $this->getUser();
@@ -49,8 +57,9 @@ class UserController extends FOSRestController implements ClassResourceInterface
     /**
      * Blacklist user.
      *
-     * @param User $user
+     * @Security("has_role('ROLE_ADMIN')")
      *
+     * @param User $user
      * @return User
      */
     public function blacklistAction(User $user)
@@ -65,15 +74,16 @@ class UserController extends FOSRestController implements ClassResourceInterface
     /**
      * Assign role.
      *
+     * @Security("has_role('ROLE_ADMIN')")
+     *
      * @param User $user
      * @param $role
-     *
      * @return User
      */
     public function assignRoleAction(User $user, $role)
     {
         $em = $this->getDoctrine()->getManager();
-        $user->setRole($role);
+        $user->addRole($role);
         $em->flush();
 
         return $user;
@@ -82,8 +92,9 @@ class UserController extends FOSRestController implements ClassResourceInterface
     /**
      * Register User.
      *
-     * @param Request $request
+     * @Security("has_role('ROLE_ADMIN')")
      *
+     * @param Request $request
      * @return \Symfony\Component\Form\FormInterface
      */
     public function postAction(Request $request)
@@ -112,6 +123,12 @@ class UserController extends FOSRestController implements ClassResourceInterface
         }
     }
 
+    /**
+     * @Security("has_role('ROLE_ADMIN')")
+     *
+     * @param User $user
+     * @return array
+     */
     public function deleteAction(User $user)
     {
         $em = $this->getDoctrine()->getManager();
@@ -122,12 +139,15 @@ class UserController extends FOSRestController implements ClassResourceInterface
     }
 
     /**
-     * Send registration email.
+     * @Get("/user/refresh-token")
      *
-     * @param $user
+     * @return array
      */
-    protected function sendRegistrationEmail($user)
+    public function userTokenRefreshAction()
     {
+        $jwtManager = $this->container->get('lexik_jwt_authentication.jwt_manager');
+
+        return ['token' => $jwtManager->create($this->getUser())];
     }
 
     /**
@@ -135,17 +155,17 @@ class UserController extends FOSRestController implements ClassResourceInterface
      * @param $gitProject
      * @return GitProject
      */
-     private function getOrCreateGitProject(Request $request, $gitProject): GitProject
-     {
-         if (!$gitProject) {
-             //create git project
-             $gitProject = new GitProject();
-             //$gitProject->setId($request->request->get('git_id'));
-             $gitProject->setName($request->request->get('git_name'));
-             $gitProject->setGitAddress($request->request->get('git_address'));
-             $gitProject->setProjectAddress($request->request->get('git_project_address'));
-         }
+    private function getOrCreateGitProject(Request $request, $gitProject): GitProject
+    {
+        if (!$gitProject) {
+            //create git project
+            $gitProject = new GitProject();
+            //$gitProject->setId($request->request->get('git_id'));
+            $gitProject->setName($request->request->get('git_name'));
+            $gitProject->setGitAddress($request->request->get('git_address'));
+            $gitProject->setProjectAddress($request->request->get('git_project_address'));
+        }
 
-         return $gitProject;
-     }
+        return $gitProject;
+    }
 }
