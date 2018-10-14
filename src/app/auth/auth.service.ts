@@ -31,10 +31,6 @@ export class AuthService {
         localStorage.setItem(environment.localStorageJWT, response.token);
     }
 
-    async getMe(): Promise<any> {
-        return await this.userService.getMe().toPromise();
-    }
-
     generateRandomState() {
         return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
     }

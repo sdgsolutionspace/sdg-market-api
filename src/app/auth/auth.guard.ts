@@ -23,21 +23,21 @@ export class AuthGuard implements CanActivate {
      * @param next
      * @param state
      */
-    canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
+    canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | boolean {
         let role = next.data.expectedRole;
 
         return this.userService.getMe()
             .pipe(
                 map(user => {
                     if (user !== null && user !== false && this.hasTheRole(user, role)) {
-                        return of(true);
+                        return true;
                     }
                     this.router.navigate(['login']);
-                    return of(false);
+                    return false;
                 }),
                 catchError(error => {
                     this.router.navigate(['login']);
-                    return of(false;
+                    return false;
                 })
             );
     }
