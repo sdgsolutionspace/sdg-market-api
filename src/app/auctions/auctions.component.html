@@ -42,9 +42,13 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8, 9]">
+            <tr colspan="6" *ngIf="projects === null">
+              <app-loading [visible]="projects === null"></app-loading>
+            </tr>
+
+            <tr *ngFor="let project of projects">
               <td>
-                Interesting Project {{i}}
+                {{ project.name }}
               </td>
               <td>
                 350 <i class="fas fa-fw fa-coins"></i>
@@ -53,7 +57,7 @@
                 35 <i class="fas fa-fw fa-coins"></i>
               </td>
               <td class="actions">
-                <a [routerLink]="['/auctions/project', i]" class="btn btn-sm btn-warning">
+                <a [routerLink]="['/auctions/project', project.id]" class="btn btn-sm btn-warning">
                   <i class="fas fa-fw fa-eye"></i> View
                 </a>
               </td>
@@ -62,7 +66,7 @@
         </table>
 
       </div>
-      <nav aria-label="Projects navigation">
+      <!-- <nav aria-label="Projects navigation">
         <ul class="pagination justify-content-center">
           <li class="page-item disabled">
             <a class="page-link" href="#" aria-label="Previous">
@@ -84,7 +88,7 @@
             </a>
           </li>
         </ul>
-      </nav>
+      </nav> -->
     </div>
   </div>
 </main>

@@ -129,23 +129,26 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8, 9]">
+                <tr *ngIf="currentSales === null">
+                  <app-loading></app-loading>
+                </tr>
+                <tr *ngFor="let sale of currentSales">
                   <td>
-                    <a href="https://github.com/username">
-                      @gitusername
+                    <a href="https://github.com/{{ sale.seller?.username }}">
+                      @{{ sale.seller?.username }}
                     </a>
                   </td>
                   <td>
-                    200 <i class="fas fa-fw fa-coins"></i>
+                    {{ sale.number_of_tokens }} <i class="fas fa-fw fa-coins"></i>
                   </td>
                   <td>
-                    05/09/2018
+                    {{ sale.offer_starts_utc_date }}
                   </td>
                   <td>
-                    1 / 15 <i class="fas fa-fw fa-coins"></i>
+                    {{ sale.sell_price_per_token }} <i class="fas fa-fw fa-coins"></i>
                   </td>
                   <td>
-                    05/10/2018
+                    {{ sale.offer_expires_at_utc_date }}
                   </td>
                   <td class="actions">
                     <a class="btn btn-dark" data-toggle="modal" data-target="#buy-modal" aria-controls="buy-modal">
@@ -335,12 +338,12 @@
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="new-offer-modal-title">Sell tokens</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <button #sellModalCloseButton type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true"><i class="fas fa-fw fa-times"></i></span>
               </button>
             </div>
             <div class="modal-body">
-              <form>
+              <form [formGroup]="sellForm" (ngSubmit)="submitSellForm()" [ngClass]="{'submitted': sellFormSubmitted}">
                 <div class="form-group row">
                   <label class="col-sm-7" for="number-of-tokens-to-sell">
                     Number of tokens to sell
@@ -348,14 +351,14 @@
                   <div class="col-sm-5">
                     <div class="input-group">
                       <input type="number" class="form-control" id="number-of-tokens-to-sell" placeholder="Tokens" min="1"
-                        step="1" required>
+                        step="1" formControlName="number_of_tokens" [ngClass]="{ 'is-invalid': submitted && sellForm.get('number_of_tokens').errors }">
                       <div class="input-group-append">
                         <span class="input-group-text">
                           <i class="fas fa-fw fa-coins"></i>
                         </span>
                       </div>
                     </div>
-                    <div class="invalid-feedback">
+                    <div class="invalid-feedback" *ngIf="sellForm.get('number_of_tokens').errors">
                       Please provide the number of tokens to sell.
                     </div>
                   </div>
@@ -367,14 +370,14 @@
                   <div class="col-sm-5">
                     <div class="input-group">
                       <input type="number" class="form-control" id="price-per-token" placeholder="Tokens" min="1" step="1"
-                        required>
+                        formControlName="sell_price_per_token" [ngClass]="{ 'is-invalid': submitted && sellForm.get('sell_price_per_token').errors }">
                       <div class="input-group-append">
                         <span class="input-group-text">
                           <i class="fas fa-fw fa-money-bill"></i>
                         </span>
                       </div>
                     </div>
-                    <div class="invalid-feedback">
+                    <div class="invalid-feedback" *ngIf="sellForm.get('sell_price_per_token').errors">
                       Please provide the price per token.
                     </div>
                   </div>

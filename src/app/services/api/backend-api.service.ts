@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
@@ -12,7 +12,7 @@ const endpoint = environment.baseAPIUrl;
 export class BackendApiService {
   constructor(private http: HttpClient) { }
 
-  private httpOptions() {
+  private httpOptions(parameters?: object) {
     let headers = {
       'Content-Type': 'application/json',
     };
@@ -21,9 +21,16 @@ export class BackendApiService {
     headers["Authorization"] = `Bearer ${token}`;
 
     let httpHeaders = new HttpHeaders(headers);
-    console.log("HTTP HEADERS", httpHeaders);
+    let params = new HttpParams();
+    if (parameters) {
+      for (let parameter in parameters) {
+        params.set(parameter, parameters[parameter]);
+      }
+    }
+
     return {
-      headers: httpHeaders
+      headers: httpHeaders,
+      params: params
     };
   }
 
@@ -32,8 +39,9 @@ export class BackendApiService {
     return body || {};
   }
 
-  public get(apiUrl: string): Observable<any> {
-    return this.http.get(endpoint + apiUrl, this.httpOptions()).pipe(
+  public get(apiUrl: string, parameters?: object): Observable<any> {
+
+    return this.http.get(endpoint + apiUrl, this.httpOptions(parameters)).pipe(
       map(this.extractData));
   }
 

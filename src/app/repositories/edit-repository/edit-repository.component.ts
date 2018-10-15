@@ -26,7 +26,7 @@ export class EditRepositoryComponent implements OnInit {
   ngOnInit() {
     const urlRegexp = '(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?';
 
-    this.projectId = this.route.snapshot.params["id"]
+    this.projectId = this.route.snapshot.params["id"];
     this.projectsApi.get(this.projectId).subscribe((project) => {
       this.project = project;
       this.form = this.fb.group({
@@ -62,7 +62,5 @@ export class EditRepositoryComponent implements OnInit {
         this.toastr.error("An error occurred while saving your data", error);
       });
     }
-
   }
-
 }

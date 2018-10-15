@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use DateTime;
+use DateInterval;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -9,7 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * SellOffer.
  *
  * @ORM\Table(name="sell_offer", indexes={@ORM\Index(name="fk_trading_user_idx", columns={"seller_id"}), @ORM\Index(name="fk_sell_offer_project1_idx", columns={"project_id"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\SellOfferRepository")
  */
 class SellOffer
 {
@@ -45,7 +47,6 @@ class SellOffer
      *
      * @ORM\Column(name="offer_starts_utc_date", type="datetime", nullable=false, options={"default"="CURRENT_TIMESTAMP"})
      * @Assert\DateTime()
-     * @Assert\NotBlank()
      */
     private $offerStartsUtcDate;
 
@@ -54,7 +55,6 @@ class SellOffer
      *
      * @ORM\Column(name="offer_expires_at_utc_date", type="datetime", nullable=true)
      * @Assert\DateTime()
-     * @Assert\NotBlank()
      */
     private $offerExpiresAtUtcDate;
 
@@ -76,9 +76,15 @@ class SellOffer
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="seller_id", referencedColumnName="id")
      * })
-     * @Assert\NotNull()
      */
     private $seller;
+
+    public function __construct()
+    {
+        $this->offerStartsUtcDate = new DateTime();
+        $this->offerExpiresAtUtcDate = clone $this->offerStartsUtcDate;
+        $this->offerExpiresAtUtcDate->add(new DateInterval('P7D'));
+    }
 
     public function getId(): ? int
     {
@@ -145,7 +151,12 @@ class SellOffer
         return $this;
     }
 
-    public function getSeller(): ? User
+    /**
+     * Return the seller.
+     *
+     * @return User
+     */
+    public function getSeller()
     {
         return $this->seller;
     }
