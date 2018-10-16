@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * PurchaseOffer.
  *
  * @ORM\Table(name="purchase_offer", indexes={@ORM\Index(name="fk_trading_user_idx", columns={"purchaser_id"}), @ORM\Index(name="fk_purchase_offer_project1_idx", columns={"project_id"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\PurchaseOfferRepository")
  */
 class PurchaseOffer
 {
@@ -45,7 +45,6 @@ class PurchaseOffer
      *
      * @ORM\Column(name="offer_starts_utc_date", type="datetime", nullable=false, options={"default"="CURRENT_TIMESTAMP"})
      * @Assert\DateTime()
-     * @Assert\NotBlank()
      */
     private $offerStartsUtcDate;
 
@@ -54,7 +53,6 @@ class PurchaseOffer
      *
      * @ORM\Column(name="offer_expires_at_utc_date", type="datetime", nullable=true)
      * @Assert\DateTime()
-     * @Assert\NotBlank()
      */
     private $offerExpiresAtUtcDate;
 
@@ -76,7 +74,6 @@ class PurchaseOffer
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="purchaser_id", referencedColumnName="id")
      * })
-     * @Assert\NotBlank()
      */
     private $purchaser;
 
@@ -114,7 +111,7 @@ class PurchaseOffer
         return $this->offerStartsUtcDate;
     }
 
-    public function setOfferStartsUtcDate(\DateTimeInterface $offerStartsUtcDate): self
+    public function setOfferStartsUtcDate($offerStartsUtcDate): self
     {
         $this->offerStartsUtcDate = $offerStartsUtcDate;
 
@@ -126,7 +123,7 @@ class PurchaseOffer
         return $this->offerExpiresAtUtcDate;
     }
 
-    public function setOfferExpiresAtUtcDate(? \DateTimeInterface $offerExpiresAtUtcDate): self
+    public function setOfferExpiresAtUtcDate($offerExpiresAtUtcDate): self
     {
         $this->offerExpiresAtUtcDate = $offerExpiresAtUtcDate;
 

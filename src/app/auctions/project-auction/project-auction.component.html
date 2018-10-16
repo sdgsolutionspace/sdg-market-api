@@ -204,6 +204,7 @@
               <thead>
                 <tr>
                   <th>User</th>
+                  <th>Number of tokens to buy</th>
                   <th>Proposed amount / token</th>
                   <th>Date</th>
                   <th>Expire</th>
@@ -211,20 +212,26 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8, 9]">
+                <tr *ngIf="currentPurchaseOffers === null">
+                  <app-loading></app-loading>
+                </tr>
+                <tr *ngFor="let offer of currentPurchaseOffers">
                   <td>
-                    <a href="https://github.com/username">
-                      @gitusername
+                    <a href="https://github.com/{{ offer.purchaser?.username }}">
+                      @{{ offer.purchaser?.username }}
                     </a>
                   </td>
                   <td>
-                    20 <i class="fas fa-fw fa-coins"></i>
+                    {{ offer.number_of_tokens }} <i class="fas fa-fw fa-coins"></i>
                   </td>
                   <td>
-                    05/09/2018
+                    {{ offer.purchase_price_per_token }} <i class="fas fa-fw fa-coins"></i>
                   </td>
                   <td>
-                    05/10/2018
+                    {{ offer.offer_starts_utc_date }}
+                  </td>
+                  <td>
+                    {{ offer.offer_expires_at_utc_date }}
                   </td>
                   <td class="actions">
                     <a class="btn btn-dark" data-toggle="modal" data-target="#new-offer-modal" aria-controls="new-offer-modal">
@@ -239,8 +246,8 @@
 
                   </th>
                   <th>
-                    <a class="btn btn-dark" data-toggle="modal" data-target="#new-offer-modal" aria-controls="new-offer-modal">
-                      <i class="fas fa-fw fa-gavel"></i> New request
+                    <a class="btn btn-dark" data-toggle="modal" data-target="#new-purchase-offer-modal" aria-controls="new-purchase-offer-modal">
+                      <i class="fas fa-fw fa-gavel"></i> New purchase offer
                     </a>
                   </th>
                 </tr>
@@ -386,6 +393,69 @@
                 <div class="form-group row">
                   <div class="col-sm-12 text-right">
                     <button type="submit" class="btn"><i class="fas fa-fw fa-gavel"></i> Sell</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- New purchase offer-->
+      <div class="modal fade" id="new-purchase-offer-modal" tabindex="-1" role="dialog" aria-labelledby="new-purchase-offer-modal-title"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="new-purchase-offer-modal-title">Purchase offer</h5>
+              <button #purchaseOfferModalCloseButton type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true"><i class="fas fa-fw fa-times"></i></span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form [formGroup]="purchaseOfferForm" (ngSubmit)="submitPurchaseOfferForm()" [ngClass]="{'submitted': purchaseOfferFormSubmitted}">
+                <div class="form-group row">
+                  <label class="col-sm-7" for="number-of-tokens-to-purchase">
+                    Number of tokens to purchase
+                  </label>
+                  <div class="col-sm-5">
+                    <div class="input-group">
+                      <input type="number" class="form-control" id="number-of-tokens-to-purchase" placeholder="Tokens"
+                        min="1" step="1" formControlName="number_of_tokens" [ngClass]="{ 'is-invalid': submitted && purchaseOfferForm.get('number_of_tokens').errors }">
+                      <div class="input-group-append">
+                        <span class="input-group-text">
+                          <i class="fas fa-fw fa-coins"></i>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="invalid-feedback" *ngIf="purchaseOfferForm.get('number_of_tokens').errors">
+                      Please provide the number of tokens to purchase.
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-sm-7" for="number-of-tokens-to-purchase-offer">
+                    Price per token
+                  </label>
+                  <div class="col-sm-5">
+                    <div class="input-group">
+                      <input type="number" class="form-control" id="price-per-token" placeholder="Tokens" min="1" step="1"
+                        formControlName="purchase_price_per_token" [ngClass]="{ 'is-invalid': submitted && purchaseOfferForm.get('purchase_price_per_token').errors }">
+                      <div class="input-group-append">
+                        <span class="input-group-text">
+                          <i class="fas fa-fw fa-money-bill"></i>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="invalid-feedback" *ngIf="purchaseOfferForm.get('purchase_price_per_token').errors">
+                      Please provide the price per token.
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group row">
+                  <div class="col-sm-12 text-right">
+                    <button type="submit" class="btn"><i class="fas fa-fw fa-gavel"></i> Create purchase offer</button>
                   </div>
                 </div>
               </form>

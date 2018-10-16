@@ -26,7 +26,7 @@ class ExceptionController extends FOSRestController implements ClassResourceInte
         if ($exception instanceof NotFoundHttpException) {
             return [
                 'code' => 404,
-                'message' => 'Object not found',
+                'message' => 'Object not found : '.$exception->getMessage(),
             ];
         }
 

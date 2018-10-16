@@ -3,27 +3,27 @@
 namespace App\Repository;
 
 use DateTime;
-use App\Entity\SellOffer;
+use App\Entity\PurchaseOffer;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
-class SellOfferRepository extends ServiceEntityRepository
+class PurchaseOfferRepository extends ServiceEntityRepository
 {
     public function __construct(RegistryInterface $registry)
     {
-        parent::__construct($registry, SellOffer::class);
+        parent::__construct($registry, PurchaseOffer::class);
     }
 
     public function findFiltered($project, $includeExpired)
     {
-        $qb = $this->createQueryBuilder('so');
+        $qb = $this->createQueryBuilder('po');
 
         if ($project) {
-            $qb->where('so.project = :project')->setParameter('project', $project);
+            $qb->where('po.project = :project')->setParameter('project', $project);
         }
 
         if (!$includeExpired) {
-            $qb->andWhere('so.offerExpiresAtUtcDate >= :now')->setParameter('now', new DateTime());
+            $qb->andWhere('po.offerExpiresAtUtcDate >= :now')->setParameter('now', new DateTime());
         }
 
         return $qb->getQuery()->getResult();

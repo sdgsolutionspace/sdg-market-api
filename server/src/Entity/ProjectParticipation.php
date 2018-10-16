@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * ProjectParticipation.
@@ -25,6 +26,8 @@ class ProjectParticipation
      * @var string
      *
      * @ORM\Column(name="number_of_tokens", type="decimal", precision=8, scale=2, nullable=false)
+     * @Assert\Type("numeric")
+     * @Assert\NotBlank()
      */
     private $numberOfTokens;
 
@@ -32,11 +35,14 @@ class ProjectParticipation
      * @var \DateTime
      *
      * @ORM\Column(name="calculation_utc_datetime", type="datetime", nullable=false, options={"default"="CURRENT_TIMESTAMP"})
+     * @Assert\DateTime()
      */
     private $calculationUtcDatetime;
 
     /**
      * @var string
+     *
+     * @Assert\NotBlank()
      *
      * @ORM\Column(name="commit_id", type="string", length=45, nullable=false)
      */
@@ -49,6 +55,8 @@ class ProjectParticipation
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="git_project_id", referencedColumnName="id")
      * })
+     *
+     * @Assert\NotBlank()
      */
     private $gitProject;
 
@@ -74,7 +82,7 @@ class ProjectParticipation
         return $this->calculationUtcDatetime;
     }
 
-    public function setCalculationUtcDatetime(\DateTimeInterface $calculationUtcDatetime): self
+    public function setCalculationUtcDatetime($calculationUtcDatetime): self
     {
         $this->calculationUtcDatetime = $calculationUtcDatetime;
 

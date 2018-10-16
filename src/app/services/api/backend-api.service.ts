@@ -30,12 +30,11 @@ export class BackendApiService {
     let params = new HttpParams();
     if (parameters) {
       for (let parameter in parameters) {
-        params.set(parameter, parameters[parameter]);
+        params.append(parameter, parameters[parameter]);
       }
     }
     return {
-      headers: httpHeaders,
-      params: params
+      headers: httpHeaders
     };
   }
 
@@ -43,8 +42,15 @@ export class BackendApiService {
     return res || {};
   }
 
+  private generateQueryString(params?: object): string {
+    if (params) {
+      return "?" + Object.keys(params).map(key => key + '=' + params[key]).join('&');
+    }
+    return "";
+  }
+
   public get(apiUrl: string, parameters?: object): Observable<any> {
-    return this.http.get(endpoint + apiUrl, this.httpOptions(parameters))
+    return this.http.get(endpoint + apiUrl + this.generateQueryString(parameters), this.httpOptions())
       .pipe(
         map(this.extractData),
         catchError((err: HttpErrorResponse) => {

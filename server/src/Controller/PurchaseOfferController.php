@@ -2,27 +2,38 @@
 
 namespace App\Controller;
 
+use DateTime;
+use DateInterval;
+use App\Entity\User;
 use App\Entity\PurchaseOffer;
 use App\Form\Type\PurchaseOfferType;
+use FOS\RestBundle\Request\ParamFetcher;
 use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Controller\FOSRestController;
-use FOS\RestBundle\Controller\Annotations\RouteResource;
+use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
+use FOS\RestBundle\Controller\Annotations\QueryParam;
 
 /**
- * @RouteResource("purchase-offer")
+ * @FOSRest\RouteResource("purchase-offer")
  * @FOSRest\NamePrefix(value="api_v1_purchase_offer_")
  */
-class PurchaseOfferController extends FOSRestController
+class PurchaseOfferController extends FOSRestController implements ClassResourceInterface
 {
     /**
      * Get all projects.
      *
+     * @QueryParam(name="project", requirements="\d+", allowBlank=true, description="Project for which getting the offers")
+     * @QueryParam(name="include_expired", requirements="^(0|1)$", default="0", strict=true, allowBlank=true, description="Project for which getting the offers")
+     *
      * @return object
      */
-    public function cgetAction()
+    public function cgetAction(ParamFetcher $paramFetcher)
     {
-        $offers = $this->getDoctrine()->getManager()->getRepository(PurchaseOffer::class)->findAll();
+        $offers = $this->getDoctrine()->getManager()->getRepository(PurchaseOffer::class)->findFiltered(
+            $paramFetcher->get('project'),
+            $paramFetcher->get('include_expired')
+        );
 
         return $offers;
     }
@@ -44,15 +55,26 @@ class PurchaseOfferController extends FOSRestController
      *
      *
      * @param Request $request
+     *
      * @return PurchaseOffer|\Symfony\Component\HttpFoundation\Response
      */
     public function postAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $purchaseOffer = new PurchaseOffer();
+        $user = $em->getRepository(User::class)->findOneBy(['username' => $this->getUser()->getUsername()]);
+
+        $purchaseOffer = new PurchaseOffer($user);
         $form = $this->createForm(PurchaseOfferType::class, $purchaseOffer);
         $form->submit($request->request->all());
         $form->handleRequest($request);
+
+        if (!$purchaseOffer->getOfferStartsUtcDate()) {
+            $purchaseOffer->setOfferStartsUtcDate(new DateTime());
+            $purchaseOffer->setOfferExpiresAtUtcDate(clone $purchaseOffer->getOfferStartsUtcDate());
+            $purchaseOffer->getOfferExpiresAtUtcDate()->add(new DateInterval('P7D'));
+        }
+
+        $purchaseOffer->setPurchaser($user);
 
         if (false === $form->isValid()) {
             return $this->handleView(
@@ -71,7 +93,8 @@ class PurchaseOfferController extends FOSRestController
      *
      *
      * @param PurchaseOffer $purchaseOffer
-     * @param Request $request
+     * @param Request       $request
+     *
      * @return PurchaseOffer|\Symfony\Component\HttpFoundation\Response
      */
     public function putAction(PurchaseOffer $purchaseOffer, Request $request)
