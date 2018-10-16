@@ -2,13 +2,16 @@
 
 namespace App\Entity;
 
+use DateTime;
+use DateInterval;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * SellOffer
+ * SellOffer.
  *
  * @ORM\Table(name="sell_offer", indexes={@ORM\Index(name="fk_trading_user_idx", columns={"seller_id"}), @ORM\Index(name="fk_sell_offer_project1_idx", columns={"project_id"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\SellOfferRepository")
  */
 class SellOffer
 {
@@ -25,6 +28,8 @@ class SellOffer
      * @var string
      *
      * @ORM\Column(name="number_of_tokens", type="decimal", precision=6, scale=2, nullable=false)
+     * @Assert\NotBlank()
+     * @Assert\Type("numeric")
      */
     private $numberOfTokens;
 
@@ -32,35 +37,40 @@ class SellOffer
      * @var string
      *
      * @ORM\Column(name="sell_price_per_token", type="decimal", precision=6, scale=2, nullable=false)
+     * @Assert\NotBlank()
+     * @Assert\Type("numeric")
      */
     private $sellPricePerToken;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="offer_stats_utc_date", type="datetime", nullable=false, options={"default"="CURRENT_TIMESTAMP"})
+     * @ORM\Column(name="offer_starts_utc_date", type="datetime", nullable=false, options={"default"="CURRENT_TIMESTAMP"})
+     * @Assert\DateTime()
      */
-    private $offerStatsUtcDate = 'CURRENT_TIMESTAMP';
+    private $offerStartsUtcDate;
 
     /**
      * @var \DateTime|null
      *
      * @ORM\Column(name="offer_expires_at_utc_date", type="datetime", nullable=true)
+     * @Assert\DateTime()
      */
     private $offerExpiresAtUtcDate;
 
     /**
-     * @var \GitProject
+     * @var GitProject
      *
      * @ORM\ManyToOne(targetEntity="GitProject")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="project_id", referencedColumnName="id")
      * })
+     * @Assert\NotNull()
      */
     private $project;
 
     /**
-     * @var \User
+     * @var User
      *
      * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumns({
@@ -69,7 +79,14 @@ class SellOffer
      */
     private $seller;
 
-    public function getId(): ?int
+    public function __construct()
+    {
+        $this->offerStartsUtcDate = new DateTime();
+        $this->offerExpiresAtUtcDate = clone $this->offerStartsUtcDate;
+        $this->offerExpiresAtUtcDate->add(new DateInterval('P7D'));
+    }
+
+    public function getId(): ? int
     {
         return $this->id;
     }
@@ -98,53 +115,56 @@ class SellOffer
         return $this;
     }
 
-    public function getOfferStatsUtcDate(): ?\DateTimeInterface
+    public function getOfferStartsUtcDate(): ? \DateTimeInterface
     {
-        return $this->offerStatsUtcDate;
+        return $this->offerStartsUtcDate;
     }
 
-    public function setOfferStatsUtcDate(\DateTimeInterface $offerStatsUtcDate): self
+    public function setOfferStartsUtcDate($offerStartsUtcDate): self
     {
-        $this->offerStatsUtcDate = $offerStatsUtcDate;
+        $this->offerStartsUtcDate = $offerStartsUtcDate;
 
         return $this;
     }
 
-    public function getOfferExpiresAtUtcDate(): ?\DateTimeInterface
+    public function getOfferExpiresAtUtcDate(): ? \DateTimeInterface
     {
         return $this->offerExpiresAtUtcDate;
     }
 
-    public function setOfferExpiresAtUtcDate(?\DateTimeInterface $offerExpiresAtUtcDate): self
+    public function setOfferExpiresAtUtcDate(? \DateTimeInterface $offerExpiresAtUtcDate): self
     {
         $this->offerExpiresAtUtcDate = $offerExpiresAtUtcDate;
 
         return $this;
     }
 
-    public function getProject(): ?GitProject
+    public function getProject(): ? GitProject
     {
         return $this->project;
     }
 
-    public function setProject(?GitProject $project): self
+    public function setProject(? GitProject $project): self
     {
         $this->project = $project;
 
         return $this;
     }
 
-    public function getSeller(): ?User
+    /**
+     * Return the seller.
+     *
+     * @return User
+     */
+    public function getSeller()
     {
         return $this->seller;
     }
 
-    public function setSeller(?User $seller): self
+    public function setSeller(? User $seller): self
     {
         $this->seller = $seller;
 
         return $this;
     }
-
-
 }

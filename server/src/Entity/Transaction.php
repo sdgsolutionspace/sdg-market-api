@@ -3,15 +3,19 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Transaction
+ * Transaction.
  *
  * @ORM\Table(name="transaction", indexes={@ORM\Index(name="fk_transaction_project_participation1_idx", columns={"project_participation_id"}), @ORM\Index(name="fk_transaction_trading1_idx", columns={"trading_id"}), @ORM\Index(name="fk_transaction_user1_idx", columns={"user_id"})})
  * @ORM\Entity
  */
 class Transaction
 {
+    const MOVEMENT_TYPE_CREDIT = 'credit';
+    const MOVEMENT_TYPE_DEBIT = 'debit';
+
     /**
      * @var int
      *
@@ -25,11 +29,13 @@ class Transaction
      * @var string
      *
      * @ORM\Column(name="movement_type", type="string", length=0, nullable=false)
+     * @Assert\Regex("/^debit|credit$/")
+     * @Assert\NotBlank()
      */
     private $movementType;
 
     /**
-     * @var \ProjectParticipation
+     * @var ProjectParticipation
      *
      * @ORM\ManyToOne(targetEntity="ProjectParticipation")
      * @ORM\JoinColumns({
@@ -39,7 +45,7 @@ class Transaction
     private $projectParticipation;
 
     /**
-     * @var \Trading
+     * @var Trading
      *
      * @ORM\ManyToOne(targetEntity="Trading")
      * @ORM\JoinColumns({
@@ -49,21 +55,22 @@ class Transaction
     private $trading;
 
     /**
-     * @var \User
+     * @var User
      *
      * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      * })
+     * @Assert\NotBlank()
      */
     private $user;
 
-    public function getId(): ?int
+    public function getId(): ? int
     {
         return $this->id;
     }
 
-    public function getMovementType(): ?string
+    public function getMovementType(): ? string
     {
         return $this->movementType;
     }
@@ -75,41 +82,39 @@ class Transaction
         return $this;
     }
 
-    public function getProjectParticipation(): ?ProjectParticipation
+    public function getProjectParticipation(): ? ProjectParticipation
     {
         return $this->projectParticipation;
     }
 
-    public function setProjectParticipation(?ProjectParticipation $projectParticipation): self
+    public function setProjectParticipation(? ProjectParticipation $projectParticipation): self
     {
         $this->projectParticipation = $projectParticipation;
 
         return $this;
     }
 
-    public function getTrading(): ?Trading
+    public function getTrading(): ? Trading
     {
         return $this->trading;
     }
 
-    public function setTrading(?Trading $trading): self
+    public function setTrading(? Trading $trading): self
     {
         $this->trading = $trading;
 
         return $this;
     }
 
-    public function getUser(): ?User
+    public function getUser(): ? User
     {
         return $this->user;
     }
 
-    public function setUser(?User $user): self
+    public function setUser(? User $user): self
     {
         $this->user = $user;
 
         return $this;
     }
-
-
 }

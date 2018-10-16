@@ -3,9 +3,10 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Trading
+ * Trading.
  *
  * @ORM\Table(name="trading", indexes={@ORM\Index(name="fk_trading_sell_offer1_idx", columns={"sell_offer_id"})})
  * @ORM\Entity
@@ -25,18 +26,20 @@ class Trading
      * @var \DateTime
      *
      * @ORM\Column(name="transaction_utc_datetime", type="datetime", nullable=false, options={"default"="CURRENT_TIMESTAMP"})
+     * @Assert\DateTime()
      */
-    private $transactionUtcDatetime = 'CURRENT_TIMESTAMP';
+    private $transactionUtcDatetime;
 
     /**
      * @var string
      *
      * @ORM\Column(name="number_of_tokens", type="decimal", precision=8, scale=2, nullable=false)
+     * @Assert\NotBlank()
      */
     private $numberOfTokens;
 
     /**
-     * @var \SellOffer
+     * @var SellOffer
      *
      * @ORM\ManyToOne(targetEntity="SellOffer")
      * @ORM\JoinColumns({
@@ -45,12 +48,12 @@ class Trading
      */
     private $sellOffer;
 
-    public function getId(): ?int
+    public function getId(): ? int
     {
         return $this->id;
     }
 
-    public function getTransactionUtcDatetime(): ?\DateTimeInterface
+    public function getTransactionUtcDatetime(): ? \DateTimeInterface
     {
         return $this->transactionUtcDatetime;
     }
@@ -74,17 +77,15 @@ class Trading
         return $this;
     }
 
-    public function getSellOffer(): ?SellOffer
+    public function getSellOffer(): ? SellOffer
     {
         return $this->sellOffer;
     }
 
-    public function setSellOffer(?SellOffer $sellOffer): self
+    public function setSellOffer(? SellOffer $sellOffer): self
     {
         $this->sellOffer = $sellOffer;
 
         return $this;
     }
-
-
 }

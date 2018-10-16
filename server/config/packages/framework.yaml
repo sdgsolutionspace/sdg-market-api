@@ -8,12 +8,14 @@ framework:
     # Remove or comment this section to explicitly disable session support.
     session:
         handler_id: ~
-
+    templating:
+        engines: twig
     #esi: true
     #fragments: true
     php_errors:
         log: true
-
+    csrf_protection:
+        enabled: false
     cache:
         # Put the unique name of your app here: the prefix seed
         # is used to compute stable namespaces for cache keys.

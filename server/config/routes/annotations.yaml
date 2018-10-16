@@ -1,3 +1,18 @@
+github_provider:
+    resource: ../src/Controller/GitHubController.php
+    type:     annotation
+    prefix: '/'
+    name_prefix: 'auth_'
+
+exception_controller:
+    resource: ../src/Controller/GitHubController.php
+    type:     annotation
+    prefix: '/'
+    name_prefix: 'auth_'
+
+api_login_check:
+    path: /api/login_check
+
 controllers:
     resource: ../src/Controller/
     type: rest

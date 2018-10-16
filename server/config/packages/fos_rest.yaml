@@ -1,5 +1,6 @@
 # Read the documentation: https://symfony.com/doc/master/bundles/FOSRestBundle/index.html
 fos_rest:
+    disable_csrf_role: ROLE_API
     serializer:
         serialize_null: true
     routing_loader:
@@ -7,7 +8,7 @@ fos_rest:
         include_format: false
     param_fetcher_listener: force
     view:
-        view_response_listener: false
+        view_response_listener: force
     format_listener:
         rules:
         - { path: '^/api/v1', fallback_format: json}
@@ -21,6 +22,12 @@ fos_rest:
             'Symfony\Component\HttpKernel\Exception\NotFoundHttpException': 404
         messages:
             'Symfony\Component\Routing\Exception\ResourceNotFoundException': true
+    zone:
+    - { path: ^/api/* }
+    body_converter:
+        enabled: true
+    body_listener:
+        array_normalizer: fos_rest.normalizer.camel_keys
 #    param_fetcher_listener:  true
 #    allowed_methods_listener:  true
 #    routing_loader: true

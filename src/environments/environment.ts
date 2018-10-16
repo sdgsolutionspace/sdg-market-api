@@ -3,16 +3,19 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false,
-  auth: {
-    domain: 'github-trading.eu.auth0.com',
-    CLIENT_ID: 'iSWtqfpvBycKK4hxa4cwTBeQdn36X8JF',
-    CLIENT_DOMAIN: 'github-trading.eu.auth0.com',
-    REDIRECT: 'http://localhost:4200/callback',
-    AUDIENCE: 'https://github-trading.eu.auth0.com/api/v2/',
-    LOGOUT_URL: '/',
-    SCOPE: 'openid profile email'
-  }
+    production: false,
+    baseUrl: 'http://localhost:8000',
+    baseAPIUrl: 'http://localhost:8000/api/v1/',
+    // baseUrl: 'http://github-trading.local',
+    // baseAPIUrl: 'http://github-trading.local/api/v1/',
+    githubAuth: {
+        URL: 'https://github.com/login/oauth/authorize',
+        CLIENT_ID: 'Iv1.54319c9b16b131e3',
+        CLIENT_DOMAIN: 'github-trading.eu.auth0.com',
+        REDIRECT_URI: 'http://localhost:4200/callback',
+        SCOPE: 'user user:email repo'
+    },
+    localStorageJWT: 'git-trading-jwt'
 };
 
 /*

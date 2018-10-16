@@ -11,26 +11,42 @@ import { EditRepositoryComponent } from './repositories/edit-repository/edit-rep
 import { AuctionsComponent } from './auctions/auctions.component';
 import { ProjectAuctionComponent } from './auctions/project-auction/project-auction.component';
 import { CallbackComponent } from './login/callback/callback.component';
+import { UsersComponent } from './users/users.component';
+import { HttpClientModule } from '@angular/common/http';
+import { SidebarComponent } from './sidebar/sidebar.component';
+import { LoadingComponent } from './loading/loading.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
+import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-@NgModule( {
-  declarations: [
-    AppComponent,
-    LoginComponent,
-    RepositoriesComponent,
-    AddRepositoryComponent,
-    EditRepositoryComponent,
-    AuctionsComponent,
-    ProjectAuctionComponent,
-    CallbackComponent
-  ],
-  imports: [
-    BrowserModule,
-    RoutingModule
-  ],
-  providers: [
-    AuthService
-  ],
-  bootstrap: [ AppComponent ]
-} )
+@NgModule({
+    declarations: [
+        AppComponent,
+        LoginComponent,
+        RepositoriesComponent,
+        AddRepositoryComponent,
+        EditRepositoryComponent,
+        AuctionsComponent,
+        ProjectAuctionComponent,
+        UsersComponent,
+        CallbackComponent,
+        SidebarComponent,
+        LoadingComponent
+    ],
+    imports: [
+        BrowserModule,
+        RoutingModule,
+        HttpClientModule,
+        ReactiveFormsModule,
+        FormsModule,
+        ToastrModule.forRoot(),
+        BrowserAnimationsModule
+    ],
+    providers: [
+        AuthService
+    ],
+    bootstrap: [AppComponent]
+})
 export class AppModule {
 }

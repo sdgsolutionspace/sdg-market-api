@@ -5,7 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * ProjectParticipation
+ * ProjectParticipation.
  *
  * @ORM\Table(name="project_participation", indexes={@ORM\Index(name="fk_project_participation_git_project1_idx", columns={"git_project_id"})})
  * @ORM\Entity
@@ -33,7 +33,7 @@ class ProjectParticipation
      *
      * @ORM\Column(name="calculation_utc_datetime", type="datetime", nullable=false, options={"default"="CURRENT_TIMESTAMP"})
      */
-    private $calculationUtcDatetime = 'CURRENT_TIMESTAMP';
+    private $calculationUtcDatetime;
 
     /**
      * @var string
@@ -43,7 +43,7 @@ class ProjectParticipation
     private $commitId;
 
     /**
-     * @var \GitProject
+     * @var GitProject
      *
      * @ORM\ManyToOne(targetEntity="GitProject")
      * @ORM\JoinColumns({
@@ -52,7 +52,7 @@ class ProjectParticipation
      */
     private $gitProject;
 
-    public function getId(): ?int
+    public function getId(): ? int
     {
         return $this->id;
     }
@@ -69,7 +69,7 @@ class ProjectParticipation
         return $this;
     }
 
-    public function getCalculationUtcDatetime(): ?\DateTimeInterface
+    public function getCalculationUtcDatetime(): ? \DateTimeInterface
     {
         return $this->calculationUtcDatetime;
     }
@@ -81,7 +81,7 @@ class ProjectParticipation
         return $this;
     }
 
-    public function getCommitId(): ?string
+    public function getCommitId(): ? string
     {
         return $this->commitId;
     }
@@ -93,17 +93,15 @@ class ProjectParticipation
         return $this;
     }
 
-    public function getGitProject(): ?GitProject
+    public function getGitProject(): ? GitProject
     {
         return $this->gitProject;
     }
 
-    public function setGitProject(?GitProject $gitProject): self
+    public function setGitProject(? GitProject $gitProject): self
     {
         $this->gitProject = $gitProject;
 
         return $this;
     }
-
-
 }
