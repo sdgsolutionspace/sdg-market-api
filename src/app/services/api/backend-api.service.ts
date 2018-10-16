@@ -10,16 +10,22 @@ const endpoint = environment.baseAPIUrl;
   providedIn: 'root'
 })
 export class BackendApiService {
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+  }
+
+
+  // public get(apiUrl: string, parameters?: object): Observable<any> {
+
+  //   return this.http.get(endpoint + apiUrl, this.httpOptions(parameters)).pipe(
+  //     map(this.extractData));
+  // }
 
   private httpOptions(parameters?: object) {
     let headers = {
       'Content-Type': 'application/json',
     };
-
-    let token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE1MzkyNDI1MTIsImV4cCI6MTU0MTg3MDUxMiwicm9sZXMiOm51bGwsInVzZXJuYW1lIjoiZ2lsbGVzLWhlbW1lcmxlIn0.eVdiX96j-yd-TLuJYIVgNmLiIMwYjtdYDDZK6Muc-VbUslkf1nHgVCZhvPKTzeD9w8UTltw2QISDZwF83L-tJNT7qOlcMPDEw1HcFhu3xTl6T9DhlS7fJFwXD8WV4vn-z2SyNDhTqsV_Wn-US0tKrteOZFimYG5OxRC9WdL2R8j8w_pwMDpWcRqueYmBibsFXkNUEXYmJ4ugnrQ5ovIP4PRtyrv6pEMbk3QvxLaMsQa5asdhSwjA4ZjKv-cuzApXfmJcLKbfk9uACXx0RggNNvDqWAJ8IWCSoJddrH-pjREsP71G7nJMT_oY7nRt7T7REdRTsGB2L7VgJL8ou8ToCAK2JLYv7KgEQ3p8ibWJe6jknUwrF2xB9Q4pnJuichG91OorunOQwkmhPOxdRipAjRfWYJvzJxde0OSP3NconnxFqOgOkGlZ5kJ6kiC3Ng9u9aTpnSGTb3NZex-1YXw83vu7oxW1AdGdlZH6gJl5U-rJkYzRPgzs5rqHFcbrBvXTheJ9GBUn0SjArv55dtsKcy_UTaFELaU-Cp15Ul1bv5AFKF6jC4mEjODAgJzfUkEc1MJqfEIf5X6uWqUPROhsPqUy5XBMtCZEL1L6I5hpgWC7T1_0Wvp2WiQwJNtDJwEm15Oz-t9jt6ERB3PF6wXwI-7csBUs252ehXakKXNQcAs";
+    let token = localStorage.getItem(environment.localStorageJWT);
     headers["Authorization"] = `Bearer ${token}`;
-
     let httpHeaders = new HttpHeaders(headers);
     let params = new HttpParams();
     if (parameters) {
@@ -27,7 +33,6 @@ export class BackendApiService {
         params.set(parameter, parameters[parameter]);
       }
     }
-
     return {
       headers: httpHeaders,
       params: params
@@ -35,14 +40,18 @@ export class BackendApiService {
   }
 
   private extractData(res: Response) {
-    let body = res;
-    return body || {};
+    return res || {};
   }
 
   public get(apiUrl: string, parameters?: object): Observable<any> {
-
-    return this.http.get(endpoint + apiUrl, this.httpOptions(parameters)).pipe(
-      map(this.extractData));
+    return this.http.get(endpoint + apiUrl, this.httpOptions(parameters))
+      .pipe(
+        map(this.extractData),
+        catchError((err: HttpErrorResponse) => {
+          console.log(err)
+          return of(false);
+        })
+      );
   }
 
   public post(apiUrl: string, data: any): Observable<any> {

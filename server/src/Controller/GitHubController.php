@@ -12,60 +12,68 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
-use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use Github\Client;
+use GuzzleHttp\RequestOptions;
+use League\OAuth2\Client\Provider\Github;
 use League\OAuth2\Client\Provider\GithubResourceOwner;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Github\Client;
 
 class GitHubController extends Controller
 {
-    /**
-     * Link to this controller to start the "connect" process.
-     *
-     * @Route("/connect/github", name="connect_github_start")
-     *
-     * @param ClientRegistry $clientRegistry
-     *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     */
-    public function connectAction(ClientRegistry $clientRegistry)
-    {
-        // will redirect to GitHub!
-        return $clientRegistry
-            ->getClient('github')
-            ->redirect(['user', 'user:email', 'repo']);
-    }
-
     /**
      * After going to GitHub, you're redirected back here
      * because this is the "redirect_route" you configured
      * in config/packages/knpu_oauth2_client.yaml.
      *
-     * @Route("/connect/github/check", name="connect_github_check")
+     * @Route("/connect/github/check", name="github_auth_check")
      *
-     * @param ClientRegistry $clientRegistry
+     * @param Request $request
      *
-     * @return JsonResponse
-     *
-     * @throws IdentityProviderException
+     * @return Response|JsonResponse
      */
-    public function connectCheckAction(ClientRegistry $clientRegistry)
+    public function connectCheckAction(Request $request)
     {
-        /** @var \KnpU\OAuth2ClientBundle\Client\Provider\GithubClient $client */
-        $client = $clientRegistry->getClient('github');
         try {
-            /** @var \League\OAuth2\Client\Provider\Github $apiUser */
-            $accessToken = $client->getAccessToken();
-            $apiUser = $client->fetchUserFromToken($accessToken);
+            $github = new Github();
+
+            $code = $request->get('code');
+            $state = $request->get('state');
+
+            $client = new \GuzzleHttp\Client();
+            $response = $client->post($github->getBaseAccessTokenUrl([]), [
+                'headers' => [
+                    'Accept' => 'application/json',
+                ],
+                RequestOptions::JSON => [
+                    'client_id' => getenv('OAUTH_GITHUB_CLIENT_ID'),
+                    'client_secret' => getenv('OAUTH_GITHUB_CLIENT_SECRET'),
+                    'code' => $code,
+                    'state' => $state,
+                ],
+            ]);
+
+            $responseData = json_decode($response->getBody()->getContents(), true);
+            if (isset($responseData['error']) || !isset($responseData['access_token'])) {
+                return new JsonResponse($responseData, 500);
+            }
+            $accessToken = $responseData['access_token'];
+
+            $githubApi = new Client();
+            $githubApi->authenticate($accessToken, null, Client::AUTH_HTTP_TOKEN);
+            $apiUser = $githubApi->currentUser()->show();
+
+            $apiUser = new GithubResourceOwner($apiUser);
+
             $dbUser = $this->syncUser($apiUser, $accessToken);
             $jwtManager = $this->container->get('lexik_jwt_authentication.jwt_manager');
 
             return new JsonResponse(['token' => $jwtManager->create($dbUser)]);
-        } catch (IdentityProviderException $e) {
-            throw $e;
+        } catch (\Exception $ex) {
+            return new JsonResponse($ex->getMessage(), 500);
         }
     }
 

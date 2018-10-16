@@ -65,11 +65,11 @@ class User implements UserInterface
     private $active = '1';
 
     /**
-     * @var string
+     * @var array
      *
-     * @ORM\Column(name="role", type="string", length=45, nullable=false, options={"default"="user"})
+     * @ORM\Column(name="roles", type="array", nullable=false)
      */
-    private $role = 'ROLE_USER';
+    private $roles;
 
     /**
      * @var string
@@ -85,16 +85,35 @@ class User implements UserInterface
      */
     private $blackListed = '0';
 
+
+    /**
+     * User constructor.
+     */
+    public function __construct()
+    {
+        $this->roles = array();
+    }
+
+    /**
+     * @return int|null
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * @return null|string
+     */
     public function getEmail(): ?string
     {
         return $this->email;
     }
 
+    /**
+     * @param null|string $email
+     * @return User
+     */
     public function setEmail(?string $email): self
     {
         $this->email = $email;
@@ -102,11 +121,18 @@ class User implements UserInterface
         return $this;
     }
 
+    /**
+     * @return null|string
+     */
     public function getUsername(): ?string
     {
         return $this->username;
     }
 
+    /**
+     * @param string $username
+     * @return User
+     */
     public function setUsername(string $username): self
     {
         $this->username = $username;
@@ -114,11 +140,18 @@ class User implements UserInterface
         return $this;
     }
 
+    /**
+     * @return null|string
+     */
     public function getGithubId(): ?string
     {
         return $this->githubId;
     }
 
+    /**
+     * @param string $githubId
+     * @return User
+     */
     public function setGithubId(string $githubId): self
     {
         $this->githubId = $githubId;
@@ -126,11 +159,18 @@ class User implements UserInterface
         return $this;
     }
 
+    /**
+     * @return null|string
+     */
     public function getTimezone(): ?string
     {
         return $this->timezone;
     }
 
+    /**
+     * @param string $timezone
+     * @return User
+     */
     public function setTimezone(string $timezone): self
     {
         $this->timezone = $timezone;
@@ -138,11 +178,18 @@ class User implements UserInterface
         return $this;
     }
 
+    /**
+     * @return bool|null
+     */
     public function getActive(): ?bool
     {
         return $this->active;
     }
 
+    /**
+     * @param bool $active
+     * @return User
+     */
     public function setActive(bool $active): self
     {
         $this->active = $active;
@@ -150,23 +197,18 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getRole(): ?string
-    {
-        return $this->role;
-    }
-
-    public function setRole(string $role): self
-    {
-        $this->role = $role;
-
-        return $this;
-    }
-
+    /**
+     * @return bool|null
+     */
     public function getBlackListed(): ?bool
     {
         return $this->blackListed;
     }
 
+    /**
+     * @param bool $blackListed
+     * @return User
+     */
     public function setBlackListed(bool $blackListed): self
     {
         $this->blackListed = $blackListed;
@@ -213,22 +255,59 @@ class User implements UserInterface
     }
 
     /**
-     * Returns the roles granted to the user.
-     *
-     *     public function getRoles()
-     *     {
-     *         return array('ROLE_USER');
-     *     }
-     *
-     * Alternatively, the roles might be stored on a ``roles`` property,
-     * and populated in any number of different ways when the user object
-     * is created.
-     *
-     * @return void (Role|string)[] The user roles
+     * @return array
      */
     public function getRoles()
     {
-        // TODO: Implement getRoles() method.
+        return $this->roles;
+    }
+
+    /**
+     * @param $role
+     * @return $this
+     */
+    public function addRole($role)
+    {
+        $role = strtoupper($role);
+        if (!in_array($role, $this->roles, true)) {
+            $this->roles[] = $role;
+        }
+        return $this;
+    }
+
+    /**
+     * @param $role
+     * @return bool
+     */
+    public function hasRole($role)
+    {
+        return in_array(strtoupper($role), $this->getRoles(), true);
+    }
+
+    /**
+     * @param $role
+     * @return $this
+     */
+    public function removeRole($role)
+    {
+        if (false !== $key = array_search(strtoupper($role), $this->roles, true)) {
+            unset($this->roles[$key]);
+            $this->roles = array_values($this->roles);
+        }
+        return $this;
+    }
+
+    /**
+     * @param array $roles
+     * @return $this
+     */
+    public function setRoles(array $roles)
+    {
+        $this->roles = array();
+        foreach ($roles as $role) {
+            $this->addRole($role);
+        }
+        return $this;
     }
 
     /**
@@ -241,7 +320,7 @@ class User implements UserInterface
      */
     public function getPassword()
     {
-        // TODO: Implement getPassword() method.
+        return null;
     }
 
     /**
@@ -253,7 +332,7 @@ class User implements UserInterface
      */
     public function getSalt()
     {
-        // TODO: Implement getSalt() method.
+        return null;
     }
 
     /**
@@ -264,6 +343,6 @@ class User implements UserInterface
      */
     public function eraseCredentials()
     {
-        // TODO: Implement eraseCredentials() method.
+        return true;
     }
 }
