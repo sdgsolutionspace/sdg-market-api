@@ -7,8 +7,8 @@ sed -i "s|DATABASE_URL.*|DATABASE_URL=mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@${
 
 ## We need to configure JWT if they didn't exist already
 if [ ! -e config/jwt/public.pem ] ; then
-    openssl genrsa -out config/jwt/private.pem -aes256 4096
-    openssl rsa -pubout -in config/jwt/private.pem -out config/jwt/public.pem
+    openssl genrsa -out config/jwt/private.pem -passout pass:foobar -aes256 4096
+    openssl rsa -pubout -passin pass:foobar -in config/jwt/private.pem -out config/jwt/public.pem
 fi
 
 ## Do all migrations for now (database must exist already even if empty)
