@@ -3,11 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\ProjectParticipation;
+use FOS\RestBundle\Request\ParamFetcher;
 use App\Form\Type\ProjectParticipationType;
 use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Controller\FOSRestController;
-use FOS\RestBundle\Controller\Annotations\RouteResource;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
+use FOS\RestBundle\Controller\Annotations\QueryParam;
+use FOS\RestBundle\Controller\Annotations\RouteResource;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 /**
@@ -19,13 +21,17 @@ class ProjectParticipationController extends FOSRestController
     /**
      * Get all projects.
      *
+     * @QueryParam(name="project", requirements="\d+", allowBlank=true, description="Project for which getting the participations")
+     *
      * @return object
      */
-    public function cgetAction()
+    public function cgetAction(ParamFetcher $paramFetcher)
     {
-        $contributions = $this->getDoctrine()->getManager()->getRepository(ProjectParticipation::class)->findAll();
+        $participations = $this->getDoctrine()->getManager()->getRepository(ProjectParticipation::class)->findFiltered(
+            $paramFetcher->get('project')
+        );
 
-        return $contributions;
+        return $participations;
     }
 
     /**

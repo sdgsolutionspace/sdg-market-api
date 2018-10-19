@@ -11,6 +11,7 @@ import { AuctionsComponent } from './auctions/auctions.component';
 import { ProjectAuctionComponent } from './auctions/project-auction/project-auction.component';
 import { CallbackComponent } from './login/callback/callback.component';
 import { UsersComponent } from './users/users.component';
+import { UserShowComponent } from './user-show/user-show.component';
 
 /**
  * Route constant
@@ -19,12 +20,13 @@ const routes: Routes = [
 
   { path: 'login', component: LoginComponent },
   { path: 'callback', component: CallbackComponent },
-  { path: 'repositories', component: RepositoriesComponent , canActivate:  [ AuthGuard ] },
-  { path: 'repositories/add', component: AddRepositoryComponent, canActivate:  [ AuthGuard ]},
-  { path: 'repositories/edit/:id', component: EditRepositoryComponent, canActivate:  [ AuthGuard ]},
+  { path: 'repositories', component: RepositoriesComponent, canActivate: [AuthGuard] },
+  { path: 'repositories/add', component: AddRepositoryComponent, canActivate: [AuthGuard] },
+  { path: 'repositories/edit/:id', component: EditRepositoryComponent, canActivate: [AuthGuard] },
   { path: 'auctions', component: AuctionsComponent },
-  { path: 'auctions/project/:id', component: ProjectAuctionComponent, canActivate:  [ AuthGuard ]},
-  { path: 'users', component: UsersComponent, canActivate:  [ AuthGuard ], data: { expectedRole: 'ROLE_ADMIN' } },
+  { path: 'auctions/project/:id', component: ProjectAuctionComponent, canActivate: [AuthGuard] },
+  { path: 'users', component: UsersComponent, canActivate: [AuthGuard], data: { expectedRole: 'ROLE_ADMIN' } },
+  { path: 'users/show/:username', component: UserShowComponent },
   { path: '**', redirectTo: 'auctions' },
 ];
 

@@ -19,6 +19,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { UserShowComponent } from './user-show/user-show.component';
+import { ContributionsComponent } from './table/contributions/contributions.component';
 
 @NgModule({
     declarations: [
@@ -32,7 +34,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
         UsersComponent,
         CallbackComponent,
         SidebarComponent,
-        LoadingComponent
+        LoadingComponent,
+        UserShowComponent,
+        ContributionsComponent
     ],
     imports: [
         BrowserModule,

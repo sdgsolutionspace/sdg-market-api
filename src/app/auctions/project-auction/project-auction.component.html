@@ -55,39 +55,7 @@
           role="tabpanel" aria-labelledby="contribution-history-tab">
           <h3>Contributions</h3>
           <div class="table-responsive">
-            <table class="table table-hover table-striped table-dark">
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Type</th>
-                  <th>Value</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8, 9]">
-                  <td>
-                    03/09/2018
-                  </td>
-                  <td>
-                    Contribution / Trading
-                  </td>
-                  <td>
-                    45 <i class="fas fa-fw fa-coins"></i>
-                  </td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <th colspan="2" class="text-right">
-                    Total
-                  </th>
-                  <th>
-                    450 <i class="fas fa-fw fa-coins"></i>
-                  </th>
-                </tr>
-              </tfoot>
-            </table>
-
+            <app-table-contributions [git-project]="currentProject"></app-table-contributions>
           </div>
           <nav aria-label="Projects navigation">
             <ul class="pagination justify-content-center">

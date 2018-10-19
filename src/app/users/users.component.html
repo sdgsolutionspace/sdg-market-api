@@ -30,9 +30,6 @@
     <div class="col-12 col-md-8 col-lg-10">
       <h1 class="title">
         Manage users
-        <a class="btn btn-light float-right" [routerLink]="['/repositories/add']" [routerLinkActive]="['active']">
-          <i class="fas fa-fw fa-plus"></i> Add new
-        </a>
       </h1>
       <div class="table-responsive">
         <table class="table table-hover table-striped table-dark">
@@ -51,7 +48,9 @@
           <tbody>
             <tr *ngFor="let user of users">
               <td>
-                {{user.username}}
+                <a href="https://github.com/{{ user.username }}" target="_blank">
+                  {{user.username}}
+                </a>
               </td>
               <td>
                 {{user.email}}
@@ -72,11 +71,11 @@
                 {{user.black_listed}}
               </td>
               <td class="actions">
-                <a [routerLink]="['/repositories/edit', i]" class="btn btn-sm btn-warning">
-                  <i class="fas fa-fw fa-pencil-alt"></i> Edit
+                <a [routerLink]="['/users/show', user.username]" class="btn btn-sm btn-warning">
+                  <i class="fas fa-fw fa-pencil-alt"></i> Display
                 </a>
                 <a href="#" class="btn btn-sm btn-danger">
-                  <i class="fas fa-fw fa-trash"></i> Remove
+                  <i class="fas fa-fw fa-trash"></i> Blacklist
                 </a>
               </td>
             </tr>
