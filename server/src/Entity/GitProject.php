@@ -47,6 +47,13 @@ class GitProject
     private $projectAddress;
 
     /**
+     * @var int
+     *
+     * @ORM\Column(name="project_value", type="integer", nullable=false, options={"default"=1000})
+     */
+    private $projectValue = 1000;
+
+    /**
      * @var bool
      *
      * @ORM\Column(name="active", type="boolean", nullable=false, options={"default"=FALSE})
@@ -101,6 +108,37 @@ class GitProject
     public function setProjectAddress($projectAddress): self
     {
         $this->projectAddress = $projectAddress;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of projectValue.
+     *
+     * @return int
+     */
+    public function getProjectValue(): int
+    {
+        return $this->projectValue;
+    }
+
+    /**
+     * Set the value of projectValue.
+     *
+     * @param int $projectValue
+     *
+     * @return self
+     */
+    public function setProjectValue(int $projectValue): self
+    {
+        $this->projectValue = $projectValue;
+
+        return $this;
+    }
+
+    public function incrementProjectValue(int $nbTokens): self
+    {
+        $this->projectValue += $nbTokens;
 
         return $this;
     }

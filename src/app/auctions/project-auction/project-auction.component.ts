@@ -6,6 +6,10 @@ import { ToastrService } from 'ngx-toastr';
 import { SellOffer } from 'src/app/interfaces/sell-offer';
 import { ApiPurchaseOfferService } from 'src/app/services/api/api-purchase-offer.service';
 import { PurchaseOffer } from 'src/app/interfaces/purchase-offer';
+import { ApiContributionService } from 'src/app/services/api/api-contribution.service';
+import { Contribution } from 'src/app/interfaces/contribution';
+import { GitProject } from 'src/app/interfaces/git-project';
+import { GitProjectApiService } from 'src/app/services/api/git-project-api.service';
 
 @Component({
   selector: 'app-project-auction',
@@ -23,13 +27,15 @@ export class ProjectAuctionComponent implements OnInit {
   public purchaseOfferFormSubmitted = false;
   public currentSales: Array<SellOffer> = null;
   public currentPurchaseOffers: Array<PurchaseOffer> = null;
-
-
+  public currentContributions: Array<Contribution>;
+  public currentProject: GitProject;
 
   @ViewChild('sellModalCloseButton') sellModalCloseButton: ElementRef;
   @ViewChild('purchaseOfferModalCloseButton') purchaseOfferModalCloseButton: ElementRef;
 
-  constructor(private fb: FormBuilder, private route: ActivatedRoute, private sellOfferApi: ApiSellOfferService, private purchaseOfferApi: ApiPurchaseOfferService, public toastr: ToastrService, public router: Router) {
+  constructor(private fb: FormBuilder, private route: ActivatedRoute, private sellOfferApi: ApiSellOfferService,
+    private purchaseOfferApi: ApiPurchaseOfferService, public toastr: ToastrService, public router: Router,
+    private contributionApi: ApiContributionService, private projecApi: GitProjectApiService) {
   }
 
   private generateSellingForm() {
@@ -63,12 +69,22 @@ export class ProjectAuctionComponent implements OnInit {
     });
   }
 
+
+
   ngOnInit() {
     this.projectId = this.route.snapshot.params["id"];
+
+    this.projecApi.get(this.projectId).toPromise().then(project => {
+      this.currentProject = project;
+    }).catch(err => {
+      console.log(err);
+    })
+
     this.generateSellingForm();
     this.generatePurchaseOfferForm();
     this.refreshSellOffer();
     this.refreshPurchasesOffer();
+    this.refreshContributions();
   }
 
   public refreshSellOffer() {
@@ -82,6 +98,13 @@ export class ProjectAuctionComponent implements OnInit {
     this.purchaseOfferApi.getAll(this.projectId).toPromise().then(purchasesOffer => {
       this.currentPurchaseOffers = purchasesOffer;
       console.log("Purchases offers", purchasesOffer);
+    });
+  }
+
+  public refreshContributions() {
+    this.contributionApi.getAll(this.projectId).toPromise().then(contributionApi => {
+      this.currentContributions = contributionApi;
+      console.log("Contributions", contributionApi);
     });
   }
 

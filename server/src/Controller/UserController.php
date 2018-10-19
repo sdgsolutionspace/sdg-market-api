@@ -2,15 +2,16 @@
 
 namespace App\Controller;
 
-use App\Entity\GitProject;
 use App\Entity\User;
+use App\Entity\GitProject;
 use App\Form\Type\UserType;
-use FOS\RestBundle\Controller\Annotations as FOSRest;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Routing\ClassResourceInterface;
+use FOS\RestBundle\Controller\Annotations as FOSRest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class UserController.
@@ -36,14 +37,16 @@ class UserController extends FOSRestController implements ClassResourceInterface
     /**
      * Get single user by id.
      *
-     * @Security("has_role('ROLE_ADMIN')")
      *
-     * @param User $user
+     * @param User $username
+     *
      * @return null|object
      */
-    public function getAction(User $user)
+    public function getAction($username, EntityManagerInterface $em)
     {
-        return $user;
+        return $em->getRepository('App:User')->findOneBy([
+            'username' => $username,
+        ]);
     }
 
     /**
@@ -60,6 +63,7 @@ class UserController extends FOSRestController implements ClassResourceInterface
      * @Security("has_role('ROLE_ADMIN')")
      *
      * @param User $user
+     *
      * @return User
      */
     public function blacklistAction(User $user)
@@ -78,6 +82,7 @@ class UserController extends FOSRestController implements ClassResourceInterface
      *
      * @param User $user
      * @param $role
+     *
      * @return User
      */
     public function assignRoleAction(User $user, $role)
@@ -95,6 +100,7 @@ class UserController extends FOSRestController implements ClassResourceInterface
      * @Security("has_role('ROLE_ADMIN')")
      *
      * @param Request $request
+     *
      * @return \Symfony\Component\Form\FormInterface
      */
     public function postAction(Request $request)
@@ -127,6 +133,7 @@ class UserController extends FOSRestController implements ClassResourceInterface
      * @Security("has_role('ROLE_ADMIN')")
      *
      * @param User $user
+     *
      * @return array
      */
     public function deleteAction(User $user)
@@ -153,6 +160,7 @@ class UserController extends FOSRestController implements ClassResourceInterface
     /**
      * @param Request $request
      * @param $gitProject
+     *
      * @return GitProject
      */
     private function getOrCreateGitProject(Request $request, $gitProject): GitProject
