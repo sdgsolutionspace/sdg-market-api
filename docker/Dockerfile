@@ -5,8 +5,11 @@ WORKDIR /var/www/html
 ENV PHP_VER 7.2
 
 ## Defaults values for the config
-ENV BASE_URL=http://localhost
-ENV BASE_API_URL=http://localhost:8000/api
+ENV MYSQL_PORT=3306
+ENV MYSQL_HOST=db
+ENV MYSQL_DB=ghtrading
+ENV MYSQL_USER=ghtrading
+ENV MYSQL_PASSWORD=ghtrading
 
 ## Non interactive Debian package installation
 ENV DEBIAN_FRONTEND noninteractive
@@ -19,27 +22,43 @@ RUN apt-get update \
     openssl
 
 ## Adding Sury (php backports) repository
-RUN wget -qO- https://deb.nodesource.com/setup_10.x | bash -
+RUN echo "deb https://packages.sury.org/php stretch main" > /etc/apt/sources.list.d/sury.list \
+    && wget -O - https://packages.sury.org/php/apt.gpg | apt-key add -
 
 ## Installing dependancies
 RUN apt-get update \
     && apt-get -y install \
-    nodejs \
-    nginx
+    libapache2-mod-php${PHP_VER} \
+    composer \
+    php${PHP_VER}-mbstring \
+    php${PHP_VER}-dom \
+    php${PHP_VER}-xml \
+    php${PHP_VER}-zip \
+    php${PHP_VER}-curl \
+    php${PHP_VER}-json \
+    php${PHP_VER}-mysql
+
 
 ## Copy the entire application
-RUN rm /var/www/html/* && mkdir /tmp/build
-COPY . /tmp/build
+RUN rm /var/www/html/*
+COPY . /var/www/html
+RUN mv .env.dist .env
+RUN chown -R www-data /var/www/
 
-## Install npm dependancies
+## Install composer dependancies
 #USER www-data
-RUN cd /tmp/build && npm install
+RUN composer install
 
-## Build with Angular
-RUN cd /tmp/build && node_modules/.bin/ng build #--prod
+## Define data location for JWT keys
+VOLUME /var/www/html/config/jwt/
 
-## Finally keep only static files and cleanup
-RUN cp -a /tmp/build/dist/github-trading/* /var/www/html && rm -rf /tmp/build
+## Override default configuration values
+RUN sed -i 's/dev/prod/g' .env
+
+## Do a proper Apache2 configuration
+RUN a2enmod rewrite
+RUN rm /etc/apache2/sites-enabled/*.conf
+COPY docker/apache.conf /etc/apache2/sites-enabled/ghtrading.conf
 
 ## Define the port used by Apache
 EXPOSE 80
