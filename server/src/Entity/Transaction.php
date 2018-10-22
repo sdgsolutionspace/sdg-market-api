@@ -13,6 +13,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Transaction
 {
+    const SUBSCRIPTION_SDG_CREDIT = 'Subription award';
+
     /**
      * @var int
      *

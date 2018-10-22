@@ -12,6 +12,7 @@ use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use App\Entity\Transaction;
 
 /**
  * Class UserController.
@@ -121,6 +122,15 @@ class UserController extends FOSRestController implements ClassResourceInterface
             $user->setActive(false);
             $user->setGithubId($gitProject->getId());
             $em->persist($user);
+
+            // Create the SDG offer
+            $sdgOffer = new Transaction();
+            $sdgOffer
+                ->setToUser($user)
+                ->setNbSdg(200)
+                ->setTransactionLabel(Transaction::SUBSCRIPTION_SDG_CREDIT);
+            $em->persist($sdgOffer);
+
             $em->flush();
 
             return $userForm;
