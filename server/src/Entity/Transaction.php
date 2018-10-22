@@ -8,14 +8,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Transaction.
  *
- * @ORM\Table(name="transaction", indexes={@ORM\Index(name="fk_transaction_project_participation1_idx", columns={"project_participation_id"}), @ORM\Index(name="fk_transaction_trading1_idx", columns={"trading_id"}), @ORM\Index(name="fk_transaction_user1_idx", columns={"user_id"})})
+ * @ORM\Table(name="transaction", indexes={@ORM\Index(name="fk_transaction_user1_idx", columns={"from_user_id"}), @ORM\Index(name="fk_transaction_user2_idx", columns={"to_user_id"})})
  * @ORM\Entity
  */
 class Transaction
 {
-    const MOVEMENT_TYPE_CREDIT = 'credit';
-    const MOVEMENT_TYPE_DEBIT = 'debit';
-
     /**
      * @var int
      *
@@ -26,44 +23,71 @@ class Transaction
     private $id;
 
     /**
-     * @var string
+     * @var User
      *
-     * @ORM\Column(name="movement_type", type="string", length=0, nullable=false)
-     * @Assert\Regex("/^debit|credit$/")
-     * @Assert\NotBlank()
-     */
-    private $movementType;
-
-    /**
-     * @var ProjectParticipation
-     *
-     * @ORM\ManyToOne(targetEntity="ProjectParticipation")
+     * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="project_participation_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="from_user_id", referencedColumnName="id", nullable=true)
      * })
      */
-    private $projectParticipation;
-
-    /**
-     * @var Trading
-     *
-     * @ORM\ManyToOne(targetEntity="Trading")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="trading_id", referencedColumnName="id")
-     * })
-     */
-    private $trading;
+    private $fromUser;
 
     /**
      * @var User
      *
      * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="to_user_id", referencedColumnName="id")
      * })
+     * @Assert\NotNull()
+     */
+    private $toUser;
+
+    /**
+     * @var GitProject
+     *
+     * @ORM\ManyToOne(targetEntity="GitProject")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="project_id", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $project;
+
+    /**
+     * @var GitProject
+     *
+     * @ORM\ManyToOne(targetEntity="ProjectParticipation")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="project_participation_id", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $projectParticipation;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="nb_tokens", type="decimal", precision=8, scale=2, nullable=false)
+     * @Assert\NotBlank()
+     * @Assert\Type("numeric")
+     */
+    private $nbTokens;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="nb_sdg", type="decimal", precision=8, scale=2, nullable=false)
+     * @Assert\NotBlank()
+     * @Assert\Type("numeric")
+     */
+    private $nbSdg;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="transaction_label", type="string", length=255, nullable=false)
      * @Assert\NotBlank()
      */
-    private $user;
+    private $transactionLabel;
 
     public function getId(): ? int
     {
@@ -82,38 +106,158 @@ class Transaction
         return $this;
     }
 
-    public function getProjectParticipation(): ? ProjectParticipation
+    /**
+     * Get the value of fromUser.
+     *
+     * @return User
+     */
+    public function getFromUser(): ? User
+    {
+        return $this->fromUser;
+    }
+
+    /**
+     * Set the value of fromUser.
+     *
+     * @param User $fromUser
+     *
+     * @return self
+     */
+    public function setFromUser(User $fromUser): self
+    {
+        $this->fromUser = $fromUser;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of toUser.
+     *
+     * @return User
+     */
+    public function getToUser(): ? User
+    {
+        return $this->toUser;
+    }
+
+    /**
+     * Set the value of toUser.
+     *
+     * @param User $toUser
+     *
+     * @return self
+     */
+    public function setToUser(User $toUser): self
+    {
+        $this->toUser = $toUser;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of nbTokens.
+     *
+     * @return float
+     */
+    public function getNbTokens()
+    {
+        return $this->nbTokens;
+    }
+
+    /**
+     * Set the value of nbTokens.
+     *
+     * @param float $nbTokens
+     *
+     * @return self
+     */
+    public function setNbTokens($nbTokens)
+    {
+        $this->nbTokens = $nbTokens;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of nbSdg.
+     *
+     * @return float
+     */
+    public function getNbSdg()
+    {
+        return $this->nbSdg;
+    }
+
+    /**
+     * Set the value of nbSdg.
+     *
+     * @param float $nbSdg
+     *
+     * @return self
+     */
+    public function setNbSdg($nbSdg)
+    {
+        $this->nbSdg = $nbSdg;
+
+        return $this;
+    }
+
+    public function getProject(): ? GitProject
+    {
+        return $this->project;
+    }
+
+    public function setProject(? GitProject $project): self
+    {
+        $this->project = $project;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of projectParticipation.
+     *
+     * @return GitProject
+     */
+    public function getProjectParticipation()
     {
         return $this->projectParticipation;
     }
 
-    public function setProjectParticipation(? ProjectParticipation $projectParticipation): self
+    /**
+     * Set the value of projectParticipation.
+     *
+     * @param GitProject $projectParticipation
+     *
+     * @return self
+     */
+    public function setProjectParticipation(GitProject $projectParticipation)
     {
         $this->projectParticipation = $projectParticipation;
 
         return $this;
     }
 
-    public function getTrading(): ? Trading
+    /**
+     * Get the value of transactionLabel.
+     *
+     * @return string
+     */
+    public function getTransactionLabel()
     {
-        return $this->trading;
+        return $this->transactionLabel;
     }
 
-    public function setTrading(? Trading $trading): self
+    /**
+     * Set the value of transactionLabel.
+     *
+     * @param string $transactionLabel
+     *
+     * @return self
+     */
+    public function setTransactionLabel(string $transactionLabel)
     {
-        $this->trading = $trading;
-
-        return $this;
-    }
-
-    public function getUser(): ? User
-    {
-        return $this->user;
-    }
-
-    public function setUser(? User $user): self
-    {
-        $this->user = $user;
+        $this->transactionLabel = $transactionLabel;
 
         return $this;
     }

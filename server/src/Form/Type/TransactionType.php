@@ -12,10 +12,13 @@ class TransactionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('movementType')
             ->add('projectParticipation')
-            ->add('trading')
-            ->add('user');
+            ->add('project')
+            ->add('fromUser')
+            ->add('toUser')
+            ->add('nbTokens')
+            ->add('nbSdg')
+            ->add('transactionLabel');
     }
 
     public function configureOptions(OptionsResolver $resolver)

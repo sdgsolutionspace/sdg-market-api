@@ -22,21 +22,21 @@
             <app-loading [visible]="projects === null"></app-loading>
             <tr *ngFor="let project of projects">
               <td>
-                {{ project.name }}
+                {{ project[0].name }}
               </td>
               <td>
-                <a href="{{ project.git_address }}" target="_blank">
-                  {{ project.git_address }}
+                <a href="{{ project[0].git_address }}" target="_blank">
+                  {{ project[0].git_address }}
                 </a>
               </td>
               <td>
-                {{ project.project_value }} <i class="fas fa-fw fa-coins"></i>
+                {{ project[0].project_value }} <i class="fas fa-fw fa-coins"></i>
               </td>
               <td class="actions">
-                <a [routerLink]="['/repositories/edit', project.id]" class="btn btn-sm btn-warning">
+                <a [routerLink]="['/repositories/edit', project[0].id]" class="btn btn-sm btn-warning">
                   <i class="fas fa-fw fa-pencil-alt"></i> Edit
                 </a>
-                <a href="javascript:;" class="btn btn-sm btn-danger" (click)="deleteItem(project.id)">
+                <a href="javascript:;" class="btn btn-sm btn-danger" (click)="deleteItem(project[0].id)">
                   <i class="fas fa-fw fa-trash"></i> Remove
                 </a>
               </td>
