@@ -2,12 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Entity\GitProject;
 use App\Form\Type\GitProjectType;
 use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Controller\FOSRestController;
-use FOS\RestBundle\Controller\Annotations\RouteResource;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
+use FOS\RestBundle\Controller\Annotations\RouteResource;
 
 /**
  * @RouteResource("git-project")
@@ -22,7 +23,16 @@ class GitProjectController extends FOSRestController
      */
     public function cgetAction()
     {
-        $offers = $this->getDoctrine()->getManager()->getRepository(GitProject::class)->findAll();
+        //$offers = $this->getDoctrine()->getManager()->getRepository(GitProject::class)->findAll();
+        $em = $this->getDoctrine()->getManager();
+
+        $user = null;
+
+        if ($this->getUser()) {
+            $user = $em->getRepository(User::class)->findOneBy(['username' => $this->getUser()->getUsername()]);
+        }
+
+        $offers = $this->getDoctrine()->getManager()->getRepository(GitProject::class)->findAllWithPersonalValue($user);
 
         return $offers;
     }
@@ -44,6 +54,7 @@ class GitProjectController extends FOSRestController
      *
      *
      * @param Request $request
+     *
      * @return GitProject|\Symfony\Component\HttpFoundation\Response
      */
     public function postAction(Request $request)
@@ -71,7 +82,8 @@ class GitProjectController extends FOSRestController
      *
      *
      * @param GitProject $gitProject
-     * @param Request $request
+     * @param Request    $request
+     *
      * @return GitProject|\Symfony\Component\HttpFoundation\Response
      */
     public function putAction(GitProject $gitProject, Request $request)

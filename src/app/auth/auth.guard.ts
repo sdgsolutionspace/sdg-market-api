@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { UserService } from "../services/api/user.service";
+import { ApiUserService } from '../services/api/api-user.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -14,7 +14,7 @@ export class AuthGuard implements CanActivate {
      */
     constructor(
         private router: Router,
-        private userService: UserService
+        private userService: ApiUserService
     ) {
     }
 
@@ -47,6 +47,11 @@ export class AuthGuard implements CanActivate {
      * @param role
      */
     private hasTheRole(user, role): boolean {
+        console.log("TEST ROLE", user, role);
+        if (!user) {
+            return false;
+        }
+
         if (role) {
             return user.roles.includes(role);
         }

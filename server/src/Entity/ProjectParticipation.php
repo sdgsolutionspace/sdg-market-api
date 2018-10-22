@@ -60,7 +60,7 @@ class ProjectParticipation
     /**
      * @var GitProject
      *
-     * @ORM\ManyToOne(targetEntity="GitProject")
+     * @ORM\ManyToOne(targetEntity="GitProject", inversedBy="participtions")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="git_project_id", referencedColumnName="id")
      * })

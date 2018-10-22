@@ -29,4 +29,8 @@ export class ApiUserService {
   public blacklist(id: number): Observable<any> {
     return this.backendApi.post(`users/${id}/blacklist`, {});
   }
+
+  public getMe() {
+    return this.backendApi.get('user/me');
+  }
 }

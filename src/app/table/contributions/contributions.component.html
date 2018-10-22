@@ -2,6 +2,7 @@
   <thead>
     <tr>
       <th>Date</th>
+      <th *ngIf="!project">Project</th>
       <th>Commit</th>
       <th>Value</th>
     </tr>
@@ -11,11 +12,14 @@
       <td>
         {{ contribution.calculation_utc_datetime }}
       </td>
+
+      <td *ngIf="!project">
+        {{ contribution.git_project.name }}
+      </td>
       <td>
-        <a href="{{ currentProject.git_address }}/commit/{{ contribution.commit_id }}">
+        <a href="{{ contribution.git_project.git_address }}/commit/{{ contribution.commit_id }}">
           #{{ contribution.commit_id }}
         </a>
-
       </td>
       <td>
         {{ contribution.number_of_tokens }} <i class="fas fa-fw fa-coins"></i>

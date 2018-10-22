@@ -22,13 +22,15 @@ class ProjectParticipationController extends FOSRestController
      * Get all projects.
      *
      * @QueryParam(name="project", requirements="\d+", allowBlank=true, description="Project for which getting the participations")
+     * @QueryParam(name="user", requirements="\d+", allowBlank=true, description="User for which getting the participations")
      *
      * @return object
      */
     public function cgetAction(ParamFetcher $paramFetcher)
     {
         $participations = $this->getDoctrine()->getManager()->getRepository(ProjectParticipation::class)->findFiltered(
-            $paramFetcher->get('project')
+            $paramFetcher->get('project'),
+            $paramFetcher->get('user')
         );
 
         return $participations;

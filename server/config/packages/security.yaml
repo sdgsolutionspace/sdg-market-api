@@ -17,5 +17,10 @@ security:
                 - lexik_jwt_authentication.jwt_token_authenticator
 
     access_control:
-        - { path: ^/api/v1/sell-offers, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/v1/sell-offers, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: [GET] }
+        - { path: ^/api/v1/git-projects, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: [GET] }
+        - { path: ^/api/v1/purchase-offer, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: [GET] }
+        - { path: ^/api/v1/sell-offer, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: [GET] }
+        - { path: ^/api/v1/contributions, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: [GET] }
+        - { path: ^/api/v1/users, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: [GET] }
         - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }

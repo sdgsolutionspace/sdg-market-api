@@ -1,29 +1,3 @@
-<header class="container-fluid page-header">
-  <div class="row">
-    <div class="col">
-      <nav class="navbar navbar-expand-lg navbar-dark">
-        <a class="navbar-brand" href="#">
-          {{title}}
-        </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#header-navigation"
-          aria-controls="header-navigation" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="header-navigation">
-          <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="#">About Us</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Log out</a>
-            </li>
-          </ul>
-        </div>
-      </nav>
-    </div>
-  </div>
-</header>
-
 <main class="container-fluid page-main-content">
   <div class="row align-items-stretch">
     <app-sidebar></app-sidebar>
@@ -33,7 +7,7 @@
       </h1>
 
 
-      <form *ngIf="user">
+      <form *ngIf="user" class="mb-sm-3">
         <div class="row">
           <div class="col-md-6">
             <div class="form-group">
@@ -49,33 +23,19 @@
           </div>
         </div>
 
+        <div class="row">
+          <div class="col-md-12">
+            <a class="btn btn-block btn-outline-primary" href="https://github.com/{{ user.username }}" target="_blank"><i
+                class="fab fa-fw fa-github"></i>
+              View profile on Github </a>
+          </div>
+        </div>
+
       </form>
 
-      <app-table-contributions [git-project]=""></app-table-contributions>
+      <h2>Contributions</h2>
+      <app-table-contributions [user]="user"></app-table-contributions>
 
     </div>
   </div>
 </main>
-
-<footer class="page-footer">
-  <div class="container">
-    <div class="row">
-      <div class="col-12 col-md-8">
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam consequatur, consequuntur deserunt
-          dignissimos doloribus et impedit nesciunt odio perspiciatis praesentium quo temporibus veniam veritatis. Eius
-          quo, reprehenderit! Aliquid, in, voluptate.
-        </p>
-      </div>
-      <div class="col-12 col-md-4">
-        <p class="text-right footer-links">
-          <a href="#">Terms of use</a>
-          <a href="#">Privacy policy</a>
-        </p>
-        <p class="text-right">
-          &copy; 2018 All rights reserved.
-        </p>
-      </div>
-    </div>
-  </div>
-</footer>

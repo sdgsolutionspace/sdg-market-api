@@ -2,6 +2,7 @@ import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import { ApiContributionService } from 'src/app/services/api/api-contribution.service';
 import { Contribution } from 'src/app/interfaces/contribution';
 import { GitProject } from 'src/app/interfaces/git-project';
+import { User } from 'src/app/interfaces/user';
 
 @Component({
   selector: 'app-table-contributions',
@@ -11,6 +12,7 @@ import { GitProject } from 'src/app/interfaces/git-project';
 export class ContributionsComponent implements OnInit {
   public currentContributions: Array<Contribution>;
   @Input("git-project") currentProject: GitProject;
+  @Input("user") user: User;
 
   constructor(private contributionApi: ApiContributionService) { }
 
@@ -22,8 +24,11 @@ export class ContributionsComponent implements OnInit {
   }
 
   public refreshContributions() {
-    if (this.currentProject) {
-      this.contributionApi.getAll(this.currentProject.id).toPromise().then(contributions => {
+    if (this.currentProject || this.user) {
+      this.contributionApi.getAll({
+        project: this.currentProject ? this.currentProject : null,
+        user: this.user ? this.user : null,
+      }).toPromise().then(contributions => {
         this.currentContributions = contributions;
       });
     }

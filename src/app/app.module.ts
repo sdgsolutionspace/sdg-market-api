@@ -21,6 +21,9 @@ import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { UserShowComponent } from './user-show/user-show.component';
 import { ContributionsComponent } from './table/contributions/contributions.component';
+import { HeaderComponent } from './header/header.component';
+import { FooterComponent } from './footer/footer.component';
+import { LogoutComponent } from './logout/logout.component';
 
 @NgModule({
     declarations: [
@@ -36,7 +39,10 @@ import { ContributionsComponent } from './table/contributions/contributions.comp
         SidebarComponent,
         LoadingComponent,
         UserShowComponent,
-        ContributionsComponent
+        ContributionsComponent,
+        HeaderComponent,
+        FooterComponent,
+        LogoutComponent
     ],
     imports: [
         BrowserModule,

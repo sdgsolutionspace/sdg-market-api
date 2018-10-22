@@ -13,12 +13,16 @@ class ProjectParticipationRepository extends ServiceEntityRepository
         parent::__construct($registry, ProjectParticipation::class);
     }
 
-    public function findFiltered($project)
+    public function findFiltered($project, $user)
     {
         $qb = $this->createQueryBuilder('pp');
 
         if ($project) {
             $qb->where('pp.gitProject = :project')->setParameter('project', $project);
+        }
+
+        if ($user) {
+            $qb->where('pp.user = :user')->setParameter('user', $user);
         }
 
         return $qb->getQuery()->getResult();

@@ -25,7 +25,10 @@ export class BackendApiService {
       'Content-Type': 'application/json',
     };
     let token = localStorage.getItem(environment.localStorageJWT);
-    headers["Authorization"] = `Bearer ${token}`;
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
     let httpHeaders = new HttpHeaders(headers);
     let params = new HttpParams();
     if (parameters) {

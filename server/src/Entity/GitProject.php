@@ -3,13 +3,15 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Exclude;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * GitProject.
  *
  * @ORM\Table(name="git_project")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\GitProjectRepository")
  */
 class GitProject
 {
@@ -60,6 +62,48 @@ class GitProject
      * @Assert\NotNull()
      */
     private $active = 1;
+
+    /**
+     * @ORM\OneToMany(targetEntity="ProjectParticipation", mappedBy="gitProject")
+     * @Exclude
+     *
+     * @var ArrayCollection
+     */
+    protected $participations;
+
+    public function __construct()
+    {
+        $this->participations = new ArrayCollection();
+    }
+
+    public function addParticipation(ProjectParticipation $participation)
+    {
+        $this->participations->add($participation);
+    }
+
+    /**
+     * Get the value of participations.
+     *
+     * @return ArrayCollection
+     */
+    public function getParticipations()
+    {
+        return $this->participations;
+    }
+
+    /**
+     * Set the value of participations.
+     *
+     * @param ArrayCollection $participations
+     *
+     * @return self
+     */
+    public function setParticipations(ArrayCollection $participations)
+    {
+        $this->participations = $participations;
+
+        return $this;
+    }
 
     public function getId(): ? int
     {
