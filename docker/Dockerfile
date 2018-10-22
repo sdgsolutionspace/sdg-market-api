@@ -39,7 +39,7 @@ RUN cd /tmp/build && npm install
 RUN cd /tmp/build && node_modules/.bin/ng build #--prod
 
 ## Finally keep only static files and cleanup
-RUN cp -a /tmp/build /var/www/html && rm -rf /tmp/build
+RUN cp -a /tmp/build/dist/github-trading/* /var/www/html && rm -rf /tmp/build
 
 ## Define the port used by Apache
 EXPOSE 80
