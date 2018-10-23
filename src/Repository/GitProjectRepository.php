@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\User;
 use App\Entity\GitProject;
+use App\Entity\Transaction;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
@@ -33,5 +34,24 @@ class GitProjectRepository extends ServiceEntityRepository
         }
 
         return $projects;
+    }
+
+    public function findWithOwnership(GitProject $project, User $user = null)
+    {
+        $data = [
+            'id' => $project->getId(),
+            'name' => $project->getName(),
+            'git_address' => $project->getGitAddress(),
+            'project_address' => $project->getProjectAddress(),
+            'project_value' => $project->getProjectValue(),
+            'active' => $project->isActive(),
+            'own_value' => 0,
+        ];
+
+        if ($user) {
+            $data['own_value'] = $this->getEntityManager()->getRepository(Transaction::class)->getProjectOwnValue($project, $user);
+        }
+
+        return $data;
     }
 }

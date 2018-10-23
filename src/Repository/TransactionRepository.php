@@ -7,6 +7,7 @@ use App\Entity\GitProject;
 use App\Entity\Transaction;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Entity\SellOffer;
 
 class TransactionRepository extends ServiceEntityRepository
 {
@@ -47,5 +48,27 @@ class TransactionRepository extends ServiceEntityRepository
             ->andWhere('t.toUser IS NULL')
             ->getQuery()
             ->getResult();
+    }
+
+    public function getTransactionsConcerningOffer(SellOffer $sellOffer)
+    {
+        return $this
+            ->createQueryBuilder('t')
+            ->select('t')
+            ->leftJoin('t.sellOffer', 'sellOffer')
+            ->where('sellOffer.id=:sellOfferId')->setParameter('sellOfferId', $sellOffer->getId())
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getRemainingTokensForOffer(SellOffer $sellOffer)
+    {
+        $transactions = $this->getTransactionsConcerningOffer($sellOffer);
+        $remainingTokens = $sellOffer->getNumberOfTokens();
+        foreach ($transactions as $currentTransaction) {
+            $remainingTokens -= abs($currentTransaction->getNbTokens());
+        }
+
+        return $remainingTokens;
     }
 }

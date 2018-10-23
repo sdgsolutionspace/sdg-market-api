@@ -7,6 +7,7 @@ use Exception;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Validator as AssertApp;
 
 /**
  * Transaction.
@@ -14,6 +15,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="transaction", indexes={@ORM\Index(name="fk_transaction_user1_idx", columns={"from_user_id"}), @ORM\Index(name="fk_transaction_user2_idx", columns={"to_user_id"})})
  * @ORM\Entity(repositoryClass="App\Repository\TransactionRepository")
  * @HasLifecycleCallbacks
+ * @AssertApp\RemainToken(message="There is only {{ remaining }} tokens left. You cannot buy {{ value }} tokens.", groups={"purchase"})
  */
 class Transaction
 {
@@ -77,7 +79,7 @@ class Transaction
      *
      * @ORM\Column(name="nb_tokens", type="decimal", precision=8, scale=2, nullable=false)
      * @Assert\NotBlank()
-     * @Assert\Type("numeric")
+     * @Assert\Type("numeric", groups={"Default", "purchase"})
      * @Assert\NotNull(groups={"purchase"})
      */
     private $nbTokens = 0;
@@ -112,7 +114,7 @@ class Transaction
             }
 
             if ($this->sellOffer->getOfferExpiresAtUtcDate() <= new DateTime()) {
-                throw new Exception('The sell offer is expired and you can\'t buy them anymore');
+                //throw new Exception('The sell offer is expired and you can\'t buy them anymore');
             }
 
             $this->transactionLabel = self::LABEL_TRADING;
