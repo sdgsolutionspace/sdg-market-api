@@ -58,12 +58,12 @@ RUN sed -i 's/dev/prod/g' .env
 ## Do a proper Apache2 configuration
 RUN a2enmod rewrite
 RUN rm /etc/apache2/sites-enabled/*.conf
-COPY docker/apache.conf /etc/apache2/sites-enabled/ghtrading.conf
+COPY apache.conf /etc/apache2/sites-enabled/ghtrading.conf
 
 ## Define the port used by Apache
 EXPOSE 80
 
 ## Prepare the proper init script
-COPY docker/init_entry.sh /init_entry.sh
+COPY init_entry.sh /init_entry.sh
 RUN chmod +x /init_entry.sh
 ENTRYPOINT [ "/init_entry.sh" ]
