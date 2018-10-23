@@ -18,7 +18,7 @@ if [ ! -e config/jwt/public.pem ] ; then
 fi
 
 ## Do all migrations for now (database must exist already even if empty)
-php bin/console doctrine:migrations:migrate
+php bin/console doctrine:migrations:migrate -q
 php bin/console cache:clear
 
 ## Now the Apache service
