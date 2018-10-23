@@ -26,6 +26,29 @@ class SellOfferRepository extends ServiceEntityRepository
             $qb->andWhere('so.offerExpiresAtUtcDate >= :now')->setParameter('now', new DateTime());
         }
 
-        return $qb->getQuery()->getResult();
+        $return = [];
+        foreach ($qb->getQuery()->getResult() as $currentOffer) {
+            $offer = [
+                'id' => $currentOffer->getId(),
+                'number_of_tokens' => $currentOffer->getNumberOfTokens(),
+                'sell_price_per_token' => $currentOffer->getSellPricePerToken(),
+                'offer_starts_utc_date' => $currentOffer->getOfferStartsUtcDate(),
+                'offer_expires_at_utc_date' => $currentOffer->getOfferExpiresAtUtcDate(),
+                'project' => $currentOffer->getProject(),
+                'seller' => $currentOffer->getSeller(),
+                'remaining_tokens' => $this->getRemainingTokensForOffer($currentOffer),
+            ];
+
+            if ($includeExpired || $offer['remaining_tokens'] > 0) {
+                $return[] = $offer;
+            }
+        }
+
+        return $return;
+    }
+
+    public function getRemainingTokensForOffer(SellOffer $sellOffer)
+    {
+        return (float) $this->getEntityManager()->getRepository('App:Transaction')->getRemainingTokensForOffer($sellOffer);
     }
 }

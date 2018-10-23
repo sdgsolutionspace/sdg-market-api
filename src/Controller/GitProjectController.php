@@ -46,6 +46,15 @@ class GitProjectController extends FOSRestController
      */
     public function getAction(GitProject $gitProject)
     {
+        $user = null;
+        $em = $this->getDoctrine()->getManager();
+
+        if ($this->getUser()) {
+            $user = $em->getRepository(User::class)->findOneBy(['username' => $this->getUser()->getUsername()]);
+        }
+
+        $gitProject = $em->getRepository(GitProject::class)->findWithOwnership($gitProject, $user);
+
         return $gitProject;
     }
 
