@@ -30,7 +30,7 @@ class GitHubController extends Controller
      * because this is the "redirect_route" you configured
      * in config/packages/knpu_oauth2_client.yaml.
      *
-     * @Route("/connect/github/check", name="github_auth_check")
+     * @Route("/api/v1/connect/github/check", name="github_auth_check")
      *
      * @param Request $request
      *
