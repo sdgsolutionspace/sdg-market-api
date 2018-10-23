@@ -11,16 +11,17 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
 use Github\Client;
+use App\Entity\User;
+use App\Entity\Transaction;
 use GuzzleHttp\RequestOptions;
 use League\OAuth2\Client\Provider\Github;
-use League\OAuth2\Client\Provider\GithubResourceOwner;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use League\OAuth2\Client\Provider\GithubResourceOwner;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class GitHubController extends Controller
 {
@@ -94,6 +95,14 @@ class GitHubController extends Controller
             $dbUser->setEmail($this->getPrimaryEmail($accessToken));
             $dbUser->setUsername($apiUser->getNickname());
             $dbUser->setTimezone('Europe/Paris');
+            $em->persist($dbUser);
+            // Create the SDG offer
+            $sdgOffer = new Transaction();
+            $sdgOffer
+                ->setToUser($dbUser)
+                ->setNbSdg(200)
+                ->setTransactionLabel(Transaction::SUBSCRIPTION_SDG_CREDIT);
+            $em->persist($sdgOffer);
         }
         $dbUser->setAccessToken($accessToken);
         $em->persist($dbUser);

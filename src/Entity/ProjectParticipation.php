@@ -24,15 +24,6 @@ class ProjectParticipation
     private $id;
 
     /**
-     * @var float
-     *
-     * @ORM\Column(name="number_of_tokens", type="decimal", precision=8, scale=2, nullable=false)
-     * @Assert\Type("numeric")
-     * @Assert\NotBlank()
-     */
-    private $numberOfTokens;
-
-    /**
      * @var \DateTime
      *
      * @ORM\Column(name="calculation_utc_datetime", type="datetime", nullable=false, options={"default"="CURRENT_TIMESTAMP"})
@@ -70,14 +61,14 @@ class ProjectParticipation
     private $gitProject;
 
     /**
-     * @var User
+     * @var Transaction
      *
-     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\ManyToOne(targetEntity="Transaction")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=true)
+     *   @ORM\JoinColumn(name="transaction_id", referencedColumnName="id", nullable=false)
      * })
      */
-    private $user;
+    private $transaction;
 
     /**
      * @var string|null
@@ -96,18 +87,6 @@ class ProjectParticipation
     public function getId(): ? int
     {
         return $this->id;
-    }
-
-    public function getNumberOfTokens()
-    {
-        return $this->numberOfTokens;
-    }
-
-    public function setNumberOfTokens($numberOfTokens): self
-    {
-        $this->numberOfTokens = $numberOfTokens;
-
-        return $this;
     }
 
     public function getCalculationUtcDatetime(): ? \DateTimeInterface
@@ -171,30 +150,6 @@ class ProjectParticipation
     }
 
     /**
-     * Get the value of user.
-     *
-     * @return User
-     */
-    public function getUser(): ? User
-    {
-        return $this->user;
-    }
-
-    /**
-     * Set the value of user.
-     *
-     * @param User $user
-     *
-     * @return self
-     */
-    public function setUser(User $user): self
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    /**
      * Get the value of committerEmail.
      *
      * @return string|null
@@ -238,6 +193,30 @@ class ProjectParticipation
     public function setCommitterUsername($committerUsername)
     {
         $this->committerUsername = $committerUsername;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of transaction.
+     *
+     * @return Transaction
+     */
+    public function getTransaction()
+    {
+        return $this->transaction;
+    }
+
+    /**
+     * Set the value of transaction.
+     *
+     * @param Transaction $transaction
+     *
+     * @return self
+     */
+    public function setTransaction(Transaction $transaction)
+    {
+        $this->transaction = $transaction;
 
         return $this;
     }

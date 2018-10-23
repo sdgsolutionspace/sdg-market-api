@@ -6,8 +6,10 @@ use DateTime;
 use DateInterval;
 use App\Entity\User;
 use App\Entity\SellOffer;
+use App\Entity\Transaction;
 use App\Form\Type\SellOfferType;
 use FOS\RestBundle\Request\ParamFetcher;
+use App\Form\Type\TransactionBuyTokenType;
 use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Routing\ClassResourceInterface;
@@ -48,6 +50,31 @@ class SellOfferController extends FOSRestController implements ClassResourceInte
     public function getAction(SellOffer $sellOffer)
     {
         return $sellOffer;
+    }
+
+    public function putBuyAction(Request $request, SellOffer $sellOffer)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $user = $em->getRepository(User::class)->findOneBy(['username' => $this->getUser()->getUsername()]);
+
+        $transactionBuy = new Transaction();
+        $transactionBuy->setToUser($user);
+
+        $form = $this->createForm(TransactionBuyTokenType::class, $transactionBuy);
+        $form->submit($request->request->all());
+        $form->handleRequest($request);
+
+        if (false === $form->isValid()) {
+            return $this->handleView(
+                $this->view($form)
+            );
+        }
+
+        $em->persist($transactionBuy);
+        $em->flush();
+
+        return $transactionBuy;
     }
 
     /**

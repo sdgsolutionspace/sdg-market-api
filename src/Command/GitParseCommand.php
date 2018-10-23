@@ -6,6 +6,7 @@ use DateTime;
 use DateTimeZone;
 use Github\Client;
 use App\Entity\GitProject;
+use App\Entity\Transaction;
 use App\Entity\ProjectParticipation;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -120,6 +121,14 @@ class GitParseCommand extends Command
             return false;
         }
 
+        $transaction = new Transaction();
+        // Create the SDG offer
+        $transaction
+            ->setNbTokens($nbTokens)
+            ->setTransactionLabel(Transaction::CONTRIBUTION)
+            ->setProject($gitProject);
+        $this->entityManager->persist($transaction);
+
         // Create a new participation in the database, if the contribution does not exist yet
         $projectParticipation = new ProjectParticipation();
         $projectParticipation
@@ -127,7 +136,8 @@ class GitParseCommand extends Command
             ->setCommitDate($this->dateTimeFromJsonFormat($commitDate))
             ->setCommitId($commitId)
             ->setGitProject($gitProject)
-            ->setNumberOfTokens($nbTokens)
+            ->setTransaction($transaction)
+            //->setNumberOfTokens($nbTokens)
             ->setCommitterEmail($email)
             ->setCommitterUsername($username);
 

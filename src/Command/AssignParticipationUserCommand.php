@@ -32,11 +32,9 @@ class AssignParticipationUserCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $io->title('Assigning the token to proper users');
 
-        $unlinkedParticipations = $this->entityManager->getRepository('App:ProjectParticipation')->findBy([
-            'user' => null,
-        ]);
+        $unlinkedProjectParticipation = $this->entityManager->getRepository('App:ProjectParticipation')->findProjectParticipationToUpdate();
 
-        foreach ($unlinkedParticipations as $currentParticipation) {
+        foreach ($unlinkedProjectParticipation as $currentParticipation) {
             if ($currentParticipation->getCommitterUsername()) {
                 $user = $this->entityManager->getRepository('App:User')->findOneBy([
                     'username' => $currentParticipation->getCommitterUsername(),
@@ -66,7 +64,7 @@ class AssignParticipationUserCommand extends Command
     protected function assignParticipationToUser(SymfonyStyle $io, ProjectParticipation $participation, User $user)
     {
         $io->note(sprintf('Assigning commit %s to user %s', $participation->getCommitId(), $user->getUsername()));
-        $participation->setUser($user);
+        $participation->getTransaction()->setToUser($user);
         $this->entityManager->persist($participation);
         $this->entityManager->flush();
     }

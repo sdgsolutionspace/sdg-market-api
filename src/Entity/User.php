@@ -6,10 +6,10 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * User
+ * User.
  *
  * @ORM\Table(name="user")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  */
 class User implements UserInterface
 {
@@ -85,7 +85,6 @@ class User implements UserInterface
      */
     private $blackListed = '0';
 
-
     /**
      * User constructor.
      */
@@ -97,7 +96,7 @@ class User implements UserInterface
     /**
      * @return int|null
      */
-    public function getId(): ?int
+    public function getId(): ? int
     {
         return $this->id;
     }
@@ -105,16 +104,17 @@ class User implements UserInterface
     /**
      * @return null|string
      */
-    public function getEmail(): ?string
+    public function getEmail(): ? string
     {
         return $this->email;
     }
 
     /**
      * @param null|string $email
+     *
      * @return User
      */
-    public function setEmail(?string $email): self
+    public function setEmail(? string $email): self
     {
         $this->email = $email;
 
@@ -124,13 +124,14 @@ class User implements UserInterface
     /**
      * @return null|string
      */
-    public function getUsername(): ?string
+    public function getUsername(): ? string
     {
         return $this->username;
     }
 
     /**
      * @param string $username
+     *
      * @return User
      */
     public function setUsername(string $username): self
@@ -143,13 +144,14 @@ class User implements UserInterface
     /**
      * @return null|string
      */
-    public function getGithubId(): ?string
+    public function getGithubId(): ? string
     {
         return $this->githubId;
     }
 
     /**
      * @param string $githubId
+     *
      * @return User
      */
     public function setGithubId(string $githubId): self
@@ -162,13 +164,14 @@ class User implements UserInterface
     /**
      * @return null|string
      */
-    public function getTimezone(): ?string
+    public function getTimezone(): ? string
     {
         return $this->timezone;
     }
 
     /**
      * @param string $timezone
+     *
      * @return User
      */
     public function setTimezone(string $timezone): self
@@ -181,13 +184,14 @@ class User implements UserInterface
     /**
      * @return bool|null
      */
-    public function getActive(): ?bool
+    public function getActive(): ? bool
     {
         return $this->active;
     }
 
     /**
      * @param bool $active
+     *
      * @return User
      */
     public function setActive(bool $active): self
@@ -200,13 +204,14 @@ class User implements UserInterface
     /**
      * @return bool|null
      */
-    public function getBlackListed(): ?bool
+    public function getBlackListed(): ? bool
     {
         return $this->blackListed;
     }
 
     /**
      * @param bool $blackListed
+     *
      * @return User
      */
     public function setBlackListed(bool $blackListed): self
@@ -219,16 +224,17 @@ class User implements UserInterface
     /**
      * @return null|string
      */
-    public function getName(): ?string
+    public function getName(): ? string
     {
         return $this->name;
     }
 
     /**
      * @param null|string $name
+     *
      * @return User
      */
-    public function setName(?string $name)
+    public function setName(? string $name)
     {
         $this->name = $name;
 
@@ -245,6 +251,7 @@ class User implements UserInterface
 
     /**
      * @param string $accessToken
+     *
      * @return User
      */
     public function setAccessToken(string $accessToken)
@@ -264,6 +271,7 @@ class User implements UserInterface
 
     /**
      * @param $role
+     *
      * @return $this
      */
     public function addRole($role)
@@ -272,11 +280,13 @@ class User implements UserInterface
         if (!in_array($role, $this->roles, true)) {
             $this->roles[] = $role;
         }
+
         return $this;
     }
 
     /**
      * @param $role
+     *
      * @return bool
      */
     public function hasRole($role)
@@ -286,6 +296,7 @@ class User implements UserInterface
 
     /**
      * @param $role
+     *
      * @return $this
      */
     public function removeRole($role)
@@ -294,11 +305,13 @@ class User implements UserInterface
             unset($this->roles[$key]);
             $this->roles = array_values($this->roles);
         }
+
         return $this;
     }
 
     /**
      * @param array $roles
+     *
      * @return $this
      */
     public function setRoles(array $roles)
@@ -307,6 +320,7 @@ class User implements UserInterface
         foreach ($roles as $role) {
             $this->addRole($role);
         }
+
         return $this;
     }
 

@@ -55,7 +55,17 @@ class UserController extends FOSRestController implements ClassResourceInterface
      */
     public function getMeAction()
     {
-        return $this->getUser();
+        $em = $this->getDoctrine()->getManager();
+
+        if ($this->getUser()) {
+            $user = $em->getRepository(User::class)->findOneBy(['username' => $this->getUser()->getUsername()]);
+        }
+
+        if (!$user) {
+            return null;
+        }
+
+        return $em->getRepository('App:User')->findUserWithSold($user);
     }
 
     /**
@@ -122,7 +132,6 @@ class UserController extends FOSRestController implements ClassResourceInterface
             $user->setActive(false);
             $user->setGithubId($gitProject->getId());
             $em->persist($user);
-
             // Create the SDG offer
             $sdgOffer = new Transaction();
             $sdgOffer

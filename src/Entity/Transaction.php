@@ -2,18 +2,24 @@
 
 namespace App\Entity;
 
+use DateTime;
+use Exception;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Transaction.
  *
  * @ORM\Table(name="transaction", indexes={@ORM\Index(name="fk_transaction_user1_idx", columns={"from_user_id"}), @ORM\Index(name="fk_transaction_user2_idx", columns={"to_user_id"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\TransactionRepository")
+ * @HasLifecycleCallbacks
  */
 class Transaction
 {
     const SUBSCRIPTION_SDG_CREDIT = 'Subription award';
+    const CONTRIBUTION = 'Project contribution';
+    const LABEL_TRADING = 'Trading';
 
     /**
      * @var int
@@ -56,14 +62,15 @@ class Transaction
     private $project;
 
     /**
-     * @var GitProject
+     * @var SellOffer
      *
-     * @ORM\ManyToOne(targetEntity="ProjectParticipation")
+     * @ORM\ManyToOne(targetEntity="SellOffer")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="project_participation_id", referencedColumnName="id", nullable=true)
+     *   @ORM\JoinColumn(name="sell_offer_id", referencedColumnName="id", nullable=true)
      * })
+     * @Assert\NotNull(groups={"purchase"})
      */
-    private $projectParticipation;
+    private $sellOffer;
 
     /**
      * @var float
@@ -71,8 +78,9 @@ class Transaction
      * @ORM\Column(name="nb_tokens", type="decimal", precision=8, scale=2, nullable=false)
      * @Assert\NotBlank()
      * @Assert\Type("numeric")
+     * @Assert\NotNull(groups={"purchase"})
      */
-    private $nbTokens;
+    private $nbTokens = 0;
 
     /**
      * @var float
@@ -81,7 +89,7 @@ class Transaction
      * @Assert\NotBlank()
      * @Assert\Type("numeric")
      */
-    private $nbSdg;
+    private $nbSdg = 0;
 
     /**
      * @var string
@@ -90,6 +98,30 @@ class Transaction
      * @Assert\NotBlank()
      */
     private $transactionLabel;
+
+    /**
+     * Check integrity with sell offer.
+     *
+     * @ORM\PrePersist
+     */
+    public function sellOfferPersist()
+    {
+        if ($this->sellOffer) {
+            if (!$this->toUser) {
+                throw new Exception('There is no user se to receive the tokens');
+            }
+
+            if ($this->sellOffer->getOfferExpiresAtUtcDate() <= new DateTime()) {
+                throw new Exception('The sell offer is expired and you can\'t buy them anymore');
+            }
+
+            $this->transactionLabel = self::LABEL_TRADING;
+            $this->fromUser = $this->sellOffer->getSeller();
+            $this->project = $this->sellOffer->getProject();
+            $this->nbTokens = abs($this->nbTokens);
+            $this->nbSdg = -1 * $this->nbTokens * $this->sellOffer->getSellPricePerToken();
+        }
+    }
 
     public function getId(): ? int
     {
@@ -217,30 +249,6 @@ class Transaction
     }
 
     /**
-     * Get the value of projectParticipation.
-     *
-     * @return GitProject
-     */
-    public function getProjectParticipation()
-    {
-        return $this->projectParticipation;
-    }
-
-    /**
-     * Set the value of projectParticipation.
-     *
-     * @param GitProject $projectParticipation
-     *
-     * @return self
-     */
-    public function setProjectParticipation(GitProject $projectParticipation)
-    {
-        $this->projectParticipation = $projectParticipation;
-
-        return $this;
-    }
-
-    /**
      * Get the value of transactionLabel.
      *
      * @return string
@@ -260,6 +268,30 @@ class Transaction
     public function setTransactionLabel(string $transactionLabel)
     {
         $this->transactionLabel = $transactionLabel;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of sellOffer.
+     *
+     * @return SellOffer
+     */
+    public function getSellOffer(): ? SellOffer
+    {
+        return $this->sellOffer;
+    }
+
+    /**
+     * Set the value of sellOffer.
+     *
+     * @param SellOffer $sellOffer
+     *
+     * @return self
+     */
+    public function setSellOffer(SellOffer $sellOffer): self
+    {
+        $this->sellOffer = $sellOffer;
 
         return $this;
     }

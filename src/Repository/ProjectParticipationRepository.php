@@ -27,4 +27,15 @@ class ProjectParticipationRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
+
+    public function findProjectParticipationToUpdate()
+    {
+        return $this
+            ->createQueryBuilder('pp')
+            ->select('pp, t')
+            ->leftJoin('pp.transaction', 't')
+            ->where('t.toUser IS NULL')
+            ->getQuery()
+            ->getResult();
+    }
 }
