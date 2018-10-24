@@ -93,6 +93,11 @@ class GitHubController extends Controller
             $dbUser->setName($apiUser->getName() ? $apiUser->getName() : 'None');
             $dbUser->setGithubId($apiUser->getId());
             $dbUser->setEmail($this->getPrimaryEmail($accessToken));
+
+            if (!$dbUser->getEmail()) {
+                throw new \Exception('Unable to retrieve your email address from Github');
+            }
+
             $dbUser->setUsername($apiUser->getNickname());
             $dbUser->setTimezone('Europe/Paris');
             $em->persist($dbUser);
@@ -103,6 +108,8 @@ class GitHubController extends Controller
                 ->setNbSdg(200)
                 ->setTransactionLabel(Transaction::SUBSCRIPTION_SDG_CREDIT);
             $em->persist($sdgOffer);
+        } else {
+            $dbUser->setEmail($this->getPrimaryEmail($accessToken));
         }
         $dbUser->setAccessToken($accessToken);
         $em->persist($dbUser);
@@ -124,6 +131,6 @@ class GitHubController extends Controller
             return $email['primary'] === true;
         });
 
-        return $email[0]['email'];
+        return array_pop($email)['email'];
     }
 }
