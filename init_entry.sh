@@ -18,8 +18,8 @@ if [ ! -e config/jwt/public.pem ] ; then
 fi
 
 ## Set access for specific folders
-chown apache:apache config/jwt/* var
-chmod 750 config/jwt/private.pem var
+chown -R www-data:www-data config/jwt/* var
+chmod -R 750 config/jwt/private.pem var
 
 ## Do all migrations for now (database must exist already even if empty)
 php bin/console doctrine:migrations:migrate -q
