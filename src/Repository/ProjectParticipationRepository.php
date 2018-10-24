@@ -22,7 +22,9 @@ class ProjectParticipationRepository extends ServiceEntityRepository
         }
 
         if ($user) {
-            $qb->where('pp.user = :user')->setParameter('user', $user);
+            $qb->leftJoin('pp.transaction', 't');
+            $qb->leftJoin('t.toUser', 'toUser');
+            $qb->where('toUser.id = :user')->setParameter('user', $user);
         }
 
         return $qb->getQuery()->getResult();
