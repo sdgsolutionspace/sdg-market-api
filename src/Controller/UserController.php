@@ -149,22 +149,6 @@ class UserController extends FOSRestController implements ClassResourceInterface
     }
 
     /**
-     * @Security("has_role('ROLE_ADMIN')")
-     *
-     * @param User $user
-     *
-     * @return array
-     */
-    public function deleteAction(User $user)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $em->remove($user);
-        $em->flush();
-
-        return ['success' => 'OK'];
-    }
-
-    /**
      * @Get("/user/refresh-token")
      *
      * @return array

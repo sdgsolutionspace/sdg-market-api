@@ -90,7 +90,7 @@ class GitHubController extends Controller
         $dbUser = $em->getRepository(User::class)->findOneBy(['githubId' => $apiUser->getId()]);
         if ($dbUser === null) {
             $dbUser = new User();
-            $dbUser->setName($apiUser->getName());
+            $dbUser->setName($apiUser->getName() ? $apiUser->getName() : 'None');
             $dbUser->setGithubId($apiUser->getId());
             $dbUser->setEmail($this->getPrimaryEmail($accessToken));
             $dbUser->setUsername($apiUser->getNickname());

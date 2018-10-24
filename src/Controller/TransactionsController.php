@@ -6,8 +6,9 @@ use App\Entity\Transaction;
 use App\Form\Type\TransactionType;
 use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Controller\FOSRestController;
-use FOS\RestBundle\Controller\Annotations\RouteResource;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
+use FOS\RestBundle\Controller\Annotations\RouteResource;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 /**
  * @RouteResource("Transaction")
@@ -42,8 +43,10 @@ class TransactionsController extends FOSRestController
     /**
      * Create a new Transaction entry.
      *
+     * @Security("has_role('ROLE_ADMIN')")
      *
      * @param Request $request
+     *
      * @return Transaction|\Symfony\Component\HttpFoundation\Response
      */
     public function postAction(Request $request)
@@ -69,9 +72,11 @@ class TransactionsController extends FOSRestController
     /**
      * Create a new Transaction entry.
      *
+     * @Security("has_role('ROLE_ADMIN')")
      *
      * @param Transaction $transaction
-     * @param Request $request
+     * @param Request     $request
+     *
      * @return Transaction|\Symfony\Component\HttpFoundation\Response
      */
     public function putAction(Transaction $transaction, Request $request)
@@ -91,14 +96,5 @@ class TransactionsController extends FOSRestController
         $em->flush();
 
         return $transaction;
-    }
-
-    public function deleteAction(Transaction $transaction)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $em->remove($transaction);
-        $em->flush();
-
-        return ['success' => true];
     }
 }

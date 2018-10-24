@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
 use FOS\RestBundle\Controller\Annotations\RouteResource;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 /**
  * @RouteResource("git-project")
@@ -61,6 +62,7 @@ class GitProjectController extends FOSRestController
     /**
      * Create a new gitProject entry.
      *
+     * @Security("has_role('ROLE_ADMIN')")
      *
      * @param Request $request
      *
@@ -89,6 +91,7 @@ class GitProjectController extends FOSRestController
     /**
      * Create a new gitProject entry.
      *
+     * @Security("has_role('ROLE_ADMIN')")
      *
      * @param GitProject $gitProject
      * @param Request    $request
@@ -114,6 +117,13 @@ class GitProjectController extends FOSRestController
         return $gitProject;
     }
 
+    /**
+     * Remove a project.
+     *
+     * @Security("has_role('ROLE_ADMIN')")
+     *
+     * @param GitProject $gitProject
+     */
     public function deleteAction(GitProject $gitProject)
     {
         $em = $this->getDoctrine()->getManager();

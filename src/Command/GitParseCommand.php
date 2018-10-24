@@ -73,7 +73,9 @@ class GitParseCommand extends Command
 
         $io->title('Parsing the git commits');
 
-        $gitProjects = $this->entityManager->getRepository('App:GitProject')->findAll();
+        $gitProjects = $this->entityManager->getRepository('App:GitProject')->findBy([
+            'active' => true,
+        ]);
 
         // Looping all existing git project
         foreach ($gitProjects as $gitProject) {
@@ -87,7 +89,7 @@ class GitParseCommand extends Command
             }
 
             // Get all the commit on this project
-            $commits = $this->githubClient->api('repo')->commits()->all($gitParams['username'], $gitParams['project'], array('sha' => 'master'));
+            $commits = $this->githubClient->api('repo')->commits()->all($gitParams['username'], $gitParams['project'], array('sha' => 'master', 'per_page' => 1000));
 
             // Loop all the commits of the project
             foreach ($commits as $commit) {
