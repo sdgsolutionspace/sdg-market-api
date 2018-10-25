@@ -104,7 +104,7 @@ class GitParseCommand extends Command
                 $nbTokens = $this->getTokens($gitProject, $changes['total-levenstein']);
 
                 // Display calculated value in the console
-                $io->note(sprintf('=> Levenstein value for user %s is %s. Granting him %s tokens', $changes['total-levenstein'], $commitData['committer']['email'], $nbTokens));
+                $io->note(sprintf('=> Levenstein value for user %s is %s. Granting him %s tokens', $commitData['committer']['email'], $changes['total-levenstein'], $nbTokens));
 
                 // Add the contribution in the DB if the SHA does not exist yet
                 $tokensGenerated = $this->grantUserTokens($gitProject, $commitData['committer']['email'], $commitData['committer']['username'], $commitData['sha'], $commitData['commit_date'], $nbTokens);
