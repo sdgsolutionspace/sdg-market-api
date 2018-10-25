@@ -1,6 +1,7 @@
 #!/bin/bash
 
 pushd /var/www/html
+args="$@"
 
 ## Replace all variable in config file
 sed -i "s|DATABASE_URL.*|DATABASE_URL=mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@${MYSQL_HOST}:${MYSQL_PORT}/${MYSQL_DB}|g" .env
@@ -10,6 +11,10 @@ sed -i "s|OAUTH_GITHUB_CLIENT_SECRET.*|OAUTH_GITHUB_CLIENT_SECRET=${GITHUB_OAUTH
 sed -i "s|GITHUB_PARSER_LOGIN.*|GITHUB_PARSER_LOGIN=${GITHUB_PARSER_LOGIN}|g" .env
 sed -i "s|GITHUB_PARSER_PASSWORD.*|GITHUB_PARSER_PASSWORD=${GITHUB_PARSER_PASSWORD}|g" .env
 
+if [ ! -z "$args" ] ; then
+  php bin/console "$args"
+  exit
+fi
 
 ## We need to configure JWT if they didn't exist already
 if [ ! -e config/jwt/public.pem ] ; then
