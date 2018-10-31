@@ -18,6 +18,7 @@ security:
 
     access_control:
         - { path: ^/api/v1/connect/github/check, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: [GET] }
+        - { path: ^/api/doc, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: [GET] }
         - { path: ^/api/v1/sell-offers, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: [GET] }
         - { path: ^/api/v1/git-projects, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: [GET] }
         - { path: ^/api/v1/purchase-offer, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: [GET] }

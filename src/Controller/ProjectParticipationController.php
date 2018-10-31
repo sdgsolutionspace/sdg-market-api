@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use Swagger\Annotations as SWG;
 use App\Entity\ProjectParticipation;
 use FOS\RestBundle\Request\ParamFetcher;
+use Nelmio\ApiDocBundle\Annotation\Model;
 use App\Form\Type\ProjectParticipationType;
 use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Controller\FOSRestController;
@@ -19,10 +21,20 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class ProjectParticipationController extends FOSRestController
 {
     /**
-     * Get all projects.
+     * Get all contributions.
      *
      * @QueryParam(name="project", requirements="\d+", allowBlank=true, description="Project for which getting the participations")
      * @QueryParam(name="user", requirements="\d+", allowBlank=true, description="User for which getting the participations")
+     *
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Return the list of contributions",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=ProjectParticipation::class))
+     *     )
+     * )
      *
      * @return object
      */
@@ -37,9 +49,15 @@ class ProjectParticipationController extends FOSRestController
     }
 
     /**
-     * Get single user by id.
+     * Get single contribution by id.
      *
      * @param ProjectParticipation $contribution
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Return contribution corresponding to the ID",
+     *     @Model(type=ProjectParticipation::class)
+     * )
      *
      * @return null|object
      */
@@ -112,6 +130,11 @@ class ProjectParticipationController extends FOSRestController
      * Remove a contribution.
      *
      * @Security("has_role('ROLE_ADMIN')")
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Return a success array",
+     * )
      *
      * @param ProjectParticipation $contribution
      */

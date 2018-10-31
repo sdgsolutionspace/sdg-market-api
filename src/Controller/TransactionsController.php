@@ -17,7 +17,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class TransactionsController extends FOSRestController
 {
     /**
-     * Get all projects.
+     * Get all transactions.
      *
      * @return object
      */

@@ -11,6 +11,7 @@
         "knplabs/github-api": "^2.10",
         "league/oauth2-github": "^2.0",
         "lexik/jwt-authentication-bundle": "^2.5",
+        "nelmio/api-doc-bundle": "^3.3",
         "nelmio/cors-bundle": "^1.5",
         "php-http/guzzle6-adapter": "^1.1",
         "sensio/framework-extra-bundle": "^5.2",
