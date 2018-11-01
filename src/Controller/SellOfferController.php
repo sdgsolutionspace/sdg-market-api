@@ -7,8 +7,10 @@ use DateInterval;
 use App\Entity\User;
 use App\Entity\SellOffer;
 use App\Entity\Transaction;
+use Swagger\Annotations as SWG;
 use App\Form\Type\SellOfferType;
 use FOS\RestBundle\Request\ParamFetcher;
+use Nelmio\ApiDocBundle\Annotation\Model;
 use App\Form\Type\TransactionBuyTokenType;
 use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Controller\FOSRestController;
@@ -23,7 +25,24 @@ use FOS\RestBundle\Controller\Annotations\QueryParam;
 class SellOfferController extends FOSRestController implements ClassResourceInterface
 {
     /**
-     * Get all projects.
+     * Get all selling offers.
+     *
+     * @SWG\Parameter(
+     *     name="Authorization",
+     *     in="header",
+     *     description="JWT token for authentication Bearer: Your_Token",
+     *     required=true,
+     *     type="string"
+     * ),
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Return the list of selling offer",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=SellOffer::class))
+     *     )
+     * )
      *
      * @QueryParam(name="project", requirements="\d+", allowBlank=true, description="Project for which getting the offers")
      * @QueryParam(name="include_expired", requirements="^(0|1)$", default="0", strict=true, allowBlank=true, description="Project for which getting the offers")
@@ -45,6 +64,20 @@ class SellOfferController extends FOSRestController implements ClassResourceInte
      *
      * @param SellOffer $sellOffer
      *
+     * @SWG\Parameter(
+     *     name="Authorization",
+     *     in="header",
+     *     description="JWT token for authentication Bearer: Your_Token",
+     *     required=true,
+     *     type="string"
+     * ),
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Return the selling offer corresponding to the id",
+     *     @Model(type=SellOffer::class)
+     * )
+     *
      * @return null|object
      */
     public function getAction(SellOffer $sellOffer)
@@ -52,6 +85,33 @@ class SellOfferController extends FOSRestController implements ClassResourceInte
         return $sellOffer;
     }
 
+    /**
+     * Buy part of an offer.
+     *
+     * @SWG\Parameter(
+     *     name="Authorization",
+     *     in="header",
+     *     description="JWT token for authentication Bearer: Your_Token",
+     *     required=true,
+     *     type="string"
+     * ),
+     *
+     * @SWG\Parameter(
+     *    name="Query body",
+     *    in="body",
+     *    description="Reflect the buying proposition",
+     *    @Model(type=TransactionBuyTokenType::class)
+     * )
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Return the result of the transaction",
+     *     @Model(type=Transaction::class)
+     * )
+     *
+     * @param Request   $request
+     * @param SellOffer $sellOffer
+     */
     public function putBuyAction(Request $request, SellOffer $sellOffer)
     {
         $em = $this->getDoctrine()->getManager();
@@ -78,8 +138,28 @@ class SellOfferController extends FOSRestController implements ClassResourceInte
     }
 
     /**
-     * Create a new SellOffer entry.
+     * Create a new offer entry.
      *
+     * @SWG\Parameter(
+     *     name="Authorization",
+     *     in="header",
+     *     description="JWT token for authentication Bearer: Your_Token",
+     *     required=true,
+     *     type="string"
+     * ),
+     *
+     * @SWG\Parameter(
+     *    name="Query body",
+     *    in="body",
+     *    description="Reflect the offer to make",
+     *    @Model(type=SellOfferType::class)
+     * )
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Return the sell offer saved",
+     *     @Model(type=SellOffer::class)
+     * )
      *
      * @param Request $request
      *
@@ -116,8 +196,28 @@ class SellOfferController extends FOSRestController implements ClassResourceInte
     }
 
     /**
-     * Create a new SellOffer entry.
+     * Update SellOffer entry.
      *
+     * @SWG\Parameter(
+     *     name="Authorization",
+     *     in="header",
+     *     description="JWT token for authentication Bearer: Your_Token",
+     *     required=true,
+     *     type="string"
+     * ),
+     *
+     * @SWG\Parameter(
+     *    name="Query body",
+     *    in="body",
+     *    description="Reflect the new data of the offer",
+     *    @Model(type=SellOfferType::class)
+     * )
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Return the updated offer",
+     *     @Model(type=Transaction::class)
+     * )
      *
      * @param SellOffer $sellOffer
      * @param Request   $request
@@ -143,6 +243,22 @@ class SellOfferController extends FOSRestController implements ClassResourceInte
         return $sellOffer;
     }
 
+    /**
+     * Delete an offer.
+     *
+     * @SWG\Parameter(
+     *     name="Authorization",
+     *     in="header",
+     *     description="JWT token for authentication Bearer: Your_Token",
+     *     required=true,
+     *     type="string"
+     * )
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Return a success array",
+     * )
+     */
     public function deleteAction(SellOffer $sellOffer)
     {
         $em = $this->getDoctrine()->getManager();
