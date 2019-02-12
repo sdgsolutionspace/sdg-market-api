@@ -11,10 +11,10 @@ class ProjectControllerTest extends TestCase
 {
     private $client;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
-        $this->client = new \GuzzleHttp\Client(['base_uri' => "http://127.0.0.1:8000/api/v1/"]);
+        $this->client = new Client(['base_uri' => "http://127.0.0.1:8000/api/v1/"]);
     }
 
     public function testPOST()
@@ -25,7 +25,7 @@ class ProjectControllerTest extends TestCase
             'git_project_address' => 'https://github.com/rohankoid/best-resume-ever'
         );
 
-        $response = $this->client->post('projects', ['body' => json_encode($data)]);
+        $response = $this->client->post('git-projects', ['body' => json_encode($data)]);
 
         $this->assertEquals(201, $response->getStatusCode());
         $data = json_decode($response->getBody(true), true);
@@ -34,7 +34,7 @@ class ProjectControllerTest extends TestCase
 
     public function testGetAll()
     {
-        $response = $this->client->get('projects');
+        $response = $this->client->get('git-projects');
         $this->assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getBody(true), true);
         $this->assertGreaterThan(0, count($data));
@@ -49,7 +49,7 @@ class ProjectControllerTest extends TestCase
             'git_project_address' => 'https://github.com/rohankoid/best-resume-ever'
         );
 
-        $response = $this->client->post('projects', ['body' => json_encode($data)]);
+        $response = $this->client->post('git-projects', ['body' => json_encode($data)]);
 
         $this->assertEquals(201, $response->getStatusCode());
         $data = json_decode($response->getBody(true), true);
