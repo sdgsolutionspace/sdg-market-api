@@ -32,7 +32,8 @@
         "symfony/maker-bundle": "^1.7",
         "symfony/phpunit-bridge": "*",
         "symfony/var-dumper": "*",
-        "symfony/web-server-bundle": "*"
+        "symfony/web-server-bundle": "*",
+        "phpunit/phpunit": "*"
     },
     "config": {
         "preferred-install": {
