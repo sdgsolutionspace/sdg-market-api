@@ -1,5 +1,6 @@
-
 ###> symfony/framework-bundle ###
+*.cache
+*.iml
 /.env
 .env.test
 /public/bundles/
