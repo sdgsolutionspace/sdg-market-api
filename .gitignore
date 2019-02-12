@@ -1,10 +1,10 @@
 
 ###> symfony/framework-bundle ###
 /.env
+.env.test
 /public/bundles/
 /var/
 /vendor/
-.idea/
 ###< symfony/framework-bundle ###
 
 ###> symfony/phpunit-bridge ###
@@ -13,5 +13,16 @@
 ###< symfony/phpunit-bridge ###
 
 ###> lexik/jwt-authentication-bundle ###
-/config/jwt/*.pem
+/config/jwt/*.pem*
 ###< lexik/jwt-authentication-bundle ###
+
+###> phpunit/phpunit ###
+/phpunit.xml
+tests/*/.phpunit.result.cache
+bootstrap.php
+###< phpunit/phpunit ###
+
+###>intellij config files ###
+.idea/
+*.iml
+###<intellij config###
