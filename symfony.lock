@@ -467,6 +467,9 @@
     "symfony/stopwatch": {
         "version": "v4.1.11"
     },
+    "symfony/stopwatch": {
+        "version": "v4.1.11"
+    },
     "symfony/templating": {
         "version": "v4.1.6"
     },
