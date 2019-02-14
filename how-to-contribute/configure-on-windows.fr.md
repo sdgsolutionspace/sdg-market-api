@@ -151,12 +151,13 @@ Ensuite vous devez installer les dépendances composer avec la commande suivante
 
 ```bash
 composer install
-php bin/console -v
-Symfony 4.1.6 (kernel: src, env: dev, debug: true)
+php bin/console -V
 ```
 
-Si tout est ok, vous ne devez pas avoir d'erreur, et la version de symfony s'affiche, comme sur l'exemple ci-dessus.
-
+Si tout est ok, vous ne devez pas avoir d'erreur, et la version de symfony s'affiche, comme sur l'exemple ci-dessous.
+```bash
+Symfony 4.1.11 (kernel: src, env: dev, debug: true)
+```
 Vous n'avez plus qu'à initialiser la base de données avec les commandes suivantes :
 
 ```bash
