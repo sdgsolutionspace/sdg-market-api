@@ -91,7 +91,7 @@ class GitParseCommand extends Command
             }
 
             // Get all the commit on this project
-            $commits = $this->githubClient->api('repo')->commits()->all($gitParams['username'], $gitParams['project'], array('sha' => 'master', 'per_page' => 1000));
+            $commits = $this->githubClient->api('repo')->commits()->all($gitParams['username'], $gitParams['project'], array('per_page' => 1000));
 
             // Loop all the commits of the project
             foreach ($commits as $commit) {
@@ -272,12 +272,13 @@ class GitParseCommand extends Command
         return abs($levenstein);
     }
 
+    //public for tests
     /**
      * Get username and project name from the github url.
      *
      * @param string $url
      */
-    protected function parseGithubUrl($url)
+    public function parseGithubUrl($url)
     {
         preg_match("#//github.com/([a-z0-9\-\._]+)/([a-z0-9\-\._]+)+#i", $url, $matches);
         if (count($matches) === 3) {
