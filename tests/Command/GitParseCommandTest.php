@@ -9,12 +9,10 @@
 namespace App\Tests\Command;
 
 use App\Command\GitParseCommand;
-use Doctrine\ORM\EntityManager;
 use Github\Client;
-use Http\Discovery\Exception\NotFoundException;
 use PHPUnit\Framework\TestCase;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-//Mocking the entity manager (thing that connectst to db) for test
+use ReflectionClass;
+//Mocking the entity manager (thing that connects to db) for test
 use Doctrine\ORM\EntityManagerInterface;
 
 class GitParseCommandTest extends TestCase
@@ -23,6 +21,13 @@ class GitParseCommandTest extends TestCase
   private $client;
   private $cmd;
   private $ghClient;
+
+  protected static function getMethod($name) {
+    $class = new ReflectionClass('App\Command\GitParseCommand');
+    $method = $class->getMethod($name);
+    $method->setAccessible(true);
+    return $method;
+  }
 
   protected function setUp(): void
   {
@@ -47,7 +52,8 @@ class GitParseCommandTest extends TestCase
 
   public function testGithucClientWithoutMaster()
   {
-    $response = $this->cmd->parseGithubUrl('http://github.com/xoeseko/sdg.market');
+    $parser = self::getMethod('parseGithubUrl');
+    $response = $parser->invokeArgs($this->cmd, ['http://github.com/xoeseko/sdg.market']);
     $commits = $this->ghClient->api('repo')->commits()->all($response['username'], $response['project'], array('per_page' => 1000));
 
     $this->assertNotEmpty($commits);
