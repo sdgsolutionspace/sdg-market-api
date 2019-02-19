@@ -278,7 +278,7 @@ class GitParseCommand extends Command
      *
      * @param string $url
      */
-    public function parseGithubUrl($url)
+    protected function parseGithubUrl($url)
     {
         preg_match("#//github.com/([a-z0-9\-\._]+)/([a-z0-9\-\._]+)+#i", $url, $matches);
         if (count($matches) === 3) {
