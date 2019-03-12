@@ -8,6 +8,7 @@ use App\Form\Type\UserType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations\Patch;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
@@ -69,6 +70,49 @@ class UserController extends FOSRestController implements ClassResourceInterface
     }
 
     /**
+     * @return mixed
+     * @Security("has_role('ROLE_ADMIN')")
+     * @Patch("/user/{username}/promote")
+     */
+    public function patchPromoteAction($username)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $user = $em->getRepository(User::class)->findOneBy(['username' => $username]);
+
+        if (!$user) {
+            return null;
+        }
+
+        $user->addRole('ROLE_ADMIN');
+        $em->persist($user);
+        $em->flush();
+
+        return $em->getRepository('App:User')->findUserWithSold($user);
+    }
+
+    /**
+     * @return mixed
+     * @Security("has_role('ROLE_ADMIN')")
+     * @Patch("/user/{username}/demote")
+     */
+    public function patchDemoteAction($username)
+    {
+        $em = $this->getDoctrine()->getManager();
+        /** @var User $user */
+        $user = $em->getRepository(User::class)->findOneBy(['username' => $username]);
+
+        if (!$user) {
+            return null;
+        }
+
+        $user->removeRole('ROLE_ADMIN');
+        $em->persist($user);
+        $em->flush();
+
+        return $em->getRepository('App:User')->findUserWithSold($user);
+    }
+
+    /**
      * Blacklist user.
      *
      * @Security("has_role('ROLE_ADMIN')")
@@ -80,7 +124,7 @@ class UserController extends FOSRestController implements ClassResourceInterface
     public function blacklistAction(User $user)
     {
         $em = $this->getDoctrine()->getManager();
-        $user->setBlackListed(1);
+        $user->setBlackListed(true);
         $em->flush();
 
         return $user;
