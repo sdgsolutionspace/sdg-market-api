@@ -56,7 +56,7 @@ RUN mv .env.dist .env
 #RUN chown -R www-data /var/www/
 RUN mkdir -p /var/www/html/var && chmod -R 777 /var/www/html/var
 RUN mkdir -p /var/www/html/.composer && chmod -R 777 /var/www/html/.composer
-RUN mkdir -p /var/www/html/config/jwt && chmod 777 /var/www/html/config/jwt
+RUN mkdir -p /var/www/html/config/jwt && chmod -R 777 /var/www/html/config/jwt
 
 ## Install composer dependancies
 RUN composer install
