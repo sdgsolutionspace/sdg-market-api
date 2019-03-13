@@ -1,0 +1,52 @@
+version: '3'
+
+services:
+  cron:
+    image: sdgsolspace/sdg-market-cron
+    environment:
+      MYSQL_HOST: db
+      MYSQL_DB: ${MYSQL_DB}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      GITHUB_PARSER_LOGIN: ${GITHUB_PARSER_LOGIN}
+      GITHUB_PARSER_PASSWORD: ${GITHUB_PARSER_PASSWORD}
+      GITHUB_OAUTH_CLIENT_ID: ${GITHUB_OAUTH_CLIENT_ID}
+      GITHUB_OAUTH_CLIENT_SECRET: ${GITHUB_OAUTH_CLIENT_SECRET}
+    stdin_open: true
+    tty: true
+
+  sdg-market-api:
+    image: sdgsolspace/sdg-market-api
+    environment:
+      MYSQL_HOST: db
+      MYSQL_DB: ${MYSQL_DB}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      GITHUB_PARSER_LOGIN: ${GITHUB_PARSER_LOGIN}
+      GITHUB_PARSER_PASSWORD: ${GITHUB_PARSER_PASSWORD}
+      GITHUB_OAUTH_CLIENT_ID: ${GITHUB_OAUTH_CLIENT_ID}
+      GITHUB_OAUTH_CLIENT_SECRET: ${GITHUB_OAUTH_CLIENT_SECRET}
+    stdin_open: true
+    tty: true
+
+  sdg-market-frontend:
+    image: sdgsolspace/sdg-market-frontend
+    environment:
+      GITHUB_REDIRECT_URI: ${GITHUB_REDIRECT_URI}
+      BASE_URL: ${BASE_URL}
+      BASE_API_URL: ${BASE_API_URL}
+      GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID}
+    stdin_open: true
+    tty: true
+
+  db:
+    image: mariadb:10.3
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DB}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: sdg-market
+      MYSQL_USER: ${MYSQL_USER}
+    stdin_open: true
+    volumes:
+    - ${DB_VOLUME_PATH}:/var/lib/mysql
+    tty: true
