@@ -23,7 +23,8 @@
         "symfony/orm-pack": "^1.0",
         "symfony/twig-bundle": "*",
         "symfony/validator": "*",
-        "symfony/yaml": "*"
+        "symfony/yaml": "*",
+	"symfony/maker-bundle": "^1.7"
     },
     "require-dev": {
         "eightpoints/guzzle-bundle": "^7.3",
