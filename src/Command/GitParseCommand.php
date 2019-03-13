@@ -73,6 +73,8 @@ class GitParseCommand extends Command
 
         $io->title('Parsing the git commits');
 
+        $io->writeln(sprintf('Using account %s %s', getenv('GITHUB_PARSER_LOGIN'), str_repeat('*', strlen(getenv('GITHUB_PARSER_PASSWORD')))));
+
         $gitProjects = $this->entityManager->getRepository('App:GitProject')->findBy([
             'active' => true,
         ]);
