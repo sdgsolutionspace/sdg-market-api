@@ -49,7 +49,7 @@ RUN rm /var/www/html/*
 COPY . /var/www/html
 RUN mv .env.dist .env
 RUN chown -R www-data /var/www/
-RUN chmod 777 /var/www/html/var/cache/prod/
+#RUN chmod 777 /var/www/html/var/cache/prod/
 
 ## Install composer dependancies
 #USER www-data
