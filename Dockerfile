@@ -58,6 +58,7 @@ RUN mkdir -p /var/www/html/var && chmod -R 777 /var/www/html/var
 RUN mkdir -p /var/www/html/.composer && chmod -R 777 /var/www/html/.composer
 RUN mkdir -p /var/www/html/config/jwt && chmod -R 777 /var/www/html/config/jwt
 
+
 ## Install composer dependancies
 RUN composer install
 
