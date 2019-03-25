@@ -248,7 +248,7 @@ class GitParseCommand extends Command
      */
     protected function levensteinPatch($patch)
     {
-        // If not change in the current file, levenstein value is 0
+        // If not change in the current file, levenshtein value is 0
         if (empty($patch)) {
             return 0;
         }
@@ -259,11 +259,11 @@ class GitParseCommand extends Command
 
         // Parsing change, line per line
         foreach ($patchArray as $line) {
-            // If the line starts with a "+", we increment the levensteing value by the number of characters (except the +)
+            // If the line starts with a "+", we increment the levenshtein value by the number of characters (except the +)
             if (preg_match('/^\+/', $line)) {
                 $levenstein += strlen($line) - 1;
             }
-            // If the line starts with a "-", we decrease the levensteing value by the number of characters (except the -)
+            // If the line starts with a "-", we decrease the levenshtein value by the number of characters (except the -)
             if (preg_match('/^\-/', $line)) {
                 $levenstein -= strlen($line) - 1;
             }
