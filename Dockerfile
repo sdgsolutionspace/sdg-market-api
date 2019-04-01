@@ -51,7 +51,7 @@ RUN curl --silent --show-error https://getcomposer.org/installer | php \
 
 ## Copy the entire application
 RUN rm /var/www/html/*
-COPY . /var/www/html
+COPY . ./
 RUN mv .env.dist .env
 #RUN chown -R www-data /var/www/
 RUN mkdir -p /var/www/html/var && chmod -R 777 /var/www/html/var
