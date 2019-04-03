@@ -22,6 +22,7 @@ ENV DEBIAN_FRONTEND noninteractive
 ## Let refresh first the Debian repo
 RUN apt-get update \
     && apt-get -y install wget \
+    curl \
     gnupg \
     apt-transport-https \
     openssl
@@ -34,25 +35,30 @@ RUN echo "deb https://packages.sury.org/php stretch main" > /etc/apt/sources.lis
 RUN apt-get update \
     && apt-get -y install \
     libapache2-mod-php${PHP_VER} \
-    composer \
+#    composer \ # Disable due outdated version in debian
     php${PHP_VER}-mbstring \
     php${PHP_VER}-dom \
     php${PHP_VER}-xml \
     php${PHP_VER}-zip \
     php${PHP_VER}-curl \
     php${PHP_VER}-json \
-    php${PHP_VER}-mysql
+    php${PHP_VER}-mysql \
+    mysql-client
 
+# Install manually composer
+RUN curl --silent --show-error https://getcomposer.org/installer | php \
+    && mv composer.phar /usr/local/bin/composer
 
 ## Copy the entire application
 RUN rm /var/www/html/*
 COPY . /var/www/html
 RUN mv .env.dist .env
-RUN chown -R www-data /var/www/
-#RUN chmod 777 /var/www/html/var/cache/prod/
+#RUN chown -R www-data /var/www/
+RUN mkdir -p /var/www/html/var && chmod -R 777 /var/www/html/var
+RUN mkdir -p /var/www/html/.composer && chmod -R 777 /var/www/html/.composer
+RUN mkdir -p /var/www/html/config/jwt && chmod 777 /var/www/html/config/jwt
 
 ## Install composer dependancies
-#USER www-data
 RUN composer install
 
 ## Define data location for JWT keys
@@ -72,4 +78,8 @@ EXPOSE 80
 ## Prepare the proper init script
 COPY init_entry.sh /init_entry.sh
 RUN chmod +x /init_entry.sh
+
+## Finally define to use apache user
+#USER www-data
+
 ENTRYPOINT [ "/init_entry.sh" ]
