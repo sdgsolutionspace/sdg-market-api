@@ -18,6 +18,14 @@ La première étape sera de simplement configurer le fichier .env présent dans 
 * BASE_API_URL : URL de l'API ou est installé SDG Market (e.g. http://url/api/v1)
 * DB_VOLUME_PATH : chemin local où sera stocké la base de donnée.
 
-Une fois modifié, il suffira d'avoir Docker et Docker composer d'activé, puis de lancer la commande suivante toujours depuis le dossier how-to-contribute :
+Une fois modifié, il suffira d'avoir Docker et Docker composer installé sur votre système, puis de lancer la commande suivante toujours depuis le dossier how-to-contribute :
 
      docker-composer up
+
+Si vous avez une erreur 500 avec l'API, il est possible que ce soit un problème d'écriture avec le dossier, dans ce cas, entrez dans le container avec la commande :
+
+    docker exec -ti <docker api id> bash
+
+Puis lancez la commande
+
+    chown www-data -R /var/www/html/var
