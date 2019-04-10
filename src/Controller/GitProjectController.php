@@ -79,7 +79,7 @@ class GitProjectController extends FOSRestController
     /**
      * Create a new a gitProject entry.
      *
-     * @Security("has_role('ROLE_ADMIN')")
+     * @Security("has_role('IS_AUTHENTICATED_ANONYMOUSLY')")
      *
      * @param Request $request
      *
