@@ -25,4 +25,3 @@ security:
         - { path: ^/api/v1/sell-offer, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: [GET] }
         - { path: ^/api/v1/contributions, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: [GET] }
         - { path: ^/api/v1/users, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: [GET] }
-        - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
