@@ -102,12 +102,20 @@ class Transaction
     private $transactionLabel;
 
     /**
+     * @var DateTime
+     *
+     * @ORM\Column(name="created_at", type="datetime", nullable=true, options={"default"="CURRENT_TIMESTAMP"})
+     */
+    private $createdAt;
+
+    /**
      * Check integrity with sell offer.
      *
      * @ORM\PrePersist
      */
     public function sellOfferPersist()
     {
+        $this->createdAt = new DateTime();
         if ($this->sellOffer) {
             if (!$this->toUser) {
                 throw new Exception('There is no user se to receive the tokens');
@@ -125,12 +133,12 @@ class Transaction
         }
     }
 
-    public function getId(): ? int
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getMovementType(): ? string
+    public function getMovementType(): ?string
     {
         return $this->movementType;
     }
@@ -147,7 +155,7 @@ class Transaction
      *
      * @return User
      */
-    public function getFromUser(): ? User
+    public function getFromUser(): ?User
     {
         return $this->fromUser;
     }
@@ -171,7 +179,7 @@ class Transaction
      *
      * @return User
      */
-    public function getToUser(): ? User
+    public function getToUser(): ?User
     {
         return $this->toUser;
     }
@@ -238,12 +246,12 @@ class Transaction
         return $this;
     }
 
-    public function getProject(): ? GitProject
+    public function getProject(): ?GitProject
     {
         return $this->project;
     }
 
-    public function setProject(? GitProject $project): self
+    public function setProject(?GitProject $project): self
     {
         $this->project = $project;
 
@@ -279,7 +287,7 @@ class Transaction
      *
      * @return SellOffer
      */
-    public function getSellOffer(): ? SellOffer
+    public function getSellOffer(): ?SellOffer
     {
         return $this->sellOffer;
     }
@@ -294,6 +302,30 @@ class Transaction
     public function setSellOffer(SellOffer $sellOffer): self
     {
         $this->sellOffer = $sellOffer;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of createdAt
+     *
+     * @return  DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set the value of createdAt
+     *
+     * @param  DateTime  $createdAt
+     *
+     * @return  self
+     */
+    public function setCreatedAt(DateTime $createdAt)
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }
