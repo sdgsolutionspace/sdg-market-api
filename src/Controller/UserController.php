@@ -174,7 +174,6 @@ class UserController extends FOSRestController implements ClassResourceInterface
             $em = $this->getDoctrine()->getManager();
             $user->setTimezone('Europe/Berlin');
             $user->setActive(false);
-            $user->setGithubId($gitProject->getId());
             $em->persist($user);
             // Create the SDG offer
             $sdgOffer = new Transaction();

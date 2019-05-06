@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
-  title: My App
-  description: This is an awesome app!
+  title: SDG backend API
+  description: This API allow to store project configuration and provide a token trading system based on project participation
   version: 1.0.0
 paths:
   /api/v1/git-projects:
@@ -67,6 +67,133 @@ paths:
       responses:
         '200':
           description: Return a success array
+  /api/v1/sell-offers:
+    get:
+      summary: Get all selling offers.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: 'JWT token for authentication Bearer: Your_Token'
+          type: string
+        - name: project
+          in: query
+          allowEmptyValue: false
+          required: false
+          description: Project for which getting the offers
+          type: string
+          pattern: \d+
+        - name: include_expired
+          in: query
+          allowEmptyValue: false
+          required: true
+          description: Project for which getting the offers
+          type: string
+          default: '0'
+          pattern: ^(0|1)$
+      responses:
+        '200':
+          description: Return the list of selling offer
+          schema:
+            items:
+              $ref: '#/definitions/SellOffer'
+            type: array
+    post:
+      summary: Create a new offer entry.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: 'JWT token for authentication Bearer: Your_Token'
+          type: string
+        - name: Query body
+          in: body
+          description: Reflect the offer to make
+          schema:
+            $ref: '#/definitions/SellOfferType'
+      responses:
+        '200':
+          description: Return the sell offer saved
+          schema:
+            $ref: '#/definitions/SellOffer'
+  '/api/v1/sell-offers/{sellOffer}':
+    get:
+      summary: Get single user by id.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: 'JWT token for authentication Bearer: Your_Token'
+          type: string
+        - name: sellOffer
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Return the selling offer corresponding to the id
+          schema:
+            $ref: '#/definitions/SellOffer'
+    put:
+      summary: Update SellOffer entry.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: 'JWT token for authentication Bearer: Your_Token'
+          type: string
+        - name: Query body
+          in: body
+          description: Reflect the new data of the offer
+          schema:
+            $ref: '#/definitions/SellOfferType'
+        - name: sellOffer
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Return the updated offer
+          schema:
+            $ref: '#/definitions/Transaction'
+    delete:
+      summary: Delete an offer.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: 'JWT token for authentication Bearer: Your_Token'
+          type: string
+        - name: sellOffer
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Return a success array
+  '/api/v1/sell-offers/{sellOffer}/buy':
+    put:
+      summary: Buy part of an offer.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: 'JWT token for authentication Bearer: Your_Token'
+          type: string
+        - name: Query body
+          in: body
+          description: Reflect the buying proposition
+          schema:
+            $ref: '#/definitions/TransactionBuyTokenType'
+        - name: sellOffer
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Return the result of the transaction
+          schema:
+            $ref: '#/definitions/Transaction'
   /api/v1/contributions:
     get:
       summary: Get all contributions.
@@ -199,6 +326,31 @@ paths:
   /api/v1/transactions:
     get:
       summary: Get all transactions.
+      parameters:
+        - name: project
+          in: query
+          allowEmptyValue: false
+          required: false
+          description: Filter by a specific project id
+          type: string
+          default: ''
+          pattern: \d+
+        - name: from_user
+          in: query
+          allowEmptyValue: false
+          required: false
+          description: Filter by a specific emitter user
+          type: string
+          default: ''
+          pattern: \d+
+        - name: to_user
+          in: query
+          allowEmptyValue: false
+          required: false
+          description: Filter by a specific receiver user
+          type: string
+          default: ''
+          pattern: \d+
       responses:
         default:
           description: ''
@@ -285,73 +437,6 @@ paths:
       responses:
         default:
           description: ''
-  /api/v1/sell-offers:
-    get:
-      summary: Get all projects.
-      parameters:
-        - name: project
-          in: query
-          allowEmptyValue: false
-          required: false
-          description: Project for which getting the offers
-          type: string
-          pattern: \d+
-        - name: include_expired
-          in: query
-          allowEmptyValue: false
-          required: true
-          description: Project for which getting the offers
-          type: string
-          default: '0'
-          pattern: ^(0|1)$
-      responses:
-        default:
-          description: ''
-    post:
-      summary: Create a new SellOffer entry.
-      responses:
-        default:
-          description: ''
-  '/api/v1/sell-offers/{sellOffer}':
-    get:
-      summary: Get single user by id.
-      parameters:
-        - name: sellOffer
-          in: path
-          required: true
-          type: string
-      responses:
-        default:
-          description: ''
-    put:
-      summary: Create a new SellOffer entry.
-      parameters:
-        - name: sellOffer
-          in: path
-          required: true
-          type: string
-      responses:
-        default:
-          description: ''
-    delete:
-      parameters:
-        - name: sellOffer
-          in: path
-          required: true
-          type: string
-      responses:
-        default:
-          description: ''
-  '/api/v1/sell-offers/{sellOffer}/buy':
-    put:
-      parameters:
-        - name: sellOffer
-          in: path
-          required: true
-          type: string
-      responses:
-        default:
-          description: ''
   '/api/v1/exceptions/{exception}/show':
     patch:
       parameters:
@@ -420,6 +505,26 @@ paths:
       responses:
         default:
           description: ''
+  '/api/v1/user/{username}/promote':
+    patch:
+      parameters:
+        - name: username
+          in: path
+          required: true
+          type: string
+      responses:
+        default:
+          description: ''
+  '/api/v1/user/{username}/demote':
+    patch:
+      parameters:
+        - name: username
+          in: path
+          required: true
+          type: string
+      responses:
+        default:
+          description: ''
   /api/doc.json:
     get:
       responses:
@@ -462,31 +567,43 @@ definitions:
       projectAddress:
         type: string
     type: object
-  ProjectParticipation:
+  SellOffer:
     required:
-      - commitId
-      - gitProject
+      - numberOfTokens
+      - sellPricePerToken
+      - project
     properties:
       id:
         type: integer
-      calculation_utc_datetime:
+      number_of_tokens:
+        type: number
+        format: float
+      sell_price_per_token:
+        type: number
+        format: float
+      offer_starts_utc_date:
         type: string
         format: date-time
         pattern: 'Y-m-d H:i:s'
-      commit_date:
+      offer_expires_at_utc_date:
         type: string
         format: date-time
         pattern: 'Y-m-d H:i:s'
-      commit_id:
-        type: string
-      git_project:
+      project:
         $ref: '#/definitions/GitProject'
-      transaction:
-        $ref: '#/definitions/Transaction'
-      committer_email:
+      seller:
+        $ref: '#/definitions/User'
+    type: object
+  TransactionBuyTokenType:
+    required:
+      - nbTokens
+      - sellOffer
+    properties:
+      nbTokens:
+        type: number
+      sellOffer:
         type: string
-      committer_username:
-        type: string
+        format: App\Entity\SellOffer id
     type: object
   Transaction:
     required:
@@ -515,6 +632,57 @@ definitions:
       transaction_label:
         type: string
     type: object
+  SellOfferType:
+    required:
+      - numberOfTokens
+      - sellPricePerToken
+      - offerStartsUtcDate
+      - offerExpiresAtUtcDate
+      - project
+    properties:
+      numberOfTokens:
+        type: number
+      sellPricePerToken:
+        type: number
+      offerStartsUtcDate:
+        type: string
+        format: date-time
+      offerExpiresAtUtcDate:
+        type: string
+        format: date-time
+      project:
+        type: string
+        format: App\Entity\GitProject id
+      seller:
+        type: string
+        format: App\Entity\User id
+    type: object
+  ProjectParticipation:
+    required:
+      - commitId
+      - gitProject
+    properties:
+      id:
+        type: integer
+      calculation_utc_datetime:
+        type: string
+        format: date-time
+        pattern: 'Y-m-d H:i:s'
+      commit_date:
+        type: string
+        format: date-time
+        pattern: 'Y-m-d H:i:s'
+      commit_id:
+        type: string
+      git_project:
+        $ref: '#/definitions/GitProject'
+      transaction:
+        $ref: '#/definitions/Transaction'
+      committer_email:
+        type: string
+      committer_username:
+        type: string
+    type: object
   User:
     properties:
       id:
@@ -534,36 +702,6 @@ definitions:
       roles:
         additionalProperties: true
         type: object
-      access_token:
-        type: string
       black_listed:
         type: boolean
     type: object
-  SellOffer:
-    required:
-      - numberOfTokens
-      - sellPricePerToken
-      - project
-    properties:
-      id:
-        type: integer
-      number_of_tokens:
-        type: number
-        format: float
-      sell_price_per_token:
-        type: number
-        format: float
-      offer_starts_utc_date:
-        type: string
-        format: date-time
-        pattern: 'Y-m-d H:i:s'
-      offer_expires_at_utc_date:
-        type: string
-        format: date-time
-        pattern: 'Y-m-d H:i:s'
-      project:
-        $ref: '#/definitions/GitProject'
-      seller:
-        $ref: '#/definitions/User'
-    type: object
-

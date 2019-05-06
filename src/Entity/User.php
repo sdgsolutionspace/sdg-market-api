@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use JMS\Serializer\Annotation\Exclude;
 
 /**
  * User.
@@ -75,6 +76,7 @@ class User implements UserInterface
      * @var string
      *
      * @ORM\Column(name="access_token", type="string", length=255, nullable=false)
+     * @Exclude
      */
     private $accessToken;
 
@@ -96,7 +98,7 @@ class User implements UserInterface
     /**
      * @return int|null
      */
-    public function getId(): ? int
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -104,7 +106,7 @@ class User implements UserInterface
     /**
      * @return null|string
      */
-    public function getEmail(): ? string
+    public function getEmail(): ?string
     {
         return $this->email;
     }
@@ -114,7 +116,7 @@ class User implements UserInterface
      *
      * @return User
      */
-    public function setEmail(? string $email): self
+    public function setEmail(?string $email): self
     {
         $this->email = $email;
 
@@ -124,7 +126,7 @@ class User implements UserInterface
     /**
      * @return null|string
      */
-    public function getUsername(): ? string
+    public function getUsername(): ?string
     {
         return $this->username;
     }
@@ -144,7 +146,7 @@ class User implements UserInterface
     /**
      * @return null|string
      */
-    public function getGithubId(): ? string
+    public function getGithubId(): ?string
     {
         return $this->githubId;
     }
@@ -164,7 +166,7 @@ class User implements UserInterface
     /**
      * @return null|string
      */
-    public function getTimezone(): ? string
+    public function getTimezone(): ?string
     {
         return $this->timezone;
     }
@@ -184,7 +186,7 @@ class User implements UserInterface
     /**
      * @return bool|null
      */
-    public function getActive(): ? bool
+    public function getActive(): ?bool
     {
         return $this->active;
     }
@@ -204,7 +206,7 @@ class User implements UserInterface
     /**
      * @return bool|null
      */
-    public function getBlackListed(): ? bool
+    public function getBlackListed(): ?bool
     {
         return $this->blackListed;
     }
@@ -224,7 +226,7 @@ class User implements UserInterface
     /**
      * @return null|string
      */
-    public function getName(): ? string
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -234,7 +236,7 @@ class User implements UserInterface
      *
      * @return User
      */
-    public function setName(? string $name)
+    public function setName(?string $name)
     {
         $this->name = $name;
 
