@@ -45,6 +45,7 @@ class GitProjectRepository extends ServiceEntityRepository
             'project_address' => $project->getProjectAddress(),
             'project_value' => $project->getProjectValue(),
             'active' => $project->isActive(),
+            'created_by' => $project->getCreatedBy(),
             'own_value' => 0,
         ];
 

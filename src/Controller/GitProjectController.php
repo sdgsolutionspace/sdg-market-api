@@ -4,14 +4,16 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Entity\GitProject;
+use Swagger\Annotations as SWG;
 use App\Form\Type\GitProjectType;
+use Nelmio\ApiDocBundle\Annotation\Model;
 use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
 use FOS\RestBundle\Controller\Annotations\RouteResource;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Nelmio\ApiDocBundle\Annotation\Model;
-use Swagger\Annotations as SWG;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * @RouteResource("git-project")
@@ -79,7 +81,7 @@ class GitProjectController extends FOSRestController
     /**
      * Create a new a gitProject entry.
      *
-     * @Security("has_role('ROLE_ADMIN')")
+     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      *
      * @param Request $request
      *
@@ -112,6 +114,9 @@ class GitProjectController extends FOSRestController
             );
         }
 
+        $user = $em->getRepository(User::class)->findOneBy(['username' => $this->getUser()->getUsername()]);
+        $gitProject->setCreatedBy($user);
+
         $em->persist($gitProject);
         $em->flush();
 
@@ -121,7 +126,7 @@ class GitProjectController extends FOSRestController
     /**
      * Update a gitProject entry.
      *
-     * @Security("has_role('ROLE_ADMIN')")
+     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      *
      * @param GitProject $gitProject
      * @param Request    $request
@@ -141,9 +146,21 @@ class GitProjectController extends FOSRestController
      *
      * @return GitProject|\Symfony\Component\HttpFoundation\Response
      */
-    public function putAction(GitProject $gitProject, Request $request)
+    public function putAction(GitProject $gitProject, Request $request, AuthorizationCheckerInterface $auth)
     {
         $em = $this->getDoctrine()->getManager();
+
+        $isAdmin = $auth->isGranted("ROLE_ADMIN");
+        $user = $em->getRepository(User::class)->findOneBy(['username' => $this->getUser()->getUsername()]);
+
+        if (!$isAdmin && !$gitProject->getCreatedBy()) {
+            throw new AccessDeniedHttpException("Only admin can update project from other users");
+        }
+
+        if (!$isAdmin && ($gitProject->getCreatedBy()->getId() != $user->getId())) {
+            throw new AccessDeniedHttpException("Only admin can update project from other users");
+        }
+
         $form = $this->createForm(GitProjectType::class, $gitProject);
         $form->submit($request->request->all());
         $form->handleRequest($request);

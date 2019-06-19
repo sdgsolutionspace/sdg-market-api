@@ -16,6 +16,9 @@ final class Version20190506220717 extends AbstractMigration
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('ALTER TABLE transaction ADD created_at DATETIME DEFAULT CURRENT_TIMESTAMP');
+
+        // Update created_at in transaction if associated to a participation
+        $this->addSql('UPDATE transaction SET created_at=(SELECT calculation_utc_datetime FROM project_participation WHERE transaction_id=transaction.id)');
     }
 
     public function down(Schema $schema): void
