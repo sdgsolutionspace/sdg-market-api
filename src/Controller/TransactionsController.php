@@ -4,11 +4,14 @@ namespace App\Controller;
 
 use App\Entity\Transaction;
 use App\Form\Type\TransactionType;
+use FOS\RestBundle\Request\ParamFetcher;
 use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
+use FOS\RestBundle\Controller\Annotations\QueryParam;
 use FOS\RestBundle\Controller\Annotations\RouteResource;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+
 
 /**
  * @RouteResource("Transaction")
@@ -18,14 +21,29 @@ class TransactionsController extends FOSRestController
 {
     /**
      * Get all transactions.
-     *
+     * 
+     * @QueryParam(name="project", requirements="\d+", default="", description="Filter by a specific project id")
+     * @QueryParam(name="from_user", requirements="\d+", default="", description="Filter by a specific emitter user")
+     * @QueryParam(name="to_user", requirements="\d+", default="", description="Filter by a specific receiver user")
+     * 
      * @return object
      */
-    public function cgetAction()
+    public function cgetAction(ParamFetcher $paramFetcher)
     {
-        $offers = $this->getDoctrine()->getManager()->getRepository(Transaction::class)->findAll();
+        // Get the data from query string
+        $project = $paramFetcher->get('project') ?: null;
+        $fromUser = $paramFetcher->get('from_user') ?: null;
+        $toUser = $paramFetcher->get('to_user') ?: null;
 
-        return $offers;
+        // Get the list of transactions
+        $transactions = $this->getDoctrine()->getManager()->getRepository(Transaction::class)->findByParameters(
+            $project,
+            $fromUser,
+            $toUser
+        );
+
+        // Return array to be parsed by FOS Rest Bundle
+        return $transactions;
     }
 
     /**

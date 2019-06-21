@@ -3,11 +3,12 @@
 namespace App\Repository;
 
 use App\Entity\User;
+use App\Entity\SellOffer;
 use App\Entity\GitProject;
 use App\Entity\Transaction;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use App\Entity\SellOffer;
 
 class TransactionRepository extends ServiceEntityRepository
 {
@@ -48,6 +49,38 @@ class TransactionRepository extends ServiceEntityRepository
             ->andWhere('t.toUser IS NULL')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * Return the list of transaction depending the filtering options sent
+     *
+     * @param string|null $project Project id to be filtered
+     * @param integer|null $fromUserId User Id of the transaction emitter to be filtered
+     * @param integer|null $toUserId User Id of the transaction receiver to be filtered
+     * @return array
+     */
+    public function findByParameters(?string $project, ?int $fromUserId, ?int $toUserId): array
+    {
+        $qb =  $this
+            ->createQueryBuilder('t')
+            ->select('t, fu, tu')
+            ->leftJoin('t.project', "p")
+            ->leftJoin('t.fromUser', "fu")
+            ->leftJoin('t.toUser', "tu");
+
+        if ($project) {
+            $qb->andWhere("p.id = :project")->setParameter("project", $project);
+        }
+
+        if ($fromUserId) {
+            $qb->andWhere("fu.id = :fromUserId")->setParameter("fromUserId", $fromUserId);
+        }
+
+        if ($toUserId) {
+            $qb->andWhere("tu.id = :toUserId")->setParameter("toUserId", $toUserId);
+        }
+
+        return $qb->getQuery()->getResult();
     }
 
     public function getTransactionsConcerningOffer(SellOffer $sellOffer)

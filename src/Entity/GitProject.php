@@ -71,12 +71,22 @@ class GitProject
      */
     protected $participations;
 
+    /**
+     * @var User
+     *
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $createdBy;
+
     public function __construct()
     {
         $this->participations = new ArrayCollection();
     }
 
-    public function addParticipation(ProjectParticipation $participation)
+    public function addParticipation($participation)
     {
         $this->participations->add($participation);
     }
@@ -98,29 +108,29 @@ class GitProject
      *
      * @return self
      */
-    public function setParticipations(ArrayCollection $participations)
+    public function setParticipations($participations)
     {
         $this->participations = $participations;
 
         return $this;
     }
 
-    public function getId(): ? int
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function isActive(): ? bool
+    public function isActive(): ?bool
     {
         return $this->active;
     }
 
-    public function setActive($active): ? bool
+    public function setActive($active): ?bool
     {
-        return $this->active = (bool) $active;
+        return $this->active = (bool)$active;
     }
 
-    public function getName(): ? string
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -132,7 +142,7 @@ class GitProject
         return $this;
     }
 
-    public function getGitAddress(): ? string
+    public function getGitAddress(): ?string
     {
         return $this->gitAddress;
     }
@@ -144,7 +154,7 @@ class GitProject
         return $this;
     }
 
-    public function getProjectAddress(): ? string
+    public function getProjectAddress(): ?string
     {
         return $this->projectAddress;
     }
@@ -173,16 +183,40 @@ class GitProject
      *
      * @return self
      */
-    public function setProjectValue(int $projectValue): self
+    public function setProjectValue($projectValue): self
     {
         $this->projectValue = $projectValue;
 
         return $this;
     }
 
-    public function incrementProjectValue(int $nbTokens): self
+    public function incrementProjectValue($nbTokens): self
     {
         $this->projectValue += $nbTokens;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of createdBy
+     *
+     * @return  User
+     */
+    public function getCreatedBy()
+    {
+        return $this->createdBy;
+    }
+
+    /**
+     * Set the value of createdBy
+     *
+     * @param  User  $createdBy
+     *
+     * @return  self
+     */
+    public function setCreatedBy($createdBy)
+    {
+        $this->createdBy = $createdBy;
 
         return $this;
     }
