@@ -51,9 +51,9 @@ class GitProject
     /**
      * @var int
      *
-     * @ORM\Column(name="project_value", type="integer", nullable=false, options={"default"=1000})
+     * @ORM\Column(name="project_value", type="integer", nullable=false, options={"default"=0})
      */
-    private $projectValue = 1000;
+    private $projectValue = 0;
 
     /**
      * @var bool

@@ -105,7 +105,7 @@ class GitHubController extends Controller
             $sdgOffer = new Transaction();
             $sdgOffer
                 ->setToUser($dbUser)
-                ->setNbSdg(200)
+                ->setNbSdg(10000)
                 ->setTransactionLabel(Transaction::SUBSCRIPTION_SDG_CREDIT);
             $em->persist($sdgOffer);
         } else {

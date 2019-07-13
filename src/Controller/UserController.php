@@ -179,7 +179,7 @@ class UserController extends FOSRestController implements ClassResourceInterface
             $sdgOffer = new Transaction();
             $sdgOffer
                 ->setToUser($user)
-                ->setNbSdg(200)
+                ->setNbSdg(1000)
                 ->setTransactionLabel(Transaction::SUBSCRIPTION_SDG_CREDIT);
             $em->persist($sdgOffer);
 
