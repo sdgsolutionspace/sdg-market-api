@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Form\Type\TransactionBuyTokenType;
 use DateTime;
 use DateInterval;
 use App\Entity\User;
@@ -13,6 +14,10 @@ use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
 use FOS\RestBundle\Controller\Annotations\QueryParam;
+use App\Entity\Transaction;
+use Swagger\Annotations as SWG;
+use Nelmio\ApiDocBundle\Annotation\Model;
+
 
 /**
  * @FOSRest\RouteResource("purchase-offer")
@@ -20,14 +25,33 @@ use FOS\RestBundle\Controller\Annotations\QueryParam;
  */
 class PurchaseOfferController extends FOSRestController implements ClassResourceInterface
 {
-    /**
-     * Get all projects.
-     *
-     * @QueryParam(name="project", requirements="\d+", allowBlank=true, description="Project for which getting the offers")
-     * @QueryParam(name="include_expired", requirements="^(0|1)$", default="0", strict=true, allowBlank=true, description="Project for which getting the offers")
-     *
-     * @return object
-     */
+
+  /**
+   * Get all purchase offers.
+   *
+   * @SWG\Parameter(
+   *     name="Authorization",
+   *     in="header",
+   *     description="JWT token for authentication Bearer: Your_Token",
+   *     required=true,
+   *     type="string"
+   * ),
+   *
+   * @SWG\Response(
+   *     response=200,
+   *     description="Return the list of purchase offers",
+   *     @SWG\Schema(
+   *          type="array",
+   *          @SWG\Items(ref=@Model(type=PurchaseOffer::class))
+   *     )
+   * )
+   *
+   * @QueryParam(name="project", requirements="\d+", allowBlank=true, description="Project for which offers are desired")
+   * @QueryParam(name="include_expired", requirements="^(0|1)$", default=0, strict=true, allowBlank=true, description="Whether or not to include expired offers")
+   *
+   * @param ParamFetcher $paramFetcher
+   * @return mixed
+   */
     public function cgetAction(ParamFetcher $paramFetcher)
     {
         $offers = $this->getDoctrine()->getManager()->getRepository(PurchaseOffer::class)->findFiltered(
@@ -123,5 +147,60 @@ class PurchaseOfferController extends FOSRestController implements ClassResource
         $em->flush();
 
         return ['success' => true];
+    }
+
+  /**
+   * Sell tokens to an existing offer.
+   *
+   * @SWG\Parameter(
+   *     name="Authorization",
+   *     in="header",
+   *     description="JWT token for authorization Bearer: Your Token",
+   *     required=true,
+   *     type="string"
+   * ),
+   *
+   * @SWG\Parameter(
+   *     name="Query body",
+   *     in="body",
+   *     description="Reflect the purchase",
+   *     @Model(type=TransactionBuyTokenType::class)
+   * )
+   *
+   * @SWG\Response(
+   *     response=200,
+   *     description="Return the result of the transaction",
+   *     @Model(type=Transaction::class)
+   * )
+   *
+   * @param Request $request
+   * @param PurchaseOffer $purchaseOffer
+   * @return Transaction|\Symfony\Component\HttpFoundation\Response
+   */
+    public function putSellAction(Request $request, PurchaseOffer $purchaseOffer)
+    {
+      $em = $this->getDoctrine()->getManager();
+
+      $user = $em->getRepository(User::class)->findOneBy(['username' => $this->getUser()->getUsername()]);
+
+
+      $transactionBuy = new Transaction();
+      $transactionBuy->setFromUser($user);
+
+      $form = $this->createForm(TransactionBuyTokenType::class, $transactionBuy);
+      $form->submit($request->request->all());
+      $form->handleRequest($request);
+
+      //TODO: Test whether this syntax equivalent to checking === false
+      if(!$form->isValid()) {
+        return $this->handleView(
+          $this->view($form)
+        );
+      }
+
+      $em->persist($transactionBuy);
+      $em->flush();
+
+      return $transactionBuy;
     }
 }
