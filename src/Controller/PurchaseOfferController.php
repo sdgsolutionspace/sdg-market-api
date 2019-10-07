@@ -7,6 +7,7 @@ use DateTime;
 use DateInterval;
 use App\Entity\User;
 use App\Entity\PurchaseOffer;
+use App\Entity\SellOffer;
 use App\Form\Type\PurchaseOfferType;
 use FOS\RestBundle\Request\ParamFetcher;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,6 +18,7 @@ use FOS\RestBundle\Controller\Annotations\QueryParam;
 use App\Entity\Transaction;
 use Swagger\Annotations as SWG;
 use Nelmio\ApiDocBundle\Annotation\Model;
+use FOS\RestBundle\Controller\Annotations\Post;
 
 
 /**
@@ -26,32 +28,32 @@ use Nelmio\ApiDocBundle\Annotation\Model;
 class PurchaseOfferController extends FOSRestController implements ClassResourceInterface
 {
 
-  /**
-   * Get all purchase offers.
-   *
-   * @SWG\Parameter(
-   *     name="Authorization",
-   *     in="header",
-   *     description="JWT token for authentication Bearer: Your_Token",
-   *     required=true,
-   *     type="string"
-   * ),
-   *
-   * @SWG\Response(
-   *     response=200,
-   *     description="Return the list of purchase offers",
-   *     @SWG\Schema(
-   *          type="array",
-   *          @SWG\Items(ref=@Model(type=PurchaseOffer::class))
-   *     )
-   * )
-   *
-   * @QueryParam(name="project", requirements="\d+", allowBlank=true, description="Project for which offers are desired")
-   * @QueryParam(name="include_expired", requirements="^(0|1)$", default=0, strict=true, allowBlank=true, description="Whether or not to include expired offers")
-   *
-   * @param ParamFetcher $paramFetcher
-   * @return mixed
-   */
+    /**
+     * Get all purchase offers.
+     *
+     * @SWG\Parameter(
+     *     name="Authorization",
+     *     in="header",
+     *     description="JWT token for authentication Bearer: Your_Token",
+     *     required=true,
+     *     type="string"
+     * ),
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Return the list of purchase offers",
+     *     @SWG\Schema(
+     *          type="array",
+     *          @SWG\Items(ref=@Model(type=PurchaseOffer::class))
+     *     )
+     * )
+     *
+     * @QueryParam(name="project", requirements="\d+", allowBlank=true, description="Project for which offers are desired")
+     * @QueryParam(name="include_expired", requirements="^(0|1)$", default=0, strict=true, allowBlank=true, description="Whether or not to include expired offers")
+     *
+     * @param ParamFetcher $paramFetcher
+     * @return mixed
+     */
     public function cgetAction(ParamFetcher $paramFetcher)
     {
         $offers = $this->getDoctrine()->getManager()->getRepository(PurchaseOffer::class)->findFiltered(
@@ -149,58 +151,82 @@ class PurchaseOfferController extends FOSRestController implements ClassResource
         return ['success' => true];
     }
 
-  /**
-   * Sell tokens to an existing offer.
-   *
-   * @SWG\Parameter(
-   *     name="Authorization",
-   *     in="header",
-   *     description="JWT token for authorization Bearer: Your Token",
-   *     required=true,
-   *     type="string"
-   * ),
-   *
-   * @SWG\Parameter(
-   *     name="Query body",
-   *     in="body",
-   *     description="Reflect the purchase",
-   *     @Model(type=TransactionBuyTokenType::class)
-   * )
-   *
-   * @SWG\Response(
-   *     response=200,
-   *     description="Return the result of the transaction",
-   *     @Model(type=Transaction::class)
-   * )
-   *
-   * @param Request $request
-   * @param PurchaseOffer $purchaseOffer
-   * @return Transaction|\Symfony\Component\HttpFoundation\Response
-   */
-    public function putSellAction(Request $request, PurchaseOffer $purchaseOffer)
+    /**
+     * Sell tokens to an existing offer.
+     *
+     * @SWG\Parameter(
+     *     name="Authorization",
+     *     in="header",
+     *     description="JWT token for authorization Bearer: Your Token",
+     *     required=true,
+     *     type="string"
+     * ),
+     *
+     * @SWG\Parameter(
+     *     name="Query body",
+     *     in="body",
+     *     description="Reflect the purchase",
+     *     @Model(type=TransactionBuyTokenType::class)
+     * )
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Return the result of the transaction",
+     *     @Model(type=Transaction::class)
+     * )
+     *
+     * @Post("/purchase-offers/{purchaseOffer}/sell")
+     * 
+     * @param Request $request
+     * @param PurchaseOffer $purchaseOffer
+     * @return Transaction|\Symfony\Component\HttpFoundation\Response
+     */
+    public function postSellAction(Request $request, PurchaseOffer $purchaseOffer)
     {
-      $em = $this->getDoctrine()->getManager();
+        $em = $this->getDoctrine()->getManager();
 
-      $user = $em->getRepository(User::class)->findOneBy(['username' => $this->getUser()->getUsername()]);
+        $user = $em->getRepository(User::class)->findOneBy(['username' => $this->getUser()->getUsername()]);
+
+        $transactionBuy = new Transaction();
+        $transactionBuy->setFromUser($user);
+
+        $nbTokens = $request->request->get("nbTokens", 0);
 
 
-      $transactionBuy = new Transaction();
-      $transactionBuy->setFromUser($user);
+        $sellOffer = new SellOffer();
+        $sellOffer
+            ->setNumberOfTokens(min($nbTokens, $purchaseOffer->getNumberOfTokens()))
+            ->setOfferStartsUtcDate(new DateTime())
+            ->setOfferExpiresAtUtcDate((new DateTime())->add(new DateInterval("PT30S")))
+            ->setProject($purchaseOffer->getProject())
+            ->setSeller($user)
+            ->setSellPricePerToken($purchaseOffer->getPurchasePricePerToken());
 
-      $form = $this->createForm(TransactionBuyTokenType::class, $transactionBuy);
-      $form->submit($request->request->all());
-      $form->handleRequest($request);
+        $em->persist($sellOffer);
 
-      //TODO: Test whether this syntax equivalent to checking === false
-      if(!$form->isValid()) {
-        return $this->handleView(
-          $this->view($form)
-        );
-      }
+        $form = $this->createForm(TransactionBuyTokenType::class, $transactionBuy);
 
-      $em->persist($transactionBuy);
-      $em->flush();
 
-      return $transactionBuy;
+        $transactionBuy
+            ->setNbTokens($sellOffer->getNumberOfTokens())
+            ->setSellOffer($sellOffer)
+            ->setCreatedAt(new DateTime())
+            ->setFromUser($user)
+            ->setToUser($purchaseOffer->getPurchaser());
+
+        $form->submit($request->request->all());
+        $form->handleRequest($request);
+
+        //TODO: Test whether this syntax equivalent to checking === false
+        if (!$form->isValid()) {
+            return $this->handleView(
+                $this->view($form)
+            );
+        }
+
+        $em->persist($transactionBuy);
+        $em->flush();
+
+        return $transactionBuy;
     }
 }

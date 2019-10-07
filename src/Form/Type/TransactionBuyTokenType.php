@@ -11,9 +11,7 @@ class TransactionBuyTokenType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('nbTokens')
-            ->add('sellOffer');
+        $builder->add('nbTokens');
     }
 
     public function configureOptions(OptionsResolver $resolver)

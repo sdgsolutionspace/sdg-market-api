@@ -70,7 +70,7 @@ class Transaction
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="sell_offer_id", referencedColumnName="id", nullable=true)
      * })
-     * @Assert\NotNull(groups={"purchase"})
+     * @Assert\NotNull(groups={"Default"})
      */
     private $sellOffer;
 
