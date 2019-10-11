@@ -188,7 +188,7 @@ class PurchaseOfferController extends FOSRestController implements ClassResource
         $user = $em->getRepository(User::class)->findOneBy(['username' => $this->getUser()->getUsername()]);
 
         $transactionBuy = new Transaction();
-        $transactionBuy->setFromUser($user);
+        $transactionBuy->setFromUser($purchaseOffer->getPurchaser());
 
         $nbTokens = $request->request->get("nbTokens", 0);
 
@@ -199,20 +199,19 @@ class PurchaseOfferController extends FOSRestController implements ClassResource
             ->setOfferStartsUtcDate(new DateTime())
             ->setOfferExpiresAtUtcDate((new DateTime())->add(new DateInterval("PT30S")))
             ->setProject($purchaseOffer->getProject())
-            ->setSeller($user)
+            ->setSeller($purchaseOffer->getPurchaser())
             ->setSellPricePerToken($purchaseOffer->getPurchasePricePerToken());
 
         $em->persist($sellOffer);
 
         $form = $this->createForm(TransactionBuyTokenType::class, $transactionBuy);
 
-
         $transactionBuy
             ->setNbTokens($sellOffer->getNumberOfTokens())
             ->setSellOffer($sellOffer)
             ->setCreatedAt(new DateTime())
-            ->setFromUser($user)
-            ->setToUser($purchaseOffer->getPurchaser());
+            ->setFromUser($purchaseOffer->getPurchaser())
+            ->setToUser($user);
 
         $form->submit($request->request->all());
         $form->handleRequest($request);
@@ -224,6 +223,17 @@ class PurchaseOfferController extends FOSRestController implements ClassResource
             );
         }
 
+        $purchaseOffer->setNumberOfTokens($purchaseOffer->getNumberOfTokens() - $sellOffer->getNumberOfTokens());
+
+        if ($purchaseOffer->getNumberOfTokens() < 0) {
+            throw new \Exception("Tried to sell to much token to the selected purchase order");
+        }
+
+        if ($purchaseOffer->getNumberOfTokens() == 0) {
+            $purchaseOffer->setOfferExpiresAtUtcDate(new DateTime());
+        }
+
+        $em->persist($purchaseOffer);
         $em->persist($transactionBuy);
         $em->flush();
 
