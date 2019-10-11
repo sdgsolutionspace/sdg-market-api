@@ -226,7 +226,7 @@ class PurchaseOfferController extends FOSRestController implements ClassResource
         $purchaseOffer->setNumberOfTokens($purchaseOffer->getNumberOfTokens() - $sellOffer->getNumberOfTokens());
 
         if ($purchaseOffer->getNumberOfTokens() < 0) {
-            throw new \Exception("Tried to sell to much token to the selected purchase order");
+            throw new \Exception("Tried to sell too many tokens to the selected purchase order");
         }
 
         if ($purchaseOffer->getNumberOfTokens() == 0) {
