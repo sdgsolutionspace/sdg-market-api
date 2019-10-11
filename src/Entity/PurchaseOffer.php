@@ -77,6 +77,62 @@ class PurchaseOffer
      */
     private $purchaser;
 
+    /**
+     * @var array
+     *
+     * @ORM\Column(name="goals", type="array", nullable=true)
+     */
+    private $goals = [];
+
+    /**
+     * @param $goal
+     * 
+     * @return string
+     */
+    public function goal()
+    {
+        return $this->goals;
+    }
+
+    /**
+     * @return array
+     */
+    public function getGoals()
+    {
+        return $this->goals;
+    }
+
+     /**
+     * @param $goal
+     *
+     * @return $this
+     */
+    public function addGoal($goal)
+    {
+        $this->goal = strtoupper($goal);
+        if (!in_array($goal, $this->goals, true)) {
+            // $this->goals[] = $goal;
+            array_push($this->goals, $goal);
+        }
+
+        return $this;
+    }
+
+        /**
+     * @param $goal
+     *
+     * @return $this
+     */
+    public function removeGoal($goal)
+    {
+        if (false !== $key = array_search(strtoupper($goal), $this->goals, true)) {
+            unset($this->goals[$key]);
+            $this->goals = array_values($this->goals);
+        }
+
+        return $this;
+    }
+
     public function getId(): ? int
     {
         return $this->id;

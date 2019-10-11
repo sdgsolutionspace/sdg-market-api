@@ -22,7 +22,8 @@ class PurchaseOfferType extends AbstractType
                 'widget' => 'single_text',
             ])
             ->add('project')
-            ->add('purchaser');
+            ->add('purchaser')
+            ->add('goal');
     }
 
     public function configureOptions(OptionsResolver $resolver)
