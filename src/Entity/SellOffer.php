@@ -36,7 +36,7 @@ class SellOffer
     /**
      * @var string
      *
-     * @ORM\Column(name="sell_price_per_token", type="decimal", precision=6, scale=2, nullable=false)
+     * @ORM\Column(name="sell_price_per_token", type="decimal", precision=12, scale=2, nullable=false)
      * @Assert\NotBlank()
      * @Assert\Type("numeric")
      */
