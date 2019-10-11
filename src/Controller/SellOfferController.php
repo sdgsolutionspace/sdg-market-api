@@ -120,6 +120,8 @@ class SellOfferController extends FOSRestController implements ClassResourceInte
 
         $transactionBuy = new Transaction();
         $transactionBuy->setToUser($user);
+        $transactionBuy->setFromUser($sellOffer->getSeller());
+        $transactionBuy->setSellOffer($sellOffer);
 
         $form = $this->createForm(TransactionBuyTokenType::class, $transactionBuy);
         $form->submit($request->request->all());

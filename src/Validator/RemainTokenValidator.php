@@ -33,6 +33,7 @@ class RemainTokenValidator extends ConstraintValidator
         $tokensLeft = $this->getRemainingTokens($offer);
         $enoughTokensRemaining = $tokensLeft >= $requestedTokens;
 
+
         if (!$enoughTokensRemaining) {
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ value }}', $requestedTokens)
