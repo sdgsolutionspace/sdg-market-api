@@ -77,7 +77,7 @@ class Transaction
     /**
      * @var float
      *
-     * @ORM\Column(name="nb_tokens", type="decimal", precision=8, scale=2, nullable=false)
+     * @ORM\Column(name="nb_tokens", type="decimal", precision=12, scale=2, nullable=false)
      * @Assert\NotBlank()
      * @Assert\Type("numeric", groups={"Default", "purchase"})
      * @Assert\NotNull(groups={"purchase"})
