@@ -2,24 +2,27 @@
 
 namespace App\Controller;
 
-use App\Form\Type\TransactionBuyTokenType;
 use DateTime;
+use Exception;
 use DateInterval;
 use App\Entity\User;
-use App\Entity\PurchaseOffer;
 use App\Entity\SellOffer;
+use App\Entity\Transaction;
+use App\Entity\PurchaseOffer;
+use Doctrine\ORM\EntityManager;
+use Swagger\Annotations as SWG;
 use App\Form\Type\PurchaseOfferType;
+use App\Service\AutoMatchTransaction;
 use FOS\RestBundle\Request\ParamFetcher;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use App\Form\Type\TransactionBuyTokenType;
 use Symfony\Component\HttpFoundation\Request;
+use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
 use FOS\RestBundle\Controller\Annotations\QueryParam;
-use App\Entity\Transaction;
-use Swagger\Annotations as SWG;
-use Nelmio\ApiDocBundle\Annotation\Model;
-use FOS\RestBundle\Controller\Annotations\Post;
-
+use Monolog\Logger;
 
 /**
  * @FOSRest\RouteResource("purchase-offer")
@@ -86,6 +89,10 @@ class PurchaseOfferController extends FOSRestController implements ClassResource
      */
     public function postAction(Request $request)
     {
+        /** @var AutoMatchTransaction $autoMatcher */
+        $autoMatcher = $this->get(AutoMatchTransaction::class);
+
+        /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
         $user = $em->getRepository(User::class)->findOneBy(['username' => $this->getUser()->getUsername()]);
 
@@ -108,7 +115,19 @@ class PurchaseOfferController extends FOSRestController implements ClassResource
             );
         }
 
-        $em->persist($purchaseOffer);
+        $em->beginTransaction();
+        try {
+            $autoMatcher->autoMatchPurchase($purchaseOffer);
+            $em->commit();
+        } catch (Exception $e) {
+            // If auto transaction is not working, the erroe is ignored and the purchase offer is created
+            $em->rollback();
+        }
+
+        if ($purchaseOffer->getNumberOfTokens()) {
+            $em->persist($purchaseOffer);
+        }
+
         $em->flush();
 
         return $purchaseOffer;

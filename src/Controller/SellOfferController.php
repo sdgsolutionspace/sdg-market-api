@@ -9,6 +9,7 @@ use App\Entity\SellOffer;
 use App\Entity\Transaction;
 use Swagger\Annotations as SWG;
 use App\Form\Type\SellOfferType;
+use App\Service\AutoMatchTransaction;
 use FOS\RestBundle\Request\ParamFetcher;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use App\Form\Type\TransactionBuyTokenType;
@@ -172,6 +173,9 @@ class SellOfferController extends FOSRestController implements ClassResourceInte
         $em = $this->getDoctrine()->getManager();
         $user = $em->getRepository(User::class)->findOneBy(['username' => $this->getUser()->getUsername()]);
 
+        /** @var AutoMatchTransaction $autoMatcher */
+        $autoMatcher = $this->get(AutoMatchTransaction::class);
+
         $sellOffer = new SellOffer($user);
         $form = $this->createForm(SellOfferType::class, $sellOffer);
         $form->submit($request->request->all());
@@ -191,7 +195,18 @@ class SellOfferController extends FOSRestController implements ClassResourceInte
             );
         }
 
-        $em->persist($sellOffer);
+        $em->beginTransaction();
+        try {
+            $autoMatcher->autoMatchSell($sellOffer);
+            $em->commit();
+        } catch (Exception $e) {
+            // If auto transaction is not working, the error is ignored and the purchase offer is created
+            $em->rollback();
+        }
+
+        if ($sellOffer->getNumberOfTokens() > 0) {
+            $em->persist($sellOffer);
+        }
         $em->flush();
 
         return $sellOffer;
